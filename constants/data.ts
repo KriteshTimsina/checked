@@ -6,30 +6,27 @@ export const data = [
       {
         title: "Change app icon",
         completed: false,
+        id: 1,
       },
       {
-        title: "Change app icon",
+        title: "Change splash screen",
         completed: false,
+        id: 2,
       },
       {
-        title: "Change app icon",
+        title: "Update build version in app/build/build.gradle",
         completed: false,
+        id: 3,
       },
       {
-        title: "Change app icon",
+        title: "Change version number in package.json",
         completed: false,
+        id: 4,
       },
       {
-        title: "Change app icon",
+        title: "Deploy",
         completed: false,
-      },
-      {
-        title: "Change app icon",
-        completed: false,
-      },
-      {
-        title: "Change app icon",
-        completed: false,
+        id: 5,
       },
     ],
   },
