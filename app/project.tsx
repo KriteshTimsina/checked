@@ -103,21 +103,22 @@ const Project = () => {
             })}
           </ScrollView>
 
-          <View style={{ width: '100%', alignItems: 'flex-end' }}>
-            <Pressable
-              onPress={() => bottomSheetRef.current?.expand()}
-              style={{
-                backgroundColor: Colors.highlight,
-                height: 50,
-                width: 50,
-                borderRadius: 100,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <AntDesign name="plus" size={35} color="white" />
-            </Pressable>
-          </View>
+          <Pressable
+            onPress={() => bottomSheetRef.current?.expand()}
+            style={{
+              backgroundColor: Colors.highlight,
+              height: 50,
+              width: 50,
+              borderRadius: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              bottom: '5%',
+              right: '5%',
+            }}
+          >
+            <AntDesign name="plus" size={35} color="white" />
+          </Pressable>
 
           {/* <Button title="TEST" onPress={() => setAllCompleted(true)} /> */}
         </ThemedView>
@@ -125,7 +126,7 @@ const Project = () => {
           index={-1}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
-          backgroundStyle={{ backgroundColor: Colors.dark.icon, marginBottom: 20 }}
+          backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
           ref={bottomSheetRef}
         >
           <BottomSheetView style={styles.contentContainer}>
