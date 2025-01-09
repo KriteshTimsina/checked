@@ -26,7 +26,6 @@ const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const [inputHeight, setInputHeight] = useState(40);
   const [inputText, setInputText] = useState('');
 
   // callbacks
@@ -47,10 +46,6 @@ const Project = () => {
       ),
     });
   }, [navigation]);
-
-  const handleContentSizeChange = (event: any) => {
-    setInputHeight(Math.max(40, event.nativeEvent.contentSize.height));
-  };
 
   const handleAddTask = () => {
     if (inputText.trim()) {
@@ -98,28 +93,29 @@ const Project = () => {
           index={-1}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
-          backgroundStyle={{ backgroundColor: Colors.dark.icon }}
+          backgroundStyle={{ backgroundColor: Colors.dark.icon, marginBottom: 20 }}
           ref={bottomSheetRef}
         >
           <BottomSheetView style={styles.contentContainer}>
             <View style={styles.contentContainer}>
-              <ThemedText style={styles.sheetTitle}>Add New Task</ThemedText>
-
+              <ThemedText type="subtitle" style={styles.sheetTitle}>
+                Add New Task
+              </ThemedText>
               <View style={styles.inputContainer}>
                 <TextInput
                   multiline
                   value={inputText}
                   onChangeText={setInputText}
-                  placeholder="Enter your task description..."
-                  placeholderTextColor="gray"
+                  autoFocus
+                  placeholder="Enter your task title..."
+                  placeholderTextColor="white"
                   style={[
                     styles.input,
                     {
-                      height: Math.max(40, inputHeight),
+                      height: 40,
                       textAlignVertical: 'top',
                     },
                   ]}
-                  onContentSizeChange={handleContentSizeChange}
                 />
 
                 <View style={styles.buttonContainer}>
@@ -215,20 +211,17 @@ const Success = ({ close }: any) => {
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    padding: 20,
     gap: 20,
+    paddingHorizontal: 10,
+    height: 200,
   },
   sheetTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
   },
   inputContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 10,
     padding: 10,
-    marginTop: 10,
   },
   input: {
     color: 'white',
