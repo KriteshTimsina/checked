@@ -1,15 +1,15 @@
-import { Pressable, StyleSheet, Text, View, Image, Button } from "react-native";
-import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useNavigation } from "expo-router";
-import { Header } from "@/components/Header";
-import { data } from "@/constants/data";
-import { Colors } from "@/constants/Colors";
-import Checkbox, { CheckboxEvent } from "expo-checkbox";
-import { SafeAreaView } from "react-native-safe-area-context";
-import ConfettiCannon from "react-native-confetti-cannon";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { Pressable, StyleSheet, Text, View, Button } from 'react-native';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useNavigation } from 'expo-router';
+import { Header } from '@/components/Header';
+import { data } from '@/constants/data';
+import { Colors } from '@/constants/Colors';
+import Checkbox, { CheckboxEvent } from 'expo-checkbox';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ConfettiCannon from 'react-native-confetti-cannon';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
-const project = () => {
+const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
 
@@ -20,17 +20,15 @@ const project = () => {
       header: () => (
         <Header
           headerStyle={{ height: 100 }}
-          textStyle={{ textAlign: "center" }}
+          textStyle={{ textAlign: 'center' }}
           title={data[0].title}
         />
       ),
     });
-  }, []);
+  }, [navigation]);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, padding: 20, backgroundColor: Colors.secondary }}
-    >
+    <SafeAreaView style={{ flex: 1, padding: 20, backgroundColor: Colors.secondary }}>
       {allCompleted && <Success close={close} />}
       <View
         style={{
@@ -38,7 +36,7 @@ const project = () => {
           gap: 20,
         }}
       >
-        {data[0].checklist.map((item) => {
+        {data[0].checklist.map(item => {
           return <CheckList key={item.id} item={item} />;
         })}
       </View>
@@ -48,10 +46,10 @@ const project = () => {
   );
 };
 
-export default project;
+export default Project;
 
 const CheckList = ({ item }: any) => {
-  const checkedRef = useRef<CheckboxEvent>(null);
+  const checkedRef = useRef<CheckboxEvent | null>(null);
   const [checked, setChecked] = useState(item.completed);
 
   const toggleCheckbox = () => {
@@ -63,7 +61,7 @@ const CheckList = ({ item }: any) => {
     <Pressable
       onPress={toggleCheckbox}
       ref={checkedRef}
-      style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+      style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}
     >
       <Checkbox
         style={{ borderRadius: 100, width: 25, height: 25, padding: 5 }}
@@ -73,9 +71,9 @@ const CheckList = ({ item }: any) => {
       />
       <Text
         style={{
-          fontFamily: "ClashGroteskMedium",
+          fontFamily: 'ClashGroteskMedium',
           fontSize: 18,
-          textDecorationLine: checked ? "line-through" : "none",
+          textDecorationLine: checked ? 'line-through' : 'none',
         }}
       >
         {item.title}
@@ -94,28 +92,22 @@ const Success = ({ close }: any) => {
         zIndex: 10,
         top: -20,
         padding: 20,
-        alignItems: "center",
+        alignItems: 'center',
         paddingTop: 50,
         gap: 20,
-        justifyContent: "center",
+        justifyContent: 'center',
       }}
     >
       <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} />
       <Animated.Image
         entering={FadeInDown.delay(300)}
-        source={require("@/assets/images/success.png")}
+        source={require('@/assets/images/success.png')}
         style={{ width: 100, height: 100 }}
       />
       <Animated.Text entering={FadeInDown.delay(400)} style={{ fontSize: 16 }}>
         All tasks completed
       </Animated.Text>
-      <Button
-        onPress={close}
-        title="Reset all tasks"
-        color={Colors.highlight}
-      />
+      <Button onPress={close} title="Reset all tasks" color={Colors.highlight} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
