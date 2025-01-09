@@ -1,30 +1,30 @@
 export const data = [
   {
-    title: "App deployment checklist",
-    createdAt: "Feb 2",
+    title: 'App deployment checklist',
+    createdAt: 'Feb 2',
     checklist: [
       {
-        title: "Change app icon",
+        title: 'Change app icon',
         completed: false,
         id: 1,
       },
       {
-        title: "Change splash screen",
+        title: 'Change splash screen',
         completed: false,
         id: 2,
       },
       {
-        title: "Update build version in app/build/build.gradle",
+        title: 'Update build version in app/build/build.gradle',
         completed: false,
         id: 3,
       },
       {
-        title: "Change version number in package.json",
+        title: 'Change version number in package.json',
         completed: false,
         id: 4,
       },
       {
-        title: "Deploy",
+        title: 'Deploy',
         completed: false,
         id: 5,
       },

@@ -1,5 +1,14 @@
-import { Pressable, StyleSheet, View, Button, TextInput } from 'react-native';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  Button,
+  TextInput,
+  Modal,
+  Alert,
+  ScrollView,
+} from 'react-native';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Header } from '@/components/Header';
 import { data } from '@/constants/data';
@@ -10,10 +19,20 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [inputHeight, setInputHeight] = useState(40);
+  const [inputText, setInputText] = useState('');
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   const close = () => setAllCompleted(false);
 
@@ -29,62 +48,104 @@ const Project = () => {
     });
   }, [navigation]);
 
-  return (
-    <ThemedView style={{ flex: 1, padding: 20 }}>
-      {allCompleted && <Success close={close} />}
-      <View
-        style={{
-          flex: 1,
-          gap: 20,
-        }}
-      >
-        {data[0].checklist.map(item => {
-          return <CheckList key={item.id} item={item} />;
-        })}
-        <View
-          style={{
-            borderColor: Colors.light.icon,
-            height: 100,
-            width: '100%',
-            borderWidth: 1,
-            borderRadius: 10,
-            padding: 10,
-          }}
-        >
-          <TextInput
-            value=""
-            placeholder="Enter"
-            placeholderTextColor={'white'}
-            style={{ height: 40, borderBottomColor: Colors.light.icon, borderBottomWidth: 1 }}
-          />
+  const handleContentSizeChange = (event: any) => {
+    setInputHeight(Math.max(40, event.nativeEvent.contentSize.height));
+  };
 
-          <View>
-            <Pressable>
-              <Ionicons name="close-outline" size={25} color="white" />
-            </Pressable>
-            <Pressable>
-              <Ionicons name="paper-plane-outline" size={25} color="white" />
+  const handleAddTask = () => {
+    if (inputText.trim()) {
+      // Add your task logic here
+      console.log('New task:', inputText);
+      setInputText('');
+      bottomSheetRef.current?.close();
+    }
+  };
+  return (
+    <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemedView style={{ flex: 1, padding: 20 }}>
+          {allCompleted && <Success close={close} />}
+          <ScrollView
+            contentContainerStyle={{
+              gap: 20,
+            }}
+            style={{ flex: 1 }}
+          >
+            {data[0].checklist.map(item => {
+              return <CheckList key={item.id} item={item} />;
+            })}
+          </ScrollView>
+
+          <View style={{ width: '100%', alignItems: 'flex-end' }}>
+            <Pressable
+              onPress={() => bottomSheetRef.current?.expand()}
+              style={{
+                backgroundColor: Colors.highlight,
+                height: 50,
+                width: 50,
+                borderRadius: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <AntDesign name="plus" size={35} color="white" />
             </Pressable>
           </View>
-        </View>
-      </View>
 
-      <View
-        style={{
-          backgroundColor: Colors.highlight,
-          height: 50,
-          width: 50,
-          borderRadius: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          alignSelf: 'flex-end',
-        }}
-      >
-        <AntDesign name="plus" size={35} color="white" />
-      </View>
+          {/* <Button title="TEST" onPress={() => setAllCompleted(true)} /> */}
+        </ThemedView>
+        <BottomSheet
+          index={-1}
+          onChange={handleSheetChanges}
+          enablePanDownToClose={true}
+          backgroundStyle={{ backgroundColor: Colors.dark.icon }}
+          ref={bottomSheetRef}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <View style={styles.contentContainer}>
+              <ThemedText style={styles.sheetTitle}>Add New Task</ThemedText>
 
-      <Button title="TEST" onPress={() => setAllCompleted(true)} />
-    </ThemedView>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  multiline
+                  value={inputText}
+                  onChangeText={setInputText}
+                  placeholder="Enter your task description..."
+                  placeholderTextColor="gray"
+                  style={[
+                    styles.input,
+                    {
+                      height: Math.max(40, inputHeight),
+                      textAlignVertical: 'top',
+                    },
+                  ]}
+                  onContentSizeChange={handleContentSizeChange}
+                />
+
+                <View style={styles.buttonContainer}>
+                  <Pressable
+                    onPress={() => {
+                      setInputText('');
+                      bottomSheetRef.current?.close();
+                    }}
+                    style={styles.iconButton}
+                  >
+                    <Ionicons name="close-outline" size={25} color="white" />
+                  </Pressable>
+
+                  <Pressable
+                    onPress={handleAddTask}
+                    style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
+                  >
+                    <Ionicons name="paper-plane-outline" size={25} color="white" />
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+          </BottomSheetView>
+        </BottomSheet>
+      </GestureHandlerRootView>
+    </>
   );
 };
 
@@ -151,3 +212,57 @@ const Success = ({ close }: any) => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    padding: 20,
+    gap: 20,
+  },
+  sheetTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  inputContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+  },
+  input: {
+    color: 'white',
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    minHeight: 40,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 15,
+    marginTop: 10,
+  },
+  iconButton: {
+    padding: 5,
+  },
+  addButton: {
+    backgroundColor: Colors.highlight,
+    height: 50,
+    width: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+});
