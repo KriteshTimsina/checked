@@ -23,7 +23,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
-import { entries as entry } from '@/db/schema';
+import { entries as entrySchema } from '@/db/schema';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -38,7 +38,7 @@ const Project = () => {
     const load = async () => {
       if (params) {
         const data = await db.query.entries.findMany({
-          where: eq(entry.project_id, Number(params.id)),
+          where: eq(entrySchema.project_id, Number(params.id)),
         });
         setEntries(data);
       }
@@ -65,10 +65,24 @@ const Project = () => {
     });
   }, [navigation]);
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (inputText.trim()) {
       // Add your task logic here
-      console.log('New task:', inputText);
+      const entry = await db
+        .insert(entrySchema)
+        .values({ project_id: Number(params.id), title: inputText, status: 0 })
+        .then(success => {
+          if (success.changes === 1) {
+            const newEntry = db.query.entries
+              .findFirst({
+                where: eq(entrySchema.id, Number(success.lastInsertRowId)),
+              })
+              .then(data => {
+                setEntries(prev => [...prev, data]);
+              });
+          }
+        });
+
       setInputText('');
       bottomSheetRef.current?.close();
     }
