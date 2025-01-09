@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View, Button } from 'react-native';
+import { Pressable, StyleSheet, View, Button, TextInput } from 'react-native';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Header } from '@/components/Header';
@@ -9,6 +9,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -40,6 +41,46 @@ const Project = () => {
         {data[0].checklist.map(item => {
           return <CheckList key={item.id} item={item} />;
         })}
+        <View
+          style={{
+            borderColor: Colors.light.icon,
+            height: 100,
+            width: '100%',
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 10,
+          }}
+        >
+          <TextInput
+            value=""
+            placeholder="Enter"
+            placeholderTextColor={'white'}
+            style={{ height: 40, borderBottomColor: Colors.light.icon, borderBottomWidth: 1 }}
+          />
+
+          <View>
+            <Pressable>
+              <Ionicons name="close-outline" size={25} color="white" />
+            </Pressable>
+            <Pressable>
+              <Ionicons name="paper-plane-outline" size={25} color="white" />
+            </Pressable>
+          </View>
+        </View>
+      </View>
+
+      <View
+        style={{
+          backgroundColor: Colors.highlight,
+          height: 50,
+          width: 50,
+          borderRadius: 100,
+          justifyContent: 'center',
+          alignItems: 'center',
+          alignSelf: 'flex-end',
+        }}
+      >
+        <AntDesign name="plus" size={35} color="white" />
       </View>
 
       <Button title="TEST" onPress={() => setAllCompleted(true)} />

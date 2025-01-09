@@ -3,17 +3,27 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Header } from '@/components/Header';
+import { ActivityIndicator } from 'react-native';
+import { openDatabaseAsync, openDatabaseSync, SQLiteProvider } from 'expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import migrations from '@/drizzle/migrations';
+
+const DATABASE_NAME = 'checklists';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const expoDb = openDatabaseSync(DATABASE_NAME);
+  const db = drizzle(expoDb);
+  const { success, error } = useMigrations(db, migrations);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     ClashGroteskBold: require('../assets/fonts/ClashGrotesk-Bold.otf'),
@@ -25,35 +35,43 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && success) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, success]);
 
   if (!loaded) {
     return null;
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <StatusBar style="auto" backgroundColor={Colors.primary} />
-        <Stack>
-          <Stack.Screen
-            options={{
-              headerShown: true,
-              header: () => <Header />,
-            }}
-            name="index"
-          />
-          <Stack.Screen
-            options={{
-              headerShown: true,
-            }}
-            name="project"
-          />
-        </Stack>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <Suspense fallback={<ActivityIndicator />}>
+      <SQLiteProvider
+        databaseName={DATABASE_NAME}
+        options={{ enableChangeListener: true }}
+        useSuspense
+      >
+        <SafeAreaProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <StatusBar style="auto" backgroundColor={Colors.primary} />
+            <Stack>
+              <Stack.Screen
+                options={{
+                  headerShown: true,
+                  header: () => <Header />,
+                }}
+                name="index"
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: true,
+                }}
+                name="project"
+              />
+            </Stack>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </SQLiteProvider>
+    </Suspense>
   );
 }

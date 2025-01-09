@@ -1,10 +1,28 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
+
 import { Link } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
 import { ScrollView, Text, View } from 'react-native';
 
+import { useEffect } from 'react';
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { useDb } from '@/db/useDb';
+import { projects } from '@/db/schema';
+
 export default function Home() {
+  const db = useDb();
+
+  // useEffect(() => {
+  //   const load = async () => {
+  //     // const data = await db.insert(projects).values({ title: 'Test', description: 'text' });
+  //     const data = await db.query.projects.findMany();
+  //     console.log(data);
+  //     console.log('LOAD');
+  //   };
+  //   load();
+  // }, []);
   return (
     <ThemedView
       style={{
