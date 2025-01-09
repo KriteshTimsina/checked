@@ -8,8 +8,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigation } from 'expo-router';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Header } from '@/components/Header';
 import { data } from '@/constants/data';
 import { Colors } from '@/constants/Colors';
@@ -21,12 +21,30 @@ import { ThemedText } from '@/components/ThemedText';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useDb } from '@/db/useDb';
+import { eq } from 'drizzle-orm';
+import { entries as entry } from '@/db/schema';
 
 const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
+  const params = useLocalSearchParams();
+  const [entries, setEntries] = useState<any>([]);
+  const db = useDb();
+
+  useEffect(() => {
+    const load = async () => {
+      if (params) {
+        const data = await db.query.entries.findMany({
+          where: eq(entry.project_id, Number(params.id)),
+        });
+        setEntries(data);
+      }
+    };
+    load();
+  }, []);
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
@@ -41,7 +59,7 @@ const Project = () => {
         <Header
           headerStyle={{ height: 100 }}
           textStyle={{ textAlign: 'center' }}
-          title={data[0].title}
+          title={params.title}
         />
       ),
     });
@@ -66,7 +84,7 @@ const Project = () => {
             }}
             style={{ flex: 1 }}
           >
-            {data[0].checklist.map(item => {
+            {entries.map(item => {
               return <CheckList key={item.id} item={item} />;
             })}
           </ScrollView>

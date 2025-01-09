@@ -2,27 +2,27 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { useDb } from '@/db/useDb';
 import { projects } from '@/db/schema';
 
 export default function Home() {
   const db = useDb();
+  const [projects, setProjects] = useState([]);
 
-  // useEffect(() => {
-  //   const load = async () => {
-  //     // const data = await db.insert(projects).values({ title: 'Test', description: 'text' });
-  //     const data = await db.query.projects.findMany();
-  //     console.log(data);
-  //     console.log('LOAD');
-  //   };
-  //   load();
-  // }, []);
+  useEffect(() => {
+    const load = async () => {
+      // const data = await db.insert(projects).values({ title: 'Test', description: 'text' });
+      const data = await db.query.projects.findMany();
+      setProjects(data);
+    };
+    load();
+  }, []);
   return (
     <ThemedView
       style={{
@@ -34,21 +34,22 @@ export default function Home() {
 
       <ScrollView>
         <View style={{ gap: 10, marginVertical: 20 }}>
-          {Array.from({ length: 3 })
-            .fill('')
-            .map((item, index) => {
-              return <Project key={index} />;
-            })}
+          {projects.map((item, index) => {
+            return <Project key={index} item={item} />;
+          })}
         </View>
       </ScrollView>
     </ThemedView>
   );
 }
 
-const Project = () => {
+const Project = ({ item }: any) => {
   return (
     <Link
-      href={'/project'}
+      href={{
+        pathname: '/project',
+        params: item,
+      }}
       style={{
         backgroundColor: Colors.primary,
         minHeight: 60,
@@ -56,7 +57,7 @@ const Project = () => {
         padding: 10,
       }}
     >
-      <Text>1</Text>
+      <Text>{item.title}</Text>
     </Link>
   );
 };
