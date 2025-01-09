@@ -1,37 +1,36 @@
-import { Colors } from "@/constants/Colors";
-import { Link } from "expo-router";
-import { ScrollView, Text, View } from "react-native";
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { Colors } from '@/constants/Colors';
+import { Link } from 'expo-router';
+import { ScrollView, Text, View } from 'react-native';
 
 export default function Home() {
   return (
-    <View
+    <ThemedView
       style={{
         flex: 1,
-        backgroundColor: Colors.secondary,
         padding: 20,
       }}
     >
-      <Text style={{ fontFamily: "ClashGroteskMedium", fontSize: 22 }}>
-        Projects
-      </Text>
+      <ThemedText type="subtitle">Projects</ThemedText>
 
       <ScrollView>
         <View style={{ gap: 10, marginVertical: 20 }}>
           {Array.from({ length: 3 })
-            .fill("")
+            .fill('')
             .map((item, index) => {
               return <Project key={index} />;
             })}
         </View>
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 }
 
 const Project = () => {
   return (
     <Link
-      href={"/project"}
+      href={'/project'}
       style={{
         backgroundColor: Colors.primary,
         minHeight: 60,

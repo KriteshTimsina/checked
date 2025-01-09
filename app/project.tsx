@@ -1,13 +1,14 @@
-import { Pressable, StyleSheet, Text, View, Button } from 'react-native';
+import { Pressable, StyleSheet, View, Button } from 'react-native';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigation } from 'expo-router';
 import { Header } from '@/components/Header';
 import { data } from '@/constants/data';
 import { Colors } from '@/constants/Colors';
 import Checkbox, { CheckboxEvent } from 'expo-checkbox';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -28,7 +29,7 @@ const Project = () => {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 20, backgroundColor: Colors.secondary }}>
+    <ThemedView style={{ flex: 1, padding: 20 }}>
       {allCompleted && <Success close={close} />}
       <View
         style={{
@@ -42,7 +43,7 @@ const Project = () => {
       </View>
 
       <Button title="TEST" onPress={() => setAllCompleted(true)} />
-    </SafeAreaView>
+    </ThemedView>
   );
 };
 
@@ -69,15 +70,13 @@ const CheckList = ({ item }: any) => {
         value={checked}
         onValueChange={toggleCheckbox}
       />
-      <Text
+      <ThemedText
         style={{
-          fontFamily: 'ClashGroteskMedium',
-          fontSize: 18,
           textDecorationLine: checked ? 'line-through' : 'none',
         }}
       >
         {item.title}
-      </Text>
+      </ThemedText>
     </Pressable>
   );
 };

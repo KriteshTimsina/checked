@@ -49,14 +49,6 @@ export default function RootLayout() {
           <Stack.Screen
             options={{
               headerShown: true,
-              header: () => (
-                <Header
-                  headerStyle={{
-                    height: 100,
-                  }}
-                  textStyle={{ textAlign: 'center' }}
-                />
-              ),
             }}
             name="project"
           />
