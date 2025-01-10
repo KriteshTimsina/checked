@@ -55,13 +55,7 @@ const Project = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      header: () => (
-        <Header
-          headerStyle={{ height: 100 }}
-          textStyle={{ textAlign: 'center' }}
-          title={params.title}
-        />
-      ),
+      title: params.title,
     });
   }, [navigation]);
 

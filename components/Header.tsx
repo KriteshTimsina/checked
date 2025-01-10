@@ -1,8 +1,9 @@
 import { Colors } from '@/constants/Colors';
 import { FC } from 'react';
 import { View, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from './ThemedText';
+import { ThemedView } from './ThemedView';
 
 const INITIAL_TITLE = 'Hello! 👋';
 
@@ -13,28 +14,16 @@ type HeaderProps = {
 };
 
 export const Header: FC<HeaderProps> = ({ title = INITIAL_TITLE, headerStyle, textStyle }) => {
+  const { top } = useSafeAreaInsets();
   return (
-    <SafeAreaView>
-      <View style={[styles.header, headerStyle]}>
-        <ThemedText type="title" style={[styles.title, textStyle]}>
-          {title}
-        </ThemedText>
-      </View>
-    </SafeAreaView>
+    <ThemedView style={[{ paddingTop: top }, headerStyle]}>
+      <ThemedText type="title" style={[styles.title, textStyle]}>
+        {title}
+      </ThemedText>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    height: 60,
-    backgroundColor: Colors.primary,
-    justifyContent: 'center',
-    borderBottomEndRadius: 30,
-    borderBottomStartRadius: 30,
-  },
-  title: {
-    color: Colors.light.text,
-    padding: 10,
-    paddingHorizontal: 20,
-  },
+  title: {},
 });

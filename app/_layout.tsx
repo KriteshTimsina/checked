@@ -45,20 +45,22 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        <SafeAreaProvider>
-          <ThemeProvider value={appTheme}>
-            <StatusBar style="auto" backgroundColor={Colors.primary} />
-            <Stack>
-              <Stack.Screen
-                options={{
-                  header: () => <Header />,
-                }}
-                name="index"
-              />
-              <Stack.Screen name="project" />
-            </Stack>
-          </ThemeProvider>
-        </SafeAreaProvider>
+        <ThemeProvider value={appTheme}>
+          <StatusBar style="auto" backgroundColor={Colors.primary} />
+          <Stack>
+            <Stack.Screen
+              options={{
+                title: 'Hello 👋',
+                headerTitleStyle: {
+                  fontFamily: 'ClashGroteskMedium',
+                  fontWeight: '700',
+                },
+              }}
+              name="index"
+            />
+            <Stack.Screen name="project" />
+          </Stack>
+        </ThemeProvider>
       </SQLiteProvider>
     </Suspense>
   );

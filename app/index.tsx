@@ -55,44 +55,42 @@ export default function Home() {
     }
   };
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedView
+    <ThemedView
+      style={{
+        flex: 1,
+        padding: 20,
+      }}
+    >
+      <ThemedText type="subtitle">Projects</ThemedText>
+
+      <ScrollView>
+        <View style={{ gap: 10, marginVertical: 20 }}>
+          {projects.length > 0 ? (
+            projects.map((item, index) => {
+              return <Project key={index} item={item} />;
+            })
+          ) : (
+            <ThemedText>No Projects</ThemedText>
+          )}
+        </View>
+      </ScrollView>
+      <Pressable
+        onPress={onAddProject}
         style={{
-          flex: 1,
-          padding: 20,
+          backgroundColor: Colors.highlight,
+          height: 50,
+          width: 50,
+          borderRadius: 100,
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: '5%',
+          right: '5%',
         }}
       >
-        <ThemedText type="subtitle">Projects</ThemedText>
-
-        <ScrollView>
-          <View style={{ gap: 10, marginVertical: 20 }}>
-            {projects.length > 0 ? (
-              projects.map((item, index) => {
-                return <Project key={index} item={item} />;
-              })
-            ) : (
-              <ThemedText>No Projects</ThemedText>
-            )}
-          </View>
-        </ScrollView>
-        <Pressable
-          onPress={onAddProject}
-          style={{
-            backgroundColor: Colors.highlight,
-            height: 50,
-            width: 50,
-            borderRadius: 100,
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            bottom: '5%',
-            right: '5%',
-          }}
-        >
-          <AntDesign name="plus" size={35} color="white" />
-        </Pressable>
-      </ThemedView>
-    </SafeAreaView>
+        <AntDesign name="plus" size={35} color="white" />
+      </Pressable>
+    </ThemedView>
   );
 }
 
