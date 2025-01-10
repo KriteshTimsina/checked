@@ -192,8 +192,17 @@ const CheckList = ({ item }: any) => {
   return (
     <Pressable
       onPress={toggleCheckbox}
+      android_ripple={{ color: Colors.light.icon }}
       ref={checkedRef}
-      style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}
+      style={{
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center',
+        backgroundColor: Colors.shade,
+        borderRadius: 10,
+        minHeight: 50,
+        padding: 5,
+      }}
     >
       <Checkbox
         style={{ borderRadius: 100, width: 25, height: 25, padding: 5 }}
@@ -252,7 +261,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: Colors.shade,
     borderRadius: 10,
     padding: 10,
   },

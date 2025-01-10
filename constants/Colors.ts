@@ -10,6 +10,7 @@ export const Colors = {
   primary: '#e0c59e',
   secondary: '#EAF8FF',
   highlight: '#e0c59e',
+  shade: 'rgba(255, 255, 255, 0.1)',
 
   light: {
     text: '#11181C',

@@ -13,6 +13,7 @@ import { projects as projectsSchema } from '@/db/schema';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { count } from 'drizzle-orm';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
   const db = useDb();
@@ -54,42 +55,44 @@ export default function Home() {
     }
   };
   return (
-    <ThemedView
-      style={{
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      <ThemedText type="subtitle">Projects</ThemedText>
-
-      <ScrollView>
-        <View style={{ gap: 10, marginVertical: 20 }}>
-          {projects.length > 0 ? (
-            projects.map((item, index) => {
-              return <Project key={index} item={item} />;
-            })
-          ) : (
-            <ThemedText>No Projects</ThemedText>
-          )}
-        </View>
-      </ScrollView>
-      <Pressable
-        onPress={onAddProject}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemedView
         style={{
-          backgroundColor: Colors.highlight,
-          height: 50,
-          width: 50,
-          borderRadius: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          bottom: '5%',
-          right: '5%',
+          flex: 1,
+          padding: 20,
         }}
       >
-        <AntDesign name="plus" size={35} color="white" />
-      </Pressable>
-    </ThemedView>
+        <ThemedText type="subtitle">Projects</ThemedText>
+
+        <ScrollView>
+          <View style={{ gap: 10, marginVertical: 20 }}>
+            {projects.length > 0 ? (
+              projects.map((item, index) => {
+                return <Project key={index} item={item} />;
+              })
+            ) : (
+              <ThemedText>No Projects</ThemedText>
+            )}
+          </View>
+        </ScrollView>
+        <Pressable
+          onPress={onAddProject}
+          style={{
+            backgroundColor: Colors.highlight,
+            height: 50,
+            width: 50,
+            borderRadius: 100,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            bottom: '5%',
+            right: '5%',
+          }}
+        >
+          <AntDesign name="plus" size={35} color="white" />
+        </Pressable>
+      </ThemedView>
+    </SafeAreaView>
   );
 }
 

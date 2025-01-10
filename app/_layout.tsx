@@ -1,73 +1,61 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import 'react-native-reanimated';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
-import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SQLiteProvider } from 'expo-sqlite';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Header } from '@/components/Header';
-import { ActivityIndicator } from 'react-native';
-import { openDatabaseAsync, openDatabaseSync, SQLiteProvider } from 'expo-sqlite';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
-import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import migrations from '@/drizzle/migrations';
 
-const DATABASE_NAME = 'checklists';
+import { useFontLoading } from '@/hooks/useFontLoading';
+import { useDatabaseInit } from '@/hooks/useDatabaseInit';
+import { DATABASE_NAME } from '@/constants/constants';
+import { Loading } from '@/components/Loading';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const expoDb = openDatabaseSync(DATABASE_NAME);
-  const db = drizzle(expoDb);
-  const { success, error } = useMigrations(db, migrations);
+  const { success: dbSuccess } = useDatabaseInit();
+  const fontsLoaded = useFontLoading();
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    ClashGroteskBold: require('../assets/fonts/ClashGrotesk-Bold.otf'),
-    ClashGroteskSemi: require('../assets/fonts/ClashGrotesk-Semibold.otf'),
-    ClashGroteskMedium: require('../assets/fonts/ClashGrotesk-Medium.otf'),
-    ClashGroteskRegular: require('../assets/fonts/ClashGrotesk-Regular.otf'),
-    ClashGroteskLight: require('../assets/fonts/ClashGrotesk-Light.otf'),
-    ClashGroteskExtralight: require('../assets/fonts/ClashGrotesk-Extralight.otf'),
-  });
+  const appTheme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const initializeApp = async () => {
+      if (fontsLoaded && dbSuccess) {
+        await SplashScreen.hideAsync();
+      }
+    };
 
-  if (!loaded) {
+    initializeApp();
+  }, [dbSuccess, fontsLoaded]);
+
+  if (!fontsLoaded) {
     return null;
   }
 
   return (
-    <Suspense fallback={<ActivityIndicator />}>
+    <Suspense fallback={<Loading />}>
       <SQLiteProvider
         databaseName={DATABASE_NAME}
         options={{ enableChangeListener: true }}
         useSuspense
       >
         <SafeAreaProvider>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <ThemeProvider value={appTheme}>
             <StatusBar style="auto" backgroundColor={Colors.primary} />
             <Stack>
               <Stack.Screen
                 options={{
-                  headerShown: true,
                   header: () => <Header />,
                 }}
                 name="index"
               />
-              <Stack.Screen
-                options={{
-                  headerShown: true,
-                }}
-                name="project"
-              />
+              <Stack.Screen name="project" />
             </Stack>
           </ThemeProvider>
         </SafeAreaProvider>
