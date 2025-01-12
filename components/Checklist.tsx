@@ -3,9 +3,11 @@ import React, { FC, useRef, useState } from 'react';
 import { Colors } from '@/constants/Colors';
 import Checkbox, { CheckboxEvent } from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
-import { IEntry } from '@/db/schema';
+import { entries, IEntry } from '@/db/schema';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useDb } from '@/db/useDb';
+import { eq } from 'drizzle-orm';
 
 type ChecklistProps = {
   item: IEntry;
@@ -17,10 +19,20 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
   const checkedRef = useRef<CheckboxEvent | null>(null);
   const [checked, setChecked] = useState(item.completed);
   const colorScheme = useColorScheme();
+  const db = useDb();
 
-  const toggleCheckbox = () => {
+  const toggleCheckbox = async () => {
     setChecked(!checked);
     checkedRef.current?.value === checked ? true : false;
+    await db
+      .update(entries)
+      .set({
+        completed: !checked,
+      })
+      .where(eq(entries.id, item.id))
+      .returning({
+        completed: entries.completed,
+      });
   };
 
   return (

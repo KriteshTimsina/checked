@@ -1,9 +1,9 @@
-import React, { FC, memo, useCallback } from 'react';
+import React, { FC, memo, useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import { IProject, projects } from '@/db/schema';
+import { Link, useFocusEffect } from 'expo-router';
+import { entries, IProject, projects } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
@@ -19,6 +19,19 @@ type ProjectItemProps = {
 
 const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const db = useDb();
+  const [completedCount, setCompletedCount] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      getCompletedTask();
+    }, [item]),
+  );
+
+  const getCompletedTask = async () => {
+    const completedCount = await db.$count(entries, eq(entries.completed, true));
+    setCompletedCount(completedCount);
+    console.log(completedCount, 'WHAT');
+  };
 
   const onDelete = async () => {
     const deleted = await db.delete(projects).where(eq(projects.id, item.id));
@@ -49,7 +62,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
               {item.title}
             </ThemedText>
             <ThemedText style={styles.completed} darkColor={Colors.light.icon}>
-              0 completed
+              {completedCount} completed
             </ThemedText>
           </View>
         </Animated.View>
