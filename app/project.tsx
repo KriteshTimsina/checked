@@ -56,13 +56,13 @@ const Project = () => {
 
   const handleAddTask = async () => {
     if (inputText.trim()) {
-      // Add your task logic here
+      const createdAt = new Date();
       const entry = await db
         .insert(entrySchema)
-        .values({ project_id: Number(params.id), title: inputText, status: 0 })
+        .values({ project_id: Number(params.id), title: inputText, status: 0, createdAt })
         .then(success => {
           if (success.changes === 1) {
-            const newEntry = db.query.entries
+            const data = db.query.entries
               .findFirst({
                 where: eq(entrySchema.id, Number(success.lastInsertRowId)),
               })
