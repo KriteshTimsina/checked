@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Appearance, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -9,17 +9,26 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { colors } from '@/constants/data';
 import { useTheme } from '@/context/ThemeContext';
+import { useDb } from '@/db/useDb';
+import { userPreferences } from '@/db/schema';
 
 const settings = () => {
-  const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { selectedTheme, onThemeSelect } = useTheme();
+  const colorScheme = useColorScheme();
+  const [darkMode, setDarkMode] = useState(colorScheme === 'dark');
 
   const openSheet = () => {
     bottomSheetRef.current?.expand();
   };
   const closeSheet = () => {
     bottomSheetRef.current?.close();
+  };
+
+  const toggleTheme = async (value: boolean) => {
+    const newTheme = value ? 'dark' : 'light';
+    setDarkMode(value);
+    Appearance.setColorScheme(newTheme);
   };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -45,16 +54,13 @@ const settings = () => {
                 }}
               />
             </Pressable>
-            <Pressable
-              onPress={openSheet}
-              style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
-            >
+            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <Ionicons name="sunny-sharp" color={Colors.primary} size={24} />
                 <ThemedText>Dark mode</ThemedText>
               </View>
-              <Switch value={true} thumbColor={Colors.primary} />
-            </Pressable>
+              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+            </View>
           </View>
         </ThemedView>
       </Pressable>
