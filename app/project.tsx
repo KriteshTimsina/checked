@@ -1,13 +1,4 @@
-import {
-  Pressable,
-  StyleSheet,
-  View,
-  Button,
-  TextInput,
-  Modal,
-  Alert,
-  ScrollView,
-} from 'react-native';
+import { Pressable, StyleSheet, View, TextInput, Modal, Alert, ScrollView } from 'react-native';
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { Header } from '@/components/Header';
@@ -24,6 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
 import { entries as entrySchema } from '@/db/schema';
+import Button from '@/components/Button';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -32,6 +24,7 @@ const Project = () => {
   const [inputText, setInputText] = useState('');
   const params = useLocalSearchParams();
   const [entries, setEntries] = useState<any>([]);
+  const inputRef = useRef<TextInput>(null);
   const db = useDb();
 
   useEffect(() => {
@@ -81,6 +74,16 @@ const Project = () => {
       bottomSheetRef.current?.close();
     }
   };
+
+  const openSheet = () => {
+    bottomSheetRef.current?.expand();
+    inputRef.current?.focus();
+  };
+  const closeSheet = () => {
+    bottomSheetRef.current?.close();
+    inputRef.current?.blur();
+    setInputText('');
+  };
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -88,7 +91,7 @@ const Project = () => {
           {allCompleted && <Success close={close} />}
           <ScrollView
             contentContainerStyle={{
-              gap: 20,
+              gap: 15,
             }}
             style={{ flex: 1 }}
           >
@@ -97,24 +100,7 @@ const Project = () => {
             })}
           </ScrollView>
 
-          <Pressable
-            onPress={() => bottomSheetRef.current?.expand()}
-            style={{
-              backgroundColor: Colors.highlight,
-              height: 50,
-              width: 50,
-              borderRadius: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
-              position: 'absolute',
-              bottom: '5%',
-              right: '5%',
-            }}
-          >
-            <AntDesign name="plus" size={35} color="white" />
-          </Pressable>
-
-          {/* <Button title="TEST" onPress={() => setAllCompleted(true)} /> */}
+          <Button onPress={openSheet} />
         </ThemedView>
         <BottomSheet
           index={-1}
@@ -130,6 +116,7 @@ const Project = () => {
               </ThemedText>
               <View style={styles.inputContainer}>
                 <TextInput
+                  ref={inputRef}
                   multiline
                   value={inputText}
                   onChangeText={setInputText}
@@ -145,13 +132,7 @@ const Project = () => {
                 />
 
                 <View style={styles.buttonContainer}>
-                  <Pressable
-                    onPress={() => {
-                      setInputText('');
-                      bottomSheetRef.current?.close();
-                    }}
-                    style={styles.iconButton}
-                  >
+                  <Pressable onPress={closeSheet} style={styles.iconButton}>
                     <Ionicons name="close-outline" size={25} color="white" />
                   </Pressable>
 
@@ -193,7 +174,7 @@ const CheckList = ({ item }: any) => {
         alignItems: 'center',
         backgroundColor: Colors.shade,
         borderRadius: 10,
-        minHeight: 50,
+        minHeight: 60,
         padding: 5,
       }}
     >
