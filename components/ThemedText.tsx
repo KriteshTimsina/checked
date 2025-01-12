@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
     fontFamily: 'ClashGroteskMedium',
   },
   defaultSemiBold: {
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: 24,
-    fontWeight: '600',
+    fontWeight: '700',
     fontFamily: 'ClashGroteskMedium',
   },
   title: {

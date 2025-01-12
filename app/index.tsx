@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
 import { toast } from '@/utils/toast';
+import * as Haptics from 'expo-haptics';
 
 export default function Home() {
   const db = useDb();
@@ -60,6 +61,7 @@ export default function Home() {
       });
 
     if (data) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setProjects(prevProjects => [...prevProjects, data]);
       closeSheet();
     }
