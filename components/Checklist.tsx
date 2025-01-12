@@ -5,6 +5,7 @@ import Checkbox, { CheckboxEvent } from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
 import { IEntry } from '@/db/schema';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 type ChecklistProps = {
   item: IEntry;
@@ -15,6 +16,7 @@ const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 const Checklist: FC<ChecklistProps> = ({ item }) => {
   const checkedRef = useRef<CheckboxEvent | null>(null);
   const [checked, setChecked] = useState(item.completed);
+  const colorScheme = useColorScheme();
 
   const toggleCheckbox = () => {
     setChecked(!checked);
@@ -27,7 +29,10 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
       onPress={toggleCheckbox}
       android_ripple={{ color: Colors.light.icon }}
       ref={checkedRef}
-      style={styles.container}
+      style={[
+        styles.container,
+        { backgroundColor: colorScheme === 'dark' ? Colors.dark.shade : Colors.light.shade },
+      ]}
     >
       <Checkbox
         style={styles.checkbox}
@@ -52,7 +57,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     alignItems: 'center',
-    backgroundColor: Colors.shade,
     borderRadius: 10,
     minHeight: 60,
     paddingHorizontal: 10,

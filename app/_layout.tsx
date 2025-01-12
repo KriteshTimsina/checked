@@ -16,6 +16,8 @@ import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import { ThemedView } from '@/components/ThemedView';
+import { Pressable } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,6 +63,7 @@ export default function RootLayout() {
               name="index"
             />
             <Stack.Screen name="project" />
+            <Stack.Screen name="settings" />
           </Stack>
         </ThemeProvider>
       </SQLiteProvider>

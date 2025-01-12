@@ -16,6 +16,7 @@ import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
 import { toast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
+import { Link } from 'expo-router';
 
 export default function Home() {
   const db = useDb();
@@ -80,6 +81,7 @@ export default function Home() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
+        <Link href={'/settings'}>Setsting</Link>
         <ThemedText type="subtitle">Projects</ThemedText>
         <ScrollView
           refreshControl={
