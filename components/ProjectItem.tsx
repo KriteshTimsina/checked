@@ -10,12 +10,14 @@ import { eq } from 'drizzle-orm';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import * as Haptics from 'expo-haptics';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 type ProjectItemProps = {
   item: IProject;
+  index: number;
 };
 
-const ProjectItem: FC<ProjectItemProps> = ({ item }) => {
+const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const db = useDb();
 
   const onDelete = async () => {
@@ -32,6 +34,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item }) => {
   const renderRightActions = useCallback(() => {
     return <RightAction onDelete={onDelete} />;
   }, []);
+
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <Link
@@ -39,16 +42,17 @@ const ProjectItem: FC<ProjectItemProps> = ({ item }) => {
           pathname: '/project',
           params: item,
         }}
-        style={styles.projectItem}
       >
-        <View>
-          <ThemedText type="defaultSemiBold" darkColor={Colors.light.text}>
-            {item.title}
-          </ThemedText>
-          <ThemedText style={styles.completed} darkColor={Colors.light.icon}>
-            0 completed
-          </ThemedText>
-        </View>
+        <Animated.View entering={FadeInDown.delay(100 * (index + 1))} style={styles.projectItem}>
+          <View>
+            <ThemedText type="defaultSemiBold" darkColor={Colors.light.text}>
+              {item.title}
+            </ThemedText>
+            <ThemedText style={styles.completed} darkColor={Colors.light.icon}>
+              0 completed
+            </ThemedText>
+          </View>
+        </Animated.View>
       </Link>
     </Swipeable>
   );
@@ -75,6 +79,7 @@ const styles = StyleSheet.create({
     minHeight: 60,
     borderRadius: 10,
     padding: 10,
+    width: '100%',
   },
   deleteContainer: {
     backgroundColor: 'red',

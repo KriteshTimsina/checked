@@ -92,7 +92,7 @@ export default function Home() {
           <View style={styles.projectContainer}>
             {projects.length > 0 ? (
               projects.map((item, index) => {
-                return <ProjectItem key={index} item={item} />;
+                return <ProjectItem key={index} item={item} index={index} />;
               })
             ) : (
               <EmptyProject />
