@@ -31,5 +31,4 @@ export const userPreferences = sqliteTable('user_preferences', {
 
 export type IProject = typeof projects.$inferSelect;
 export type IEntry = typeof entries.$inferSelect;
-
 export type IUserPreferences = typeof userPreferences.$inferSelect;

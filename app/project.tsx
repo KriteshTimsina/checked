@@ -14,7 +14,7 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
-import { entries as entrySchema, IEntry, IProject } from '@/db/schema';
+import { entries as entrySchema, IEntry, IProject, projects } from '@/db/schema';
 import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
@@ -42,18 +42,42 @@ const Project = () => {
     load();
   }, []);
 
-  // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
 
-  const close = () => setAllCompleted(false);
+  const resetProject = async () => {
+    console.log('RN');
+    const data = await db
+      .update(entrySchema)
+      .set({ completed: false })
+      .where(eq(entrySchema.project_id, Number(params.id)))
+      .returning({
+        id: entrySchema.id,
+        title: entrySchema.title,
+        completed: entrySchema.completed,
+        createdAt: entrySchema.createdAt,
+        project_id: entrySchema.project_id,
+      });
+
+    console.log(data, 'HHU');
+
+    if (data) {
+      setEntries(data);
+      setAllCompleted(false);
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: params.title,
     });
   }, [navigation]);
+
+  useEffect(() => {
+    const isAllCompleted = entries.length > 0 && entries.every(entry => entry.completed === true);
+    setAllCompleted(isAllCompleted);
+  }, [entries]);
 
   const handleAddTask = async () => {
     if (inputText.trim()) {
@@ -94,7 +118,7 @@ const Project = () => {
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
-          {allCompleted && <Success close={close} />}
+          {allCompleted && <Success close={resetProject} />}
           {entries.length === 0 ? (
             <EmptyProject type="checklist" />
           ) : (
@@ -184,7 +208,19 @@ const Success = ({ close }: any) => {
       <Animated.Text entering={FadeInDown.delay(400)} style={{ fontSize: 16 }}>
         All tasks completed
       </Animated.Text>
-      <Button onPress={close} title="Reset all tasks" color={Colors.highlight} />
+      <Pressable
+        onPress={close}
+        style={{
+          backgroundColor: Colors.dark.background,
+          borderRadius: 10,
+          height: 40,
+          justifyContent: 'center',
+          marginTop: 20,
+          width: '40%',
+        }}
+      >
+        <ThemedText style={{ textAlign: 'center' }}>Reset checklist</ThemedText>
+      </Pressable>
     </View>
   );
 };

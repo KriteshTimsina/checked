@@ -22,8 +22,6 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
   const db = useDb();
 
   const toggleCheckbox = async () => {
-    setChecked(!checked);
-    checkedRef.current?.value === checked ? true : false;
     await db
       .update(entries)
       .set({
@@ -33,6 +31,8 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
       .returning({
         completed: entries.completed,
       });
+    setChecked(!checked);
+    checkedRef.current?.value === checked ? true : false;
   };
 
   return (
