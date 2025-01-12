@@ -17,6 +17,7 @@ import EmptyProject from '@/components/EmptyProject';
 import { toast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
 import { Link } from 'expo-router';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function Home() {
   const db = useDb();
@@ -80,30 +81,32 @@ export default function Home() {
   };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemedView style={styles.container}>
-        <Link href={'/settings'}>Setsting</Link>
-        <ThemedText type="subtitle">Projects</ThemedText>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              colors={[Colors.primary]}
-              refreshing={loading}
-              onRefresh={loadProjects}
-            />
-          }
-        >
-          <View style={styles.projectContainer}>
-            {projects.length > 0 ? (
-              projects.map((item, index) => {
-                return <ProjectItem key={index} item={item} index={index} />;
-              })
-            ) : (
-              <EmptyProject />
-            )}
-          </View>
-        </ScrollView>
-        <Button onPress={openSheet} />
-      </ThemedView>
+      <Pressable onPress={closeSheet} style={{ flex: 1 }}>
+        <ThemedView style={styles.container}>
+          <Link href={'/settings'}>Setsting</Link>
+          <ThemedText type="subtitle">Projects</ThemedText>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                colors={[Colors.primary]}
+                refreshing={loading}
+                onRefresh={loadProjects}
+              />
+            }
+          >
+            <View style={styles.projectContainer}>
+              {projects.length > 0 ? (
+                projects.map((item, index) => {
+                  return <ProjectItem key={index} item={item} index={index} />;
+                })
+              ) : (
+                <EmptyProject />
+              )}
+            </View>
+          </ScrollView>
+          <Button onPress={openSheet} />
+        </ThemedView>
+      </Pressable>
 
       <BottomSheet
         index={-1}
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: Colors.shade,
+    backgroundColor: Colors.dark.shade,
     borderRadius: 10,
     padding: 10,
   },

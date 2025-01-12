@@ -18,6 +18,7 @@ import { Loading } from '@/components/Loading';
 import { ThemedView } from '@/components/ThemedView';
 import { Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import AppThemeProvider from '@/context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,24 +49,26 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        <ThemeProvider value={appTheme}>
-          <StatusBar style="auto" backgroundColor={Colors.primary} />
-          <Stack
-            screenOptions={{
-              headerShadowVisible: false,
-              header: ({ options }) => <Header title={options.title} />,
-            }}
-          >
-            <Stack.Screen
-              options={{
-                title: 'Hello 👋',
+        <AppThemeProvider>
+          <ThemeProvider value={appTheme}>
+            <StatusBar style="auto" backgroundColor={Colors.primary} />
+            <Stack
+              screenOptions={{
+                headerShadowVisible: false,
+                header: ({ options }) => <Header title={options.title} />,
               }}
-              name="index"
-            />
-            <Stack.Screen name="project" />
-            <Stack.Screen name="settings" />
-          </Stack>
-        </ThemeProvider>
+            >
+              <Stack.Screen
+                options={{
+                  title: 'Hello 👋',
+                }}
+                name="index"
+              />
+              <Stack.Screen name="project" />
+              <Stack.Screen name="settings" />
+            </Stack>
+          </ThemeProvider>
+        </AppThemeProvider>
       </SQLiteProvider>
     </Suspense>
   );

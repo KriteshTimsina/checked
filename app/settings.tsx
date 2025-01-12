@@ -1,17 +1,19 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
+import { Colors, updatePrimaryColor } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { colors } from '@/constants/data';
+import { useTheme } from '@/context/ThemeContext';
 
 const settings = () => {
   const colorScheme = useColorScheme();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const { selectedTheme, onThemeSelect } = useTheme();
 
   const openSheet = () => {
     bottomSheetRef.current?.expand();
@@ -39,7 +41,7 @@ const settings = () => {
                   width: 20,
                   height: 20,
                   borderRadius: 100,
-                  backgroundColor: Colors.primary,
+                  backgroundColor: selectedTheme.primary,
                 }}
               />
             </Pressable>
@@ -50,7 +52,7 @@ const settings = () => {
       <BottomSheet
         index={-1}
         enablePanDownToClose={true}
-        backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
+        backgroundStyle={{ backgroundColor: selectedTheme.primary, marginBottom: 20 }}
         ref={bottomSheetRef}
       >
         <BottomSheetView style={styles.contentContainer}>
@@ -62,7 +64,8 @@ const settings = () => {
             <View style={{ flexDirection: 'row', gap: 20 }}>
               {colors.map(color => {
                 return (
-                  <View
+                  <Pressable
+                    onPress={() => onThemeSelect(color)}
                     key={color.id}
                     style={[
                       styles.color,
@@ -71,11 +74,12 @@ const settings = () => {
                     ]}
                   >
                     {color.selected && <Ionicons size={20} name="checkmark-outline" />}
-                  </View>
+                  </Pressable>
                 );
               })}
             </View>
             <Pressable
+              onPress={() => {}}
               style={{
                 backgroundColor: Colors.dark.background,
                 borderRadius: 10,

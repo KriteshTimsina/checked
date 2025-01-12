@@ -18,6 +18,7 @@ import { entries as entrySchema, IEntry, IProject } from '@/db/schema';
 import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
+import { useTheme } from '@/context/ThemeContext';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    backgroundColor: Colors.shade,
+    backgroundColor: Colors.dark.shade,
     borderRadius: 10,
     padding: 10,
   },

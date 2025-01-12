@@ -30,3 +30,13 @@ export const Colors = {
     shade: 'rgba(255, 255, 255, 0.1)',
   },
 };
+
+export const updatePrimaryColor = (newColor: string) => {
+  if (typeof newColor === 'string' && /^#([0-9A-F]{3}){1,2}$/i.test(newColor)) {
+    Colors.primary = newColor;
+    Colors.highlight = newColor;
+    console.log(`Primary color updated to: ${newColor}`);
+  } else {
+    console.error('Invalid color format. Please provide a valid hex color code.');
+  }
+};
