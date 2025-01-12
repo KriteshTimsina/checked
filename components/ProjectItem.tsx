@@ -6,7 +6,7 @@ import { Link, useFocusEffect } from 'expo-router';
 import { entries, IProject, projects } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
 import { useDb } from '@/db/useDb';
-import { eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import * as Haptics from 'expo-haptics';
@@ -24,32 +24,37 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   useFocusEffect(
     useCallback(() => {
       getCompletedTask();
-    }, [item]),
+    }, [item.id]),
   );
 
-  const getCompletedTask = async () => {
-    const completedCount = await db.$count(entries, eq(entries.completed, true));
-    setCompletedCount(completedCount);
-    console.log(completedCount, 'WHAT');
-  };
+  const getCompletedTask = useCallback(async () => {
+    try {
+      const count = await db.$count(
+        entries,
+        and(eq(entries.completed, true), eq(entries.project_id, item.id)),
+      );
+      setCompletedCount(count);
+    } catch (error) {
+      console.error('Error fetching completed tasks:', error);
+    }
+  }, [db, item.id]);
 
   const onDelete = async () => {
-    const deleted = await db.delete(projects).where(eq(projects.id, item.id));
+    try {
+      const deleted = await db.delete(projects).where(eq(projects.id, item.id));
 
-    if (deleted.changes === 1) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      return toast('Project deleted successfully.');
+      if (deleted.changes === 1) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        return toast('Project deleted successfully.');
+      }
+    } catch (error) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      toast('Failed deleting project');
     }
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-    return toast('Failed deleteing project');
   };
 
-  const renderRightActions = useCallback(() => {
-    return <RightAction onDelete={onDelete} />;
-  }, []);
-
   return (
-    <Swipeable renderRightActions={renderRightActions}>
+    <Swipeable renderRightActions={() => <RightAction onDelete={onDelete} />}>
       <Link
         href={{
           pathname: '/project',
