@@ -21,5 +21,15 @@ export const entries = sqliteTable('entries', {
     .references(() => projects.id),
 });
 
+export const userPreferences = sqliteTable('user_preferences', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  app_theme_id: integer().notNull(),
+  app_theme_mode: text({ enum: ['dark', 'light'] })
+    .default('dark')
+    .notNull(),
+});
+
 export type IProject = typeof projects.$inferSelect;
 export type IEntry = typeof entries.$inferSelect;
+
+export type IUserPreferences = typeof userPreferences.$inferSelect;

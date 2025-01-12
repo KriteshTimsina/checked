@@ -19,6 +19,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Pressable } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import AppThemeProvider from '@/context/ThemeContext';
+import { useInitPreferences } from '@/hooks/useInitializePreferences';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
   const { success: dbSuccess } = useDatabaseInit();
   const fontsLoaded = useFontLoading();
   const colorScheme = useColorScheme();
+
   const appTheme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
 
   useEffect(() => {

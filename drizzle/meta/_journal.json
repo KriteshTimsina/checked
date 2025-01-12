@@ -15,6 +15,13 @@
       "when": 1736671431171,
       "tag": "0001_opposite_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1736679541058,
+      "tag": "0002_unknown_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

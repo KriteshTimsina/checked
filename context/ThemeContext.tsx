@@ -1,4 +1,5 @@
 import { colors } from '@/constants/data';
+import { useInitPreferences } from '@/hooks/useInitializePreferences';
 import { createContext, useContext, useState } from 'react';
 
 type Theme = {
@@ -16,6 +17,7 @@ const ThemeContext = createContext<ThemeContextProps | null>(null);
 
 const AppThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedTheme, setSelectedTheme] = useState<Theme>(colors[0]);
+  useInitPreferences();
 
   const onThemeSelect = (theme: Theme) => {
     setSelectedTheme(theme);

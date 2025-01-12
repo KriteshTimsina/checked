@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -27,7 +27,7 @@ const settings = () => {
         <ThemedView style={{ flex: 1, padding: 20 }}>
           <ThemedText type="subtitle">Settings</ThemedText>
 
-          <View style={{ marginVertical: 20 }}>
+          <View style={{ marginVertical: 20, gap: 20 }}>
             <Pressable
               onPress={openSheet}
               style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
@@ -44,6 +44,16 @@ const settings = () => {
                   backgroundColor: selectedTheme.primary,
                 }}
               />
+            </Pressable>
+            <Pressable
+              onPress={openSheet}
+              style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
+            >
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <Ionicons name="sunny-sharp" color={Colors.primary} size={24} />
+                <ThemedText>Dark mode</ThemedText>
+              </View>
+              <Switch value={true} thumbColor={Colors.primary} />
             </Pressable>
           </View>
         </ThemedView>
