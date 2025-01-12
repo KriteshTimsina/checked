@@ -5,6 +5,7 @@ import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
 import {
   Pressable,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,20 +24,35 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
+import { toast } from '@/utils/Toast';
 
 export default function Home() {
   const db = useDb();
   const [projects, setProjects] = useState<IProject[]>([]);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
-      const data = await db.query.projects.findMany();
-      setProjects(data);
-    };
-    load();
+    loadProjects();
   }, []);
+
+  const loadProjects = async () => {
+    try {
+      setLoading(true);
+      const data = await db.query.projects.findMany();
+      if (data.length === 0) {
+        return toast('No projects. Add one to view.');
+      }
+      setProjects(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onAddProject = async () => {
     const hasProjects = await db.select({ count: count() }).from(projectsSchema);
@@ -73,7 +89,9 @@ export default function Home() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="subtitle">Projects</ThemedText>
-        <ScrollView>
+        <ScrollView
+          refreshControl={<RefreshControl refreshing={loading} onRefresh={loadProjects} />}
+        >
           <View style={styles.projectContainer}>
             {projects.length > 0 ? (
               projects.map((item, index) => {
