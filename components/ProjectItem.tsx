@@ -24,8 +24,12 @@ const ProjectItem: FC<ProjectItemProps> = ({ item }) => {
     }
     return toast('Failed deleteing project');
   };
+
+  const renderRightActions = useCallback(() => {
+    return <RightAction onDelete={onDelete} />;
+  }, []);
   return (
-    <Swipeable renderRightActions={() => <RightAction onDelete={onDelete} />}>
+    <Swipeable renderRightActions={renderRightActions}>
       <Link
         href={{
           pathname: '/project',
@@ -41,7 +45,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item }) => {
 
 export default ProjectItem;
 
-const RightAction = memo(({ onDelete }: any) => {
+const RightAction = memo(({ onDelete }: { onDelete: () => void }) => {
   return (
     <Pressable onPress={onDelete} style={styles.deleteContainer}>
       <MaterialCommunityIcons

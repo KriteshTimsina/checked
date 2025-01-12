@@ -2,23 +2,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-import { Link } from 'expo-router';
-import {
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { useEffect, useRef, useState } from 'react';
 import { useDb } from '@/db/useDb';
 import { IProject, projects as projectsSchema } from '@/db/schema';
 
-import { count } from 'drizzle-orm';
 import Button from '@/components/Button';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -44,6 +33,7 @@ export default function Home() {
       setLoading(true);
       const data = await db.query.projects.findMany();
       if (data.length === 0) {
+        setProjects([]);
         return toast('No projects. Add one to view.');
       }
       setProjects(data);
