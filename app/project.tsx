@@ -133,7 +133,6 @@ const Project = () => {
                   multiline
                   value={inputText}
                   onChangeText={setInputText}
-                  autoFocus
                   placeholder="Enter your task title..."
                   placeholderTextColor="white"
                   style={[

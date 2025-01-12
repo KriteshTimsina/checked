@@ -2,22 +2,33 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-import { Link, useNavigation } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
-import { Pressable, ScrollView, Text, ToastAndroid, View } from 'react-native';
+import { Link } from 'expo-router';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  ToastAndroid,
+  View,
+} from 'react-native';
 
-import { useEffect, useState } from 'react';
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { useEffect, useRef, useState } from 'react';
 import { useDb } from '@/db/useDb';
-import { projects as projectsSchema } from '@/db/schema';
+import { IProject, projects as projectsSchema } from '@/db/schema';
 
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { count } from 'drizzle-orm';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from '@/components/Button';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
+import ProjectItem from '@/components/ProjectItem';
 
 export default function Home() {
   const db = useDb();
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<IProject[]>([]);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [inputText, setInputText] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -30,85 +41,157 @@ export default function Home() {
   const onAddProject = async () => {
     const hasProjects = await db.select({ count: count() }).from(projectsSchema);
 
-    if (hasProjects[0].count > 1) {
-      ToastAndroid.showWithGravity(
-        'Cannot add more than one project in free version',
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-      );
-      return false;
-    }
+    // if (hasProjects[0].count > 1) {
+    //   ToastAndroid.showWithGravity(
+    //     'Cannot add more than one project in free version',
+    //     ToastAndroid.LONG,
+    //     ToastAndroid.BOTTOM,
+    //   );
+    //   return false;
+    // }
 
     const data = await db
       .insert(projectsSchema)
       .values({
-        title: 'Project',
-        description: 'Hello',
+        title: inputText,
+        description: 'This project has no description.',
       })
       .returning({
         id: projectsSchema.id,
         title: projectsSchema.title,
+        description: projectsSchema.description,
       });
 
     if (data) {
       setProjects(data);
     }
   };
-  return (
-    <ThemedView
-      style={{
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      <ThemedText type="subtitle">Projects</ThemedText>
 
-      <ScrollView>
-        <View style={{ gap: 10, marginVertical: 20 }}>
-          {projects.length > 0 ? (
-            projects.map((item, index) => {
-              return <Project key={index} item={item} />;
-            })
-          ) : (
-            <ThemedText>No Projects</ThemedText>
-          )}
-        </View>
-      </ScrollView>
-      <Pressable
-        onPress={onAddProject}
-        style={{
-          backgroundColor: Colors.highlight,
-          height: 50,
-          width: 50,
-          borderRadius: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          bottom: '5%',
-          right: '5%',
-        }}
+  const openSheet = () => bottomSheetRef.current?.expand();
+  const closeSheet = () => bottomSheetRef.current?.close();
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemedView style={styles.container}>
+        <ThemedText type="subtitle">Projects</ThemedText>
+        <ScrollView>
+          <View style={styles.projectContainer}>
+            {projects.length > 0 ? (
+              projects.map((item, index) => {
+                return <ProjectItem key={index} item={item} />;
+              })
+            ) : (
+              <ThemedText>No Projects</ThemedText>
+            )}
+          </View>
+        </ScrollView>
+        <Button onPress={openSheet} />
+      </ThemedView>
+
+      <BottomSheet
+        index={-1}
+        enablePanDownToClose={true}
+        backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
+        ref={bottomSheetRef}
       >
-        <AntDesign name="plus" size={35} color="white" />
-      </Pressable>
-    </ThemedView>
+        <BottomSheetView style={styles.contentContainer}>
+          <View style={styles.contentContainer}>
+            <ThemedText type="subtitle" style={styles.sheetTitle}>
+              Add New Task
+            </ThemedText>
+            <View style={styles.inputContainer}>
+              <TextInput
+                multiline
+                value={inputText}
+                onChangeText={setInputText}
+                placeholder="Enter your task title..."
+                placeholderTextColor="white"
+                style={styles.input}
+              />
+
+              <View style={styles.buttonContainer}>
+                <Pressable
+                  onPress={() => {
+                    setInputText('');
+                    bottomSheetRef.current?.close();
+                  }}
+                  style={styles.iconButton}
+                >
+                  <Ionicons name="close-outline" size={25} color="white" />
+                </Pressable>
+
+                <Pressable
+                  onPress={onAddProject}
+                  style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
+                >
+                  <Ionicons name="paper-plane-outline" size={25} color="white" />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
+    </GestureHandlerRootView>
   );
 }
 
-const Project = ({ item }: any) => {
-  return (
-    <Link
-      href={{
-        pathname: '/project',
-        params: item,
-      }}
-      style={{
-        backgroundColor: Colors.primary,
-        minHeight: 60,
-        borderRadius: 10,
-        padding: 10,
-      }}
-    >
-      <Text>{item.title}</Text>
-    </Link>
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  projectContainer: {
+    gap: 10,
+    marginVertical: 20,
+  },
+  contentContainer: {
+    flex: 1,
+    gap: 20,
+    paddingHorizontal: 10,
+    height: 200,
+  },
+  sheetTitle: {
+    textAlign: 'center',
+  },
+  inputContainer: {
+    backgroundColor: Colors.shade,
+    borderRadius: 10,
+    padding: 10,
+  },
+  input: {
+    color: 'white',
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    minHeight: 40,
+    textAlignVertical: 'top',
+    backgroundColor: 'red',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 15,
+    marginTop: 10,
+  },
+  iconButton: {
+    padding: 5,
+  },
+  addButton: {
+    backgroundColor: Colors.highlight,
+    height: 50,
+    width: 50,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+});

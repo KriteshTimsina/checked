@@ -15,5 +15,5 @@ export const entries = sqliteTable('entries', {
     .references(() => projects.id),
 });
 
-export type Project = typeof projects.$inferSelect;
-export type Entry = typeof entries.$inferSelect;
+export type IProject = typeof projects.$inferSelect;
+export type IEntry = typeof entries.$inferSelect;
