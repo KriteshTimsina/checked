@@ -19,7 +19,7 @@ import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
 import { useTheme } from '@/context/ThemeContext';
-
+import * as Haptics from 'expo-haptics';
 const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
@@ -72,6 +72,8 @@ const Project = () => {
               });
           }
         });
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
       setInputText('');
       bottomSheetRef.current?.close();
