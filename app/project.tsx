@@ -17,6 +17,7 @@ import { eq } from 'drizzle-orm';
 import { entries as entrySchema, IEntry, IProject } from '@/db/schema';
 import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
+import EmptyProject from '@/components/EmptyProject';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -85,21 +86,21 @@ const Project = () => {
     inputRef.current?.blur();
     setInputText('');
   };
+
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
           {allCompleted && <Success close={close} />}
-          <ScrollView
-            contentContainerStyle={{
-              gap: 15,
-            }}
-            style={{ flex: 1 }}
-          >
-            {entries.map(item => {
-              return <Checklist key={item.id} item={item} />;
-            })}
-          </ScrollView>
+          {entries.length === 0 ? (
+            <EmptyProject type="checklist" />
+          ) : (
+            <ScrollView contentContainerStyle={styles.scrollContainer} style={{ flex: 1 }}>
+              {entries.map(item => {
+                return <Checklist key={item.id} item={item} />;
+              })}
+            </ScrollView>
+          )}
 
           <Button onPress={openSheet} />
         </ThemedView>
@@ -190,6 +191,9 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingHorizontal: 10,
     height: 200,
+  },
+  scrollContainer: {
+    gap: 15,
   },
   sheetTitle: {
     textAlign: 'center',

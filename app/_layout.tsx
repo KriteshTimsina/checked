@@ -51,15 +51,12 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShadowVisible: false,
+              header: ({ options }) => <Header title={options.title} />,
             }}
           >
             <Stack.Screen
               options={{
                 title: 'Hello 👋',
-                headerTitleStyle: {
-                  fontFamily: 'ClashGroteskMedium',
-                  fontWeight: '700',
-                },
               }}
               name="index"
             />

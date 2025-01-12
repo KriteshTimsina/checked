@@ -1,10 +1,20 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { ThemedText } from './ThemedText';
 import LottieView from 'lottie-react-native';
 import emptyProject from '@/assets/lottie/empty-state.json';
+import { ThemedView } from './ThemedView';
 
-const EmptyProject = () => {
+const TITLE = {
+  project: 'No Projects. Add one to view.',
+  checklist: 'Checklist is empty. Add one to view.',
+};
+
+type EmptyProjectProps = {
+  type?: 'project' | 'checklist';
+};
+
+const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {
   const animation = useRef<LottieView>(null);
 
   useEffect(() => {
@@ -13,10 +23,10 @@ const EmptyProject = () => {
     return () => animation.current?.pause();
   }, []);
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <LottieView autoPlay ref={animation} style={styles.empty} source={emptyProject} />
-      <ThemedText style={{ textAlign: 'center' }}>No Projects. Add one to view.</ThemedText>
-    </View>
+      <ThemedText style={{ textAlign: 'center' }}>{TITLE[type]}</ThemedText>
+    </ThemedView>
   );
 };
 

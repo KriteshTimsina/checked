@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     fontFamily: 'ClashGroteskMedium',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     lineHeight: 32,
     fontFamily: 'ClashGroteskMedium',

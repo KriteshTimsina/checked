@@ -14,10 +14,16 @@ type HeaderProps = {
 };
 
 export const Header: FC<HeaderProps> = ({ title = INITIAL_TITLE, headerStyle, textStyle }) => {
-  const { top } = useSafeAreaInsets();
+  const { top, left } = useSafeAreaInsets();
   return (
-    <ThemedView style={[{ paddingTop: top }, headerStyle]}>
-      <ThemedText type="title" style={[styles.title, textStyle]}>
+    <ThemedView
+      style={[
+        { paddingTop: top * 1.5, paddingLeft: 20, paddingBottom: 10 },
+        styles.header,
+        headerStyle,
+      ]}
+    >
+      <ThemedText type="title" darkColor={Colors.light.text} style={[styles.title, textStyle]}>
         {title}
       </ThemedText>
     </ThemedView>
@@ -25,5 +31,8 @@ export const Header: FC<HeaderProps> = ({ title = INITIAL_TITLE, headerStyle, te
 };
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: Colors.primary,
+  },
   title: {},
 });
