@@ -25,6 +25,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
 import { toast } from '@/utils/Toast';
+import EmptyProject from '@/components/EmptyProject';
 
 export default function Home() {
   const db = useDb();
@@ -98,7 +99,7 @@ export default function Home() {
                 return <ProjectItem key={index} item={item} />;
               })
             ) : (
-              <ThemedText>No Projects</ThemedText>
+              <EmptyProject />
             )}
           </View>
         </ScrollView>
