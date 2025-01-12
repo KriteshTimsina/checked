@@ -15,6 +15,7 @@ import { useFontLoading } from '@/hooks/useFontLoading';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
+import { ThemedView } from '@/components/ThemedView';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -47,7 +48,11 @@ export default function RootLayout() {
       >
         <ThemeProvider value={appTheme}>
           <StatusBar style="auto" backgroundColor={Colors.primary} />
-          <Stack>
+          <Stack
+            screenOptions={{
+              headerShadowVisible: false,
+            }}
+          >
             <Stack.Screen
               options={{
                 title: 'Hello 👋',

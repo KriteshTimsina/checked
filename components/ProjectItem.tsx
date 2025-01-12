@@ -7,7 +7,7 @@ import { IProject, projects } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
-import { toast } from '@/utils/Toast';
+import { toast } from '@/utils/toast';
 
 type ProjectItemProps = {
   item: IProject;

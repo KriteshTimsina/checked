@@ -24,13 +24,14 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
-import { toast } from '@/utils/Toast';
 import EmptyProject from '@/components/EmptyProject';
+import { toast } from '@/utils/toast';
 
 export default function Home() {
   const db = useDb();
   const [projects, setProjects] = useState<IProject[]>([]);
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const inputRef = useRef<TextInput>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -56,18 +57,7 @@ export default function Home() {
   };
 
   const onAddProject = async () => {
-    const hasProjects = await db.select({ count: count() }).from(projectsSchema);
-
-    // if (hasProjects[0].count > 1) {
-    //   ToastAndroid.showWithGravity(
-    //     'Cannot add more than one project in free version',
-    //     ToastAndroid.LONG,
-    //     ToastAndroid.BOTTOM,
-    //   );
-    //   return false;
-    // }
-
-    const data = await db
+    const [data] = await db
       .insert(projectsSchema)
       .values({
         title: inputText,
@@ -80,18 +70,32 @@ export default function Home() {
       });
 
     if (data) {
-      setProjects(data);
+      setProjects(prevProjects => [...prevProjects, data]);
+      closeSheet();
     }
   };
 
-  const openSheet = () => bottomSheetRef.current?.expand();
-  const closeSheet = () => bottomSheetRef.current?.close();
+  const openSheet = () => {
+    bottomSheetRef.current?.expand();
+    inputRef.current?.focus();
+  };
+  const closeSheet = () => {
+    bottomSheetRef.current?.close();
+    inputRef.current?.blur();
+    setInputText('');
+  };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
         <ThemedText type="subtitle">Projects</ThemedText>
         <ScrollView
-          refreshControl={<RefreshControl refreshing={loading} onRefresh={loadProjects} />}
+          refreshControl={
+            <RefreshControl
+              colors={[Colors.primary]}
+              refreshing={loading}
+              onRefresh={loadProjects}
+            />
+          }
         >
           <View style={styles.projectContainer}>
             {projects.length > 0 ? (
@@ -119,6 +123,7 @@ export default function Home() {
             </ThemedText>
             <View style={styles.inputContainer}>
               <TextInput
+                ref={inputRef}
                 multiline
                 value={inputText}
                 onChangeText={setInputText}
@@ -128,13 +133,7 @@ export default function Home() {
               />
 
               <View style={styles.buttonContainer}>
-                <Pressable
-                  onPress={() => {
-                    setInputText('');
-                    bottomSheetRef.current?.close();
-                  }}
-                  style={styles.iconButton}
-                >
+                <Pressable hitSlop={5} onPress={closeSheet} style={styles.iconButton}>
                   <Ionicons name="close-outline" size={25} color="white" />
                 </Pressable>
 
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     minHeight: 40,
     textAlignVertical: 'top',
-    backgroundColor: 'red',
   },
   buttonContainer: {
     flexDirection: 'row',
