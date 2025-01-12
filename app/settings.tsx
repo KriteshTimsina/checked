@@ -2,7 +2,7 @@ import { Appearance, Pressable, StyleSheet, Switch, Text, View } from 'react-nat
 import React, { useRef, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Colors, updatePrimaryColor } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -61,7 +61,29 @@ const settings = () => {
               </View>
               <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
             </View>
+            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <MaterialCommunityIcons name="volume-vibrate" color={Colors.primary} size={24} />
+                <ThemedText>Enable haptics</ThemedText>
+              </View>
+              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+            </View>
+            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <Ionicons name="notifications-sharp" color={Colors.primary} size={24} />
+                <ThemedText>Enable Notifications</ThemedText>
+              </View>
+              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+            </View>
+            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <MaterialIcons name="settings-backup-restore" color={Colors.primary} size={24} />
+                <ThemedText>Reset preferences</ThemedText>
+              </View>
+              <Ionicons name="chevron-forward-sharp" size={25} color={Colors.light.icon} />
+            </View>
           </View>
+          <Footer />
         </ThemedView>
       </Pressable>
 
@@ -114,6 +136,16 @@ const settings = () => {
 };
 
 export default settings;
+
+const Footer = () => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+      <ThemedText>
+        Created with love by <ThemedText type="link">Kritesh Timsina</ThemedText>
+      </ThemedText>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   settingItem: {
