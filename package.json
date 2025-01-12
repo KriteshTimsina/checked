@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "build": "expo lint && tsc"
+    "build": "expo lint && tsc",
+    "db:migrate": "npx drizzle-kit generate"
   },
   "jest": {
     "preset": "jest-expo"

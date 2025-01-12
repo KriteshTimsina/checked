@@ -58,6 +58,7 @@ export default function Home() {
         id: projectsSchema.id,
         title: projectsSchema.title,
         description: projectsSchema.description,
+        createdAt: projectsSchema.createdAt,
       });
 
     if (data) {

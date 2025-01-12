@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "402dfff5-a17c-4bc5-9243-0cfddfe6e344",
-  "prevId": "b85fcbe7-6093-42fd-a982-4c0b96c85753",
+  "id": "dcf80a0b-6e58-42af-a7eb-0768375abb15",
+  "prevId": "3ee7b466-a9de-4890-820b-279e085caae4",
   "tables": {
     "entries": {
       "name": "entries",
@@ -21,11 +21,19 @@
           "notNull": true,
           "autoincrement": false
         },
-        "status": {
-          "name": "status",
+        "completed": {
+          "name": "completed",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         },
         "project_id": {
@@ -78,6 +86,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         }
       },

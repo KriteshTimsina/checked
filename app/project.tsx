@@ -14,8 +14,9 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
-import { entries as entrySchema } from '@/db/schema';
+import { entries as entrySchema, IEntry, IProject } from '@/db/schema';
 import Button from '@/components/Button';
+import Checklist from '@/components/Checklist';
 
 const Project = () => {
   const navigation = useNavigation();
@@ -23,7 +24,7 @@ const Project = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const params = useLocalSearchParams();
-  const [entries, setEntries] = useState<any>([]);
+  const [entries, setEntries] = useState<IEntry[]>([]);
   const inputRef = useRef<TextInput>(null);
   const db = useDb();
 
@@ -96,7 +97,7 @@ const Project = () => {
             style={{ flex: 1 }}
           >
             {entries.map(item => {
-              return <CheckList key={item.id} item={item} />;
+              return <Checklist key={item.id} item={item} />;
             })}
           </ScrollView>
 
@@ -153,47 +154,6 @@ const Project = () => {
 };
 
 export default Project;
-
-const CheckList = ({ item }: any) => {
-  const checkedRef = useRef<CheckboxEvent | null>(null);
-  const [checked, setChecked] = useState(item.completed);
-
-  const toggleCheckbox = () => {
-    setChecked(!checked);
-    checkedRef.current?.value === checked ? true : false;
-  };
-
-  return (
-    <Pressable
-      onPress={toggleCheckbox}
-      android_ripple={{ color: Colors.light.icon }}
-      ref={checkedRef}
-      style={{
-        flexDirection: 'row',
-        gap: 10,
-        alignItems: 'center',
-        backgroundColor: Colors.shade,
-        borderRadius: 10,
-        minHeight: 60,
-        padding: 5,
-      }}
-    >
-      <Checkbox
-        style={{ borderRadius: 100, width: 25, height: 25, padding: 5 }}
-        color={Colors.highlight}
-        value={checked}
-        onValueChange={toggleCheckbox}
-      />
-      <ThemedText
-        style={{
-          textDecorationLine: checked ? 'line-through' : 'none',
-        }}
-      >
-        {item.title}
-      </ThemedText>
-    </Pressable>
-  );
-};
 
 const Success = ({ close }: any) => {
   return (
