@@ -1,13 +1,12 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React, { FC, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text } from 'react-native';
+import React, { FC, useState } from 'react';
 import { Colors } from '@/constants/Colors';
-import Checkbox, { CheckboxEvent } from 'expo-checkbox';
+import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
-import { entries, IEntry } from '@/db/schema';
+import { IEntry } from '@/db/schema';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { eq } from 'drizzle-orm';
-import { getDb } from '@/utils/db';
+import { useEntries } from '@/store/entries';
 
 type ChecklistProps = {
   item: IEntry;
@@ -16,23 +15,21 @@ type ChecklistProps = {
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
 const Checklist: FC<ChecklistProps> = ({ item }) => {
-  const checkedRef = useRef<CheckboxEvent | null>(null);
   const [checked, setChecked] = useState(item.completed);
   const colorScheme = useColorScheme();
-  const db = getDb();
+  const { updateEntryStatus } = useEntries();
 
   const toggleCheckbox = async () => {
-    await db
-      .update(entries)
-      .set({
-        completed: !checked,
-      })
-      .where(eq(entries.id, item.id))
-      .returning({
-        completed: entries.completed,
-      });
-    setChecked(!checked);
-    checkedRef.current?.value === checked ? true : false;
+    try {
+      const newChecked = !checked;
+      const isSuccess = await updateEntryStatus(item.id, newChecked);
+
+      if (isSuccess) {
+        setChecked(newChecked);
+      }
+    } catch (error) {
+      console.error('Error updating entry status:', error);
+    }
   };
 
   return (
@@ -40,7 +37,6 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
       entering={FadeInDown.delay(200)}
       onPress={toggleCheckbox}
       android_ripple={{ color: Colors.light.icon }}
-      ref={checkedRef}
       style={[
         styles.container,
         { backgroundColor: colorScheme === 'dark' ? Colors.dark.shade : Colors.light.shade },

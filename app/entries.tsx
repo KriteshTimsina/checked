@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View, TextInput, ScrollView } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -8,59 +8,52 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { eq } from 'drizzle-orm';
-import { entries as entrySchema } from '@/db/schema';
 import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
 import * as Haptics from 'expo-haptics';
-import { getDb } from '@/utils/db';
 import { useEntries } from '@/store/entries';
 
 const Entries = () => {
-  const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
-  const db = getDb();
   const { entries, createEntry, getEntries } = useEntries();
 
-  useEffect(() => {
-    if (projectId) {
-      getEntries(projectId);
-    }
-  }, [projectId, getEntries]);
+  useFocusEffect(
+    useCallback(() => {
+      console.log('RUN');
+      if (projectId) {
+        getEntries(projectId);
+      }
+    }, [projectId]),
+  );
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
 
-  const resetProject = async () => {
-    const data = await db
-      .update(entrySchema)
-      .set({ completed: false })
-      .where(eq(entrySchema.project_id, Number(projectId)))
-      .returning({
-        id: entrySchema.id,
-        title: entrySchema.title,
-        completed: entrySchema.completed,
-        createdAt: entrySchema.createdAt,
-        project_id: entrySchema.project_id,
-      });
+  // const resetProject = async () => {
+  //   const data = await db
+  //     .update(entrySchema)
+  //     .set({ completed: false })
+  //     .where(eq(entrySchema.project_id, Number(projectId)))
+  //     .returning({
+  //       id: entrySchema.id,
+  //       title: entrySchema.title,
+  //       completed: entrySchema.completed,
+  //       createdAt: entrySchema.createdAt,
+  //       project_id: entrySchema.project_id,
+  //     });
 
-    console.log(data, 'HHU');
+  //   console.log(data, 'HHU');
 
-    if (data) {
-      // setEntries(data);
-      setAllCompleted(false);
-    }
-  };
-
-  useEffect(() => {
-    const isAllCompleted = entries.length > 0 && entries.every(entry => entry.completed === true);
-    setAllCompleted(isAllCompleted);
-  }, [entries]);
+  //   if (data) {
+  //     // setEntries(data);
+  //     setAllCompleted(false);
+  //   }
+  // };
 
   const handleAddEntry = async () => {
     if (inputText.trim()) {
@@ -89,7 +82,7 @@ const Entries = () => {
     <>
       <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
-          {allCompleted && <Success close={resetProject} />}
+          <ThemedText type="subtitle">Checklists</ThemedText>
           {entries.length === 0 ? (
             <EmptyProject type="checklist" />
           ) : (
@@ -204,6 +197,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     gap: 15,
+    marginVertical: 15,
   },
   sheetTitle: {
     textAlign: 'center',

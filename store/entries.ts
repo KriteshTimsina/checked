@@ -8,6 +8,7 @@ interface EntriesState {
   createEntry: (data: Pick<IEntry, 'title' | 'project_id'>) => Promise<boolean>;
   getEntries: (projectId: string) => void;
   getCompletedEntriesCount: (projectId: number) => Promise<number>;
+  updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
 }
 
 const db = getDb();
@@ -50,6 +51,19 @@ const useEntriesStore = create<EntriesState>()(set => ({
 
     return completedCount;
   },
+  updateEntryStatus: async (entryId: number, completed: boolean) => {
+    const updated = await db
+      .update(entrySchema)
+      .set({
+        completed,
+      })
+      .where(eq(entrySchema.id, entryId));
+
+    if (updated.changes) {
+      return true;
+    }
+    return false;
+  },
 }));
 
 export const useEntries = () => {
@@ -57,11 +71,13 @@ export const useEntries = () => {
   const getEntries = useEntriesStore(state => state.getEntries);
   const createEntry = useEntriesStore(state => state.createEntry);
   const getCompletedEntriesCount = useEntriesStore(state => state.getCompletedEntriesCount);
+  const updateEntryStatus = useEntriesStore(state => state.updateEntryStatus);
 
   return {
     entries,
     getEntries,
     createEntry,
     getCompletedEntriesCount,
+    updateEntryStatus,
   };
 };

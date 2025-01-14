@@ -2,7 +2,6 @@ import { IProject, projects as projectSchema } from '@/db/schema';
 import { getDb } from '@/utils/db';
 import { toast } from '@/utils/toast';
 import { eq } from 'drizzle-orm';
-import { double } from 'drizzle-orm/mysql-core';
 import { create } from 'zustand';
 
 interface ProjectState {

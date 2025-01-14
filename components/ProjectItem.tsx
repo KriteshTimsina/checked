@@ -1,17 +1,15 @@
-import React, { FC, memo, useCallback, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native';
+import React, { FC, memo, useCallback, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useFocusEffect } from 'expo-router';
-import { entries, IProject, projects } from '@/db/schema';
+import { IProject } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
-import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { getDb } from '@/utils/db';
-import { and, eq } from 'drizzle-orm';
 import { useProject } from '@/store/projects';
+import * as Haptics from 'expo-haptics';
 import { useEntries } from '@/store/entries';
 
 type ProjectItemProps = {
@@ -82,7 +80,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
 
 export default ProjectItem;
 
-const RightAction = memo(({ onDelete }: { onDelete: () => void }) => {
+const RightAction = ({ onDelete }: { onDelete: () => void }) => {
   return (
     <Pressable onPress={onDelete} style={styles.deleteContainer}>
       <MaterialCommunityIcons
@@ -93,7 +91,7 @@ const RightAction = memo(({ onDelete }: { onDelete: () => void }) => {
       />
     </Pressable>
   );
-});
+};
 
 const styles = StyleSheet.create({
   projectItem: {
