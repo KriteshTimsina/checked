@@ -1,7 +1,7 @@
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -17,9 +17,11 @@ import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import { ThemedView } from '@/components/ThemedView';
 import { Pressable } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import AppThemeProvider from '@/context/ThemeContext';
 import { useInitPreferences } from '@/hooks/useInitializePreferences';
+import { StackScreenDefaultOptions } from '@/constants/layout';
+import UserIcon from '@/components/UserIcon';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,21 +55,32 @@ export default function RootLayout() {
       >
         <AppThemeProvider>
           <ThemeProvider value={appTheme}>
-            <StatusBar style="auto" backgroundColor={Colors.primary} />
+            <StatusBar style="auto" />
             <Stack
               screenOptions={{
-                headerShadowVisible: false,
-                header: ({ options }) => <Header title={options.title} />,
+                ...StackScreenDefaultOptions,
               }}
             >
               <Stack.Screen
                 options={{
-                  title: 'Hello 👋',
+                  headerTitle: 'Hello 👋',
+                  headerRight: () => <UserIcon />,
                 }}
                 name="index"
               />
-              <Stack.Screen name="entries" />
-              <Stack.Screen name="settings" />
+              <Stack.Screen
+                name="entries"
+                options={({ route }: any) => ({
+                  headerTitleAlign: 'center',
+                  headerTitle: route.params && route.params.title,
+                })}
+              />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  title: 'Settings',
+                }}
+              />
             </Stack>
           </ThemeProvider>
         </AppThemeProvider>

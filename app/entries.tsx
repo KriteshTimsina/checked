@@ -27,16 +27,16 @@ const Entries = () => {
   const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
-  const params = useLocalSearchParams();
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
   const db = getDb();
   const { entries, createEntry, getEntries } = useEntries();
 
   useEffect(() => {
-    if (params.id) {
-      getEntries(params.id.toString());
+    if (projectId) {
+      getEntries(projectId);
     }
-  }, [params.id]);
+  }, [projectId]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -46,7 +46,7 @@ const Entries = () => {
     const data = await db
       .update(entrySchema)
       .set({ completed: false })
-      .where(eq(entrySchema.project_id, Number(params.id)))
+      .where(eq(entrySchema.project_id, Number(projectId)))
       .returning({
         id: entrySchema.id,
         title: entrySchema.title,
@@ -63,12 +63,6 @@ const Entries = () => {
     }
   };
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: params.title,
-    });
-  }, [navigation]);
-
   useEffect(() => {
     const isAllCompleted = entries.length > 0 && entries.every(entry => entry.completed === true);
     setAllCompleted(isAllCompleted);
@@ -77,7 +71,7 @@ const Entries = () => {
   const handleAddEntry = async () => {
     if (inputText.trim()) {
       const entry = await createEntry({
-        project_id: Number(params.id),
+        project_id: Number(projectId),
         title: inputText,
       });
       if (entry) {

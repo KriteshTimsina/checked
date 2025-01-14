@@ -60,7 +60,10 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
       <Link
         href={{
           pathname: '/entries',
-          params: item,
+          params: {
+            projectId: item.id,
+            title: item.title,
+          },
         }}
       >
         <Animated.View entering={FadeInDown.delay(100 * (index + 1))} style={styles.projectItem}>

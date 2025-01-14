@@ -57,7 +57,6 @@ export default function Home() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={styles.container}>
-          <Link href={'/settings'}>Setsting</Link>
           <ThemedText type="subtitle">Projects</ThemedText>
           <ScrollView
             refreshControl={
