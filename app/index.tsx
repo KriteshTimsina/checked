@@ -25,29 +25,21 @@ export default function Home() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const db = getDb();
-  const { projects, getAllProjects } = useProject();
+  const { projects, getAllProjects, createProject } = useProject();
 
   useEffect(() => {
     getAllProjects();
   }, []);
 
   const onAddProject = async () => {
-    const [data] = await db
-      .insert(projectsSchema)
-      .values({
-        title: inputText,
-        description: 'This project has no description.',
-      })
-      .returning({
-        id: projectsSchema.id,
-        title: projectsSchema.title,
-        description: projectsSchema.description,
-        createdAt: projectsSchema.createdAt,
-      });
+    const created = await createProject({
+      title: inputText,
+      description: 'Testing',
+      createdAt: new Date(),
+    });
 
-    if (data) {
+    if (created) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      // setProjects(prevProjects => [...prevProjects, data]);
       closeSheet();
     }
   };

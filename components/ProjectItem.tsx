@@ -11,6 +11,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { getDb } from '@/utils/db';
 import { and, eq } from 'drizzle-orm';
+import { useProject } from '@/store/projects';
 
 type ProjectItemProps = {
   item: IProject;
@@ -20,6 +21,7 @@ type ProjectItemProps = {
 const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const db = getDb();
   const [completedCount, setCompletedCount] = useState(0);
+  const { deleteProject } = useProject();
 
   useFocusEffect(
     useCallback(() => {
@@ -41,9 +43,9 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
 
   const onDelete = async () => {
     try {
-      const deleted = await db.delete(projects).where(eq(projects.id, item.id));
+      const deleted = await deleteProject(item.id);
 
-      if (deleted.changes === 1) {
+      if (deleted) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         return toast('Project deleted successfully.');
       }
