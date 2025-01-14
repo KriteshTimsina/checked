@@ -17,36 +17,19 @@ import { toast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
 import { Link } from 'expo-router';
 import { getDb } from '@/utils/db';
+import { useProject, useProjectStore } from '@/store/projects';
 
 export default function Home() {
-  const [projects, setProjects] = useState<IProject[]>([]);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const inputRef = useRef<TextInput>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const db = getDb();
+  const { projects, getAllProjects } = useProject();
 
   useEffect(() => {
-    loadProjects();
+    getAllProjects();
   }, []);
-
-  const loadProjects = async () => {
-    try {
-      setLoading(true);
-      const data = await db.query.projects.findMany();
-      if (data.length === 0) {
-        setProjects([]);
-        return toast('No projects. Add one to view.');
-      }
-      setProjects(data);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const onAddProject = async () => {
     const [data] = await db
@@ -64,7 +47,7 @@ export default function Home() {
 
     if (data) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setProjects(prevProjects => [...prevProjects, data]);
+      // setProjects(prevProjects => [...prevProjects, data]);
       closeSheet();
     }
   };
@@ -89,7 +72,7 @@ export default function Home() {
               <RefreshControl
                 colors={[Colors.primary]}
                 refreshing={loading}
-                onRefresh={loadProjects}
+                onRefresh={getAllProjects}
               />
             }
           >
