@@ -3,7 +3,15 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-import { Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -56,25 +64,18 @@ export default function Home() {
       <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={styles.container}>
           <ThemedText type="subtitle">Projects</ThemedText>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                colors={[Colors.primary]}
-                refreshing={loading}
-                onRefresh={getAllProjects}
+          <View style={styles.projectContainer}>
+            {projects.length > 0 ? (
+              <FlatList
+                data={projects}
+                keyExtractor={item => String(item.id)}
+                renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}
+                contentContainerStyle={{ gap: 10 }}
               />
-            }
-          >
-            <View style={styles.projectContainer}>
-              {projects.length > 0 ? (
-                projects.map((item, index) => {
-                  return <ProjectItem key={index} item={item} index={index} />;
-                })
-              ) : (
-                <EmptyProject />
-              )}
-            </View>
-          </ScrollView>
+            ) : (
+              <EmptyProject />
+            )}
+          </View>
           <Button onPress={openSheet} />
         </ThemedView>
       </Pressable>

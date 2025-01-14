@@ -1,6 +1,6 @@
-import React, { FC, memo, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useFocusEffect } from 'expo-router';
 import { IProject } from '@/db/schema';
@@ -12,6 +12,8 @@ import { useProject } from '@/store/projects';
 import * as Haptics from 'expo-haptics';
 import { useEntries } from '@/store/entries';
 
+let currentSwipeable: SwipeableMethods | null = null;
+
 type ProjectItemProps = {
   item: IProject;
   index: number;
@@ -21,6 +23,16 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const [completedCount, setCompletedCount] = useState(0);
   const { deleteProject } = useProject();
   const { getCompletedEntriesCount } = useEntries();
+  const swipeableRef = useRef<SwipeableMethods>(null);
+
+  useEffect(() => {
+    const currentRef = swipeableRef.current;
+    return () => {
+      if (currentSwipeable === currentRef) {
+        currentSwipeable = null;
+      }
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -52,8 +64,26 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     }
   };
 
+  const onSwipeableWillOpen = () => {
+    if (currentSwipeable && currentSwipeable !== swipeableRef.current) {
+      currentSwipeable.close();
+    }
+    currentSwipeable = swipeableRef.current;
+  };
+
+  const onSwipeableWillClose = () => {
+    if (currentSwipeable === swipeableRef.current) {
+      currentSwipeable = null;
+    }
+  };
+
   return (
-    <Swipeable renderRightActions={() => <RightAction onDelete={onDelete} />}>
+    <Swipeable
+      ref={swipeableRef}
+      onSwipeableWillOpen={onSwipeableWillOpen}
+      onSwipeableWillClose={onSwipeableWillClose}
+      renderRightActions={() => <RightAction onDelete={onDelete} />}
+    >
       <Link
         href={{
           pathname: '/entries',
