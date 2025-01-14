@@ -31,10 +31,14 @@ export default function Home() {
   const { projects, getAllProjects, createProject } = useProject();
 
   useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = () => {
     setLoading(true);
     getAllProjects();
     setLoading(false);
-  }, [getAllProjects]);
+  };
 
   const onAddProject = async () => {
     const created = await createProject({
@@ -67,6 +71,13 @@ export default function Home() {
           <View style={styles.projectContainer}>
             {projects.length > 0 ? (
               <FlatList
+                refreshControl={
+                  <RefreshControl
+                    colors={[Colors.primary]}
+                    refreshing={loading}
+                    onRefresh={fetchProjects}
+                  ></RefreshControl>
+                }
                 data={projects}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}

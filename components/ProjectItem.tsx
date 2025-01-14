@@ -34,12 +34,6 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     };
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      getCompletedTask();
-    }, []),
-  );
-
   const getCompletedTask = useCallback(async () => {
     try {
       const count = await getCompletedEntriesCount(item.id);
@@ -47,7 +41,13 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     } catch (error) {
       console.error('Error fetching completed tasks:', error);
     }
-  }, []);
+  }, [getCompletedEntriesCount, item.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getCompletedTask();
+    }, [getCompletedTask]),
+  );
 
   const onDelete = async () => {
     try {
