@@ -1,3 +1,4 @@
+import React from 'react';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
@@ -5,31 +6,27 @@ import { Colors } from '@/constants/Colors';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { useEffect, useRef, useState } from 'react';
-import { IProject, projects as projectsSchema } from '@/db/schema';
 
 import Button from '@/components/Button';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
-import { toast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
-import { Link } from 'expo-router';
-import { getDb } from '@/utils/db';
-import { useProject, useProjectStore } from '@/store/projects';
+import { useProject } from '@/store/projects';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const inputRef = useRef<TextInput>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
-  const db = getDb();
   const { projects, getAllProjects, createProject } = useProject();
 
   useEffect(() => {
+    setLoading(true);
     getAllProjects();
-  }, []);
+    setLoading(false);
+  }, [getAllProjects]);
 
   const onAddProject = async () => {
     const created = await createProject({
@@ -49,12 +46,13 @@ export default function Home() {
     inputRef.current?.focus();
   };
   const closeSheet = () => {
+    console.log('RUN');
     bottomSheetRef.current?.close();
     inputRef.current?.blur();
     setInputText('');
   };
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <>
       <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={styles.container}>
           <ThemedText type="subtitle">Projects</ThemedText>
@@ -119,7 +117,7 @@ export default function Home() {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </GestureHandlerRootView>
+    </>
   );
 }
 

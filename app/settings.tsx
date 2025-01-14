@@ -1,16 +1,17 @@
-import { Appearance, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import React, { useRef, useState } from 'react';
+import { Appearance, Pressable, StyleSheet, Switch, View } from 'react-native';
+
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Colors, updatePrimaryColor } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { colors } from '@/constants/data';
 import { useTheme } from '@/context/ThemeContext';
 
-const settings = () => {
+import { Colors } from '@/constants/Colors';
+import { colors } from '@/constants/data';
+
+const Settings = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { selectedTheme, onThemeSelect } = useTheme();
   const colorScheme = useColorScheme();
@@ -29,7 +30,7 @@ const settings = () => {
     Appearance.setColorScheme(newTheme);
   };
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <>
       <Pressable style={{ flex: 1 }} onPress={closeSheet}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
           <ThemedText type="subtitle">Settings</ThemedText>
@@ -129,11 +130,11 @@ const settings = () => {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </GestureHandlerRootView>
+    </>
   );
 };
 
-export default settings;
+export default Settings;
 
 const Footer = () => {
   return (

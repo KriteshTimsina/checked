@@ -1,29 +1,23 @@
-import { Pressable, StyleSheet, View, TextInput, Modal, Alert, ScrollView } from 'react-native';
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { Header } from '@/components/Header';
-import { data } from '@/constants/data';
+import { Pressable, StyleSheet, View, TextInput, ScrollView } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-import Checkbox, { CheckboxEvent } from 'expo-checkbox';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { eq } from 'drizzle-orm';
-import { entries as entrySchema, IEntry, IProject, projects } from '@/db/schema';
+import { entries as entrySchema } from '@/db/schema';
 import Button from '@/components/Button';
 import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
-import { useTheme } from '@/context/ThemeContext';
 import * as Haptics from 'expo-haptics';
 import { getDb } from '@/utils/db';
 import { useEntries } from '@/store/entries';
 
 const Entries = () => {
-  const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
@@ -36,7 +30,7 @@ const Entries = () => {
     if (projectId) {
       getEntries(projectId);
     }
-  }, [projectId]);
+  }, [projectId, getEntries]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -93,7 +87,7 @@ const Entries = () => {
 
   return (
     <>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+      <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
           {allCompleted && <Success close={resetProject} />}
           {entries.length === 0 ? (
@@ -108,52 +102,52 @@ const Entries = () => {
 
           <Button onPress={openSheet} />
         </ThemedView>
-        <BottomSheet
-          index={-1}
-          onChange={handleSheetChanges}
-          enablePanDownToClose={true}
-          backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
-          ref={bottomSheetRef}
-        >
-          <BottomSheetView style={styles.contentContainer}>
-            <View style={styles.contentContainer}>
-              <ThemedText type="subtitle" style={styles.sheetTitle}>
-                Add New Task
-              </ThemedText>
-              <View style={styles.inputContainer}>
-                <TextInput
-                  ref={inputRef}
-                  multiline
-                  value={inputText}
-                  onChangeText={setInputText}
-                  placeholder="Enter your task title..."
-                  placeholderTextColor="white"
-                  style={[
-                    styles.input,
-                    {
-                      height: 40,
-                      textAlignVertical: 'top',
-                    },
-                  ]}
-                />
+      </Pressable>
+      <BottomSheet
+        index={-1}
+        onChange={handleSheetChanges}
+        enablePanDownToClose={true}
+        backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
+        ref={bottomSheetRef}
+      >
+        <BottomSheetView style={styles.contentContainer}>
+          <View style={styles.contentContainer}>
+            <ThemedText type="subtitle" style={styles.sheetTitle}>
+              Add New Task
+            </ThemedText>
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={inputRef}
+                multiline
+                value={inputText}
+                onChangeText={setInputText}
+                placeholder="Enter your task title..."
+                placeholderTextColor="white"
+                style={[
+                  styles.input,
+                  {
+                    height: 40,
+                    textAlignVertical: 'top',
+                  },
+                ]}
+              />
 
-                <View style={styles.buttonContainer}>
-                  <Pressable onPress={closeSheet} style={styles.iconButton}>
-                    <Ionicons name="close-outline" size={25} color="white" />
-                  </Pressable>
+              <View style={styles.buttonContainer}>
+                <Pressable onPress={closeSheet} style={styles.iconButton}>
+                  <Ionicons name="close-outline" size={25} color="white" />
+                </Pressable>
 
-                  <Pressable
-                    onPress={handleAddEntry}
-                    style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
-                  >
-                    <Ionicons name="paper-plane-outline" size={25} color="white" />
-                  </Pressable>
-                </View>
+                <Pressable
+                  onPress={handleAddEntry}
+                  style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
+                >
+                  <Ionicons name="paper-plane-outline" size={25} color="white" />
+                </Pressable>
               </View>
             </View>
-          </BottomSheetView>
-        </BottomSheet>
-      </GestureHandlerRootView>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </>
   );
 };
