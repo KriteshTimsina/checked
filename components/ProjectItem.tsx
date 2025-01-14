@@ -12,6 +12,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { getDb } from '@/utils/db';
 import { and, eq } from 'drizzle-orm';
 import { useProject } from '@/store/projects';
+import { useEntries } from '@/store/entries';
 
 type ProjectItemProps = {
   item: IProject;
@@ -19,27 +20,24 @@ type ProjectItemProps = {
 };
 
 const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
-  const db = getDb();
   const [completedCount, setCompletedCount] = useState(0);
   const { deleteProject } = useProject();
+  const { getCompletedEntriesCount } = useEntries();
 
   useFocusEffect(
     useCallback(() => {
       getCompletedTask();
-    }, [item.id]),
+    }, []),
   );
 
   const getCompletedTask = useCallback(async () => {
     try {
-      const count = await db.$count(
-        entries,
-        and(eq(entries.completed, true), eq(entries.project_id, item.id)),
-      );
+      const count = await getCompletedEntriesCount(item.id);
       setCompletedCount(count);
     } catch (error) {
       console.error('Error fetching completed tasks:', error);
     }
-  }, [db, item.id]);
+  }, []);
 
   const onDelete = async () => {
     try {
@@ -52,6 +50,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     } catch (error) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       toast('Failed deleting project');
+      console.error(error);
     }
   };
 

@@ -1,12 +1,13 @@
 import { entries as entrySchema, IEntry } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface EntriesState {
   entries: IEntry[];
   createEntry: (data: Pick<IEntry, 'title' | 'project_id'>) => Promise<boolean>;
-  getEntries: (project_id: string) => void;
+  getEntries: (projectId: string) => void;
+  getCompletedEntriesCount: (projectId: number) => Promise<number>;
 }
 
 const db = getDb();
@@ -41,16 +42,26 @@ const useEntriesStore = create<EntriesState>()(set => ({
     }
     return false;
   },
+  getCompletedEntriesCount: async projectId => {
+    const completedCount = await db.$count(
+      entrySchema,
+      and(eq(entrySchema.completed, true), eq(entrySchema.project_id, projectId)),
+    );
+
+    return completedCount;
+  },
 }));
 
 export const useEntries = () => {
   const entries = useEntriesStore(state => state.entries);
   const getEntries = useEntriesStore(state => state.getEntries);
   const createEntry = useEntriesStore(state => state.createEntry);
+  const getCompletedEntriesCount = useEntriesStore(state => state.getCompletedEntriesCount);
 
   return {
     entries,
     getEntries,
     createEntry,
+    getCompletedEntriesCount,
   };
 };
