@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { userPreferences } from '@/db/schema';
-import { useDb } from '@/db/useDb';
+import { getDb } from '@/utils/db';
 
 const DEFAULT_THEME_ID = 1;
 export const useInitPreferences = () => {
-  const db = useDb();
+  const db = getDb();
 
   useEffect(() => {
     const initializePreferences = async () => {

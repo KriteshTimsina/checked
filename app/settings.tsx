@@ -9,8 +9,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { colors } from '@/constants/data';
 import { useTheme } from '@/context/ThemeContext';
-import { useDb } from '@/db/useDb';
-import { userPreferences } from '@/db/schema';
 
 const settings = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);

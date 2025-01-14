@@ -5,7 +5,6 @@ import { Colors } from '@/constants/Colors';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { useEffect, useRef, useState } from 'react';
-import { useDb } from '@/db/useDb';
 import { IProject, projects as projectsSchema } from '@/db/schema';
 
 import Button from '@/components/Button';
@@ -17,15 +16,15 @@ import EmptyProject from '@/components/EmptyProject';
 import { toast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
 import { Link } from 'expo-router';
-import { useTheme } from '@/context/ThemeContext';
+import { getDb } from '@/utils/db';
 
 export default function Home() {
-  const db = useDb();
   const [projects, setProjects] = useState<IProject[]>([]);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const inputRef = useRef<TextInput>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
+  const db = getDb();
 
   useEffect(() => {
     loadProjects();

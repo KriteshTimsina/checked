@@ -6,8 +6,8 @@ import { ThemedText } from './ThemedText';
 import { entries, IEntry } from '@/db/schema';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
+import { getDb } from '@/utils/db';
 
 type ChecklistProps = {
   item: IEntry;
@@ -19,7 +19,7 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
   const checkedRef = useRef<CheckboxEvent | null>(null);
   const [checked, setChecked] = useState(item.completed);
   const colorScheme = useColorScheme();
-  const db = useDb();
+  const db = getDb();
 
   const toggleCheckbox = async () => {
     await db

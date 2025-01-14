@@ -12,7 +12,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useDb } from '@/db/useDb';
 import { eq } from 'drizzle-orm';
 import { entries as entrySchema, IEntry, IProject, projects } from '@/db/schema';
 import Button from '@/components/Button';
@@ -20,6 +19,7 @@ import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
 import { useTheme } from '@/context/ThemeContext';
 import * as Haptics from 'expo-haptics';
+import { getDb } from '@/utils/db';
 const Project = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
@@ -28,7 +28,7 @@ const Project = () => {
   const params = useLocalSearchParams();
   const [entries, setEntries] = useState<IEntry[]>([]);
   const inputRef = useRef<TextInput>(null);
-  const db = useDb();
+  const db = getDb();
 
   useEffect(() => {
     const load = async () => {
@@ -47,7 +47,6 @@ const Project = () => {
   }, []);
 
   const resetProject = async () => {
-    console.log('RN');
     const data = await db
       .update(entrySchema)
       .set({ completed: false })

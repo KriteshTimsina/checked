@@ -5,12 +5,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useFocusEffect } from 'expo-router';
 import { entries, IProject, projects } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
-import { useDb } from '@/db/useDb';
-import { and, eq, sql } from 'drizzle-orm';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { getDb } from '@/utils/db';
+import { and, eq } from 'drizzle-orm';
 
 type ProjectItemProps = {
   item: IProject;
@@ -18,7 +18,7 @@ type ProjectItemProps = {
 };
 
 const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
-  const db = useDb();
+  const db = getDb();
   const [completedCount, setCompletedCount] = useState(0);
 
   useFocusEffect(
