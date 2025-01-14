@@ -20,27 +20,23 @@ import EmptyProject from '@/components/EmptyProject';
 import { useTheme } from '@/context/ThemeContext';
 import * as Haptics from 'expo-haptics';
 import { getDb } from '@/utils/db';
-const Project = () => {
+import { useEntries } from '@/store/entries';
+
+const Entries = () => {
   const navigation = useNavigation();
   const [allCompleted, setAllCompleted] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const params = useLocalSearchParams();
-  const [entries, setEntries] = useState<IEntry[]>([]);
   const inputRef = useRef<TextInput>(null);
   const db = getDb();
+  const { entries, createEntry, getEntries } = useEntries();
 
   useEffect(() => {
-    const load = async () => {
-      if (params) {
-        const data = await db.query.entries.findMany({
-          where: eq(entrySchema.project_id, Number(params.id)),
-        });
-        setEntries(data);
-      }
-    };
-    load();
-  }, []);
+    if (params.id) {
+      getEntries(params.id.toString());
+    }
+  }, [params.id]);
 
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
@@ -62,7 +58,7 @@ const Project = () => {
     console.log(data, 'HHU');
 
     if (data) {
-      setEntries(data);
+      // setEntries(data);
       setAllCompleted(false);
     }
   };
@@ -78,28 +74,16 @@ const Project = () => {
     setAllCompleted(isAllCompleted);
   }, [entries]);
 
-  const handleAddTask = async () => {
+  const handleAddEntry = async () => {
     if (inputText.trim()) {
-      const createdAt = new Date();
-      const entry = await db
-        .insert(entrySchema)
-        .values({ project_id: Number(params.id), title: inputText, status: 0, createdAt })
-        .then(success => {
-          if (success.changes === 1) {
-            const data = db.query.entries
-              .findFirst({
-                where: eq(entrySchema.id, Number(success.lastInsertRowId)),
-              })
-              .then(data => {
-                setEntries(prev => [...prev, data]);
-              });
-          }
-        });
-
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
-      setInputText('');
-      bottomSheetRef.current?.close();
+      const entry = await createEntry({
+        project_id: Number(params.id),
+        title: inputText,
+      });
+      if (entry) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        closeSheet();
+      }
     }
   };
 
@@ -165,7 +149,7 @@ const Project = () => {
                   </Pressable>
 
                   <Pressable
-                    onPress={handleAddTask}
+                    onPress={handleAddEntry}
                     style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.5 }]}
                   >
                     <Ionicons name="paper-plane-outline" size={25} color="white" />
@@ -180,7 +164,7 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Entries;
 
 const Success = ({ close }: any) => {
   return (

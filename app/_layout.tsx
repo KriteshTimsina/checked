@@ -66,7 +66,7 @@ export default function RootLayout() {
                 }}
                 name="index"
               />
-              <Stack.Screen name="project" />
+              <Stack.Screen name="entries" />
               <Stack.Screen name="settings" />
             </Stack>
           </ThemeProvider>

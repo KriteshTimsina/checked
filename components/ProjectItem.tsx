@@ -59,7 +59,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     <Swipeable renderRightActions={() => <RightAction onDelete={onDelete} />}>
       <Link
         href={{
-          pathname: '/project',
+          pathname: '/entries',
           params: item,
         }}
       >
