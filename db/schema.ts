@@ -12,13 +12,13 @@ export const projects = sqliteTable('projects', {
 export const entries = sqliteTable('entries', {
   id: integer().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
-  completed: integer({ mode: 'boolean' }).default(false),
+  completed: integer({ mode: 'boolean' }).default(false).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date()),
   project_id: integer('project_id')
     .notNull()
-    .references(() => projects.id),
+    .references(() => projects.id, { onDelete: 'cascade' }),
 });
 
 export const userPreferences = sqliteTable('user_preferences', {

@@ -42,6 +42,7 @@ const useEntriesStore = create<EntriesState>()(set => ({
       set(state => ({
         entries: [...state.entries, newEntry],
       }));
+      return true;
     }
     return false;
   },
