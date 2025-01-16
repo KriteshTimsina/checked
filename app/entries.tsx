@@ -10,9 +10,9 @@ import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Button from '@/components/Button';
 import EmptyProject from '@/components/EmptyProject';
-import * as Haptics from 'expo-haptics';
 import { useEntries } from '@/store/entries';
 import Checklist from '@/components/Checklist';
+import { haptics } from '@/utils/haptics';
 
 const Entries = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -73,7 +73,7 @@ const Entries = () => {
         title: inputText,
       });
       if (entry) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        haptics.success();
         closeSheet();
       }
     }

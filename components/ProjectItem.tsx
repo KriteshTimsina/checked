@@ -9,8 +9,8 @@ import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useProject } from '@/store/projects';
-import * as Haptics from 'expo-haptics';
 import { useEntries } from '@/store/entries';
+import { haptics } from '@/utils/haptics';
 
 let currentSwipeable: SwipeableMethods | null = null;
 
@@ -54,11 +54,11 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
       const deleted = await deleteProject(item.id);
 
       if (deleted) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        haptics.success();
         return toast('Project deleted successfully.');
       }
     } catch (error) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      haptics.error();
       toast('Failed deleting project');
       console.error(error);
     }

@@ -22,6 +22,7 @@ import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
 import * as Haptics from 'expo-haptics';
 import { useProject } from '@/store/projects';
+import { haptics } from '@/utils/haptics';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -48,7 +49,7 @@ export default function Home() {
     });
 
     if (created) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      haptics.success();
       closeSheet();
     }
   };
