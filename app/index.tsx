@@ -58,7 +58,6 @@ export default function Home() {
     inputRef.current?.focus();
   };
   const closeSheet = () => {
-    console.log('RUN');
     bottomSheetRef.current?.close();
     inputRef.current?.blur();
     setInputText('');

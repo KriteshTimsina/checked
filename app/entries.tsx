@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View, TextInput, ScrollView } from 'react-native';
+import { Pressable, StyleSheet, View, TextInput, FlatList } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -9,10 +9,10 @@ import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import Button from '@/components/Button';
-import Checklist from '@/components/Checklist';
 import EmptyProject from '@/components/EmptyProject';
 import * as Haptics from 'expo-haptics';
 import { useEntries } from '@/store/entries';
+import Checklist from '@/components/Checklist';
 
 const Entries = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -21,13 +21,24 @@ const Entries = () => {
   const inputRef = useRef<TextInput>(null);
   const { entries, createEntry, getEntries } = useEntries();
 
+  console.log(entries, 'HHHH');
+
   useFocusEffect(
     useCallback(() => {
-      console.log('RUN');
-      if (projectId) {
-        getEntries(projectId);
-      }
-    }, [projectId]),
+      let isActive = true;
+
+      const loadEntries = async () => {
+        if (projectId && isActive) {
+          await getEntries(projectId);
+        }
+      };
+
+      loadEntries();
+
+      return () => {
+        isActive = false;
+      };
+    }, [getEntries, projectId]),
   );
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -82,17 +93,16 @@ const Entries = () => {
     <>
       <Pressable onPress={closeSheet} style={{ flex: 1 }}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
-          <ThemedText type="subtitle">Checklists</ThemedText>
           {entries.length === 0 ? (
             <EmptyProject type="checklist" />
           ) : (
-            <ScrollView contentContainerStyle={styles.scrollContainer} style={{ flex: 1 }}>
-              {entries.map(item => {
-                return <Checklist key={item.id} item={item} />;
-              })}
-            </ScrollView>
+            <FlatList
+              contentContainerStyle={styles.scrollContainer}
+              data={entries}
+              keyExtractor={item => String(item.id)}
+              renderItem={({ item }) => <Checklist item={item} />}
+            />
           )}
-
           <Button onPress={openSheet} />
         </ThemedView>
       </Pressable>

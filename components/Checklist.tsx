@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
-import React, { FC, useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+import React, { FC } from 'react';
 import { Colors } from '@/constants/Colors';
 import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
@@ -7,6 +7,7 @@ import { IEntry } from '@/db/schema';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useEntries } from '@/store/entries';
+import debounce from 'lodash/debounce';
 
 type ChecklistProps = {
   item: IEntry;
@@ -15,22 +16,16 @@ type ChecklistProps = {
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
 const Checklist: FC<ChecklistProps> = ({ item }) => {
-  const [checked, setChecked] = useState(item.completed);
   const colorScheme = useColorScheme();
   const { updateEntryStatus } = useEntries();
 
-  const toggleCheckbox = async () => {
+  const toggleCheckbox = debounce(async () => {
     try {
-      const newChecked = !checked;
-      const isSuccess = await updateEntryStatus(item.id, newChecked);
-
-      if (isSuccess) {
-        setChecked(newChecked);
-      }
+      await updateEntryStatus(item.id, !item.completed);
     } catch (error) {
       console.error('Error updating entry status:', error);
     }
-  };
+  }, 100);
 
   return (
     <AnimatedButton
@@ -45,12 +40,12 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
       <Checkbox
         style={styles.checkbox}
         color={Colors.highlight}
-        value={checked}
+        value={item.completed}
         onValueChange={toggleCheckbox}
       />
       <ThemedText
         style={{
-          textDecorationLine: checked ? 'line-through' : 'none',
+          textDecorationLine: item.completed ? 'line-through' : 'none',
         }}
       >
         {item.title}

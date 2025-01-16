@@ -20,6 +20,8 @@ const useEntriesStore = create<EntriesState>()(set => ({
       where: eq(entrySchema.project_id, Number(projectId)),
     });
 
+    console.log(allEntries, 'NENAPs');
+
     set({
       entries: allEntries,
     });
@@ -52,17 +54,25 @@ const useEntriesStore = create<EntriesState>()(set => ({
     return completedCount;
   },
   updateEntryStatus: async (entryId: number, completed: boolean) => {
-    const updated = await db
-      .update(entrySchema)
-      .set({
-        completed,
-      })
-      .where(eq(entrySchema.id, entryId));
+    try {
+      const updated = await db
+        .update(entrySchema)
+        .set({ completed })
+        .where(eq(entrySchema.id, entryId));
 
-    if (updated.changes) {
-      return true;
+      if (updated.changes) {
+        set(state => ({
+          entries: state.entries.map(entry =>
+            entry.id === entryId ? { ...entry, completed } : entry,
+          ),
+        }));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error updating entry status:', error);
+      return false;
     }
-    return false;
   },
 }));
 
