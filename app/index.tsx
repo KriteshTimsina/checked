@@ -3,15 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-import {
-  FlatList,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { FlatList, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -20,7 +12,6 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
-import * as Haptics from 'expo-haptics';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
 

@@ -1,9 +1,7 @@
 import { Pressable, StyleSheet, View, TextInput, FlatList } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useRef, useState } from 'react';
+import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-import ConfettiCannon from 'react-native-confetti-cannon';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,8 +18,6 @@ const Entries = () => {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
   const { entries, createEntry, getEntries } = useEntries();
-
-  console.log(entries, 'HHHH');
 
   useFocusEffect(
     useCallback(() => {
@@ -44,27 +40,6 @@ const Entries = () => {
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
-
-  // const resetProject = async () => {
-  //   const data = await db
-  //     .update(entrySchema)
-  //     .set({ completed: false })
-  //     .where(eq(entrySchema.project_id, Number(projectId)))
-  //     .returning({
-  //       id: entrySchema.id,
-  //       title: entrySchema.title,
-  //       completed: entrySchema.completed,
-  //       createdAt: entrySchema.createdAt,
-  //       project_id: entrySchema.project_id,
-  //     });
-
-  //   console.log(data, 'HHU');
-
-  //   if (data) {
-  //     // setEntries(data);
-  //     setAllCompleted(false);
-  //   }
-  // };
 
   const handleAddEntry = async () => {
     if (inputText.trim()) {
@@ -103,6 +78,9 @@ const Entries = () => {
               renderItem={({ item }) => <Checklist item={item} />}
             />
           )}
+          <Link href={'/success'}>
+            <ThemedText>hi</ThemedText>
+          </Link>
           <Button onPress={openSheet} />
         </ThemedView>
       </Pressable>
@@ -157,47 +135,6 @@ const Entries = () => {
 
 export default Entries;
 
-const Success = ({ close }: any) => {
-  return (
-    <View
-      style={{
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: Colors.primary,
-        flex: 1,
-        zIndex: 10,
-        top: -20,
-        padding: 20,
-        alignItems: 'center',
-        paddingTop: 50,
-        gap: 20,
-        justifyContent: 'center',
-      }}
-    >
-      <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} />
-      <Animated.Image
-        entering={FadeInDown.delay(300)}
-        source={require('@/assets/images/success.png')}
-        style={{ width: 100, height: 100 }}
-      />
-      <Animated.Text entering={FadeInDown.delay(400)} style={{ fontSize: 16 }}>
-        All tasks completed
-      </Animated.Text>
-      <Pressable
-        onPress={close}
-        style={{
-          backgroundColor: Colors.dark.background,
-          borderRadius: 10,
-          height: 40,
-          justifyContent: 'center',
-          marginTop: 20,
-          width: '40%',
-        }}
-      >
-        <ThemedText style={{ textAlign: 'center' }}>Reset checklist</ThemedText>
-      </Pressable>
-    </View>
-  );
-};
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,

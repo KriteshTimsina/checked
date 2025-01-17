@@ -1,10 +1,9 @@
-// db.ts
-import { DATABASE_NAME } from '@/constants/constants';
-import { drizzle } from 'drizzle-orm/expo-sqlite';
 import * as SQLite from 'expo-sqlite';
 import * as schema from '@/db/schema';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
 
-// Define the type for your schema
+import { DATABASE_NAME } from '@/constants/constants';
+
 type Schema = typeof schema;
 
 let db: ReturnType<typeof drizzle<Schema>> | null = null;
