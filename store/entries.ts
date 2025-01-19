@@ -9,21 +9,24 @@ interface EntriesState {
   getEntries: (projectId: string) => void;
   getCompletedEntriesCount: (projectId: number) => Promise<number>;
   updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
+  isAllCompleted: boolean;
 }
 
 const db = getDb();
 
 const useEntriesStore = create<EntriesState>()(set => ({
   entries: [],
+  isAllCompleted: false,
   getEntries: async projectId => {
     const allEntries = await db.query.entries.findMany({
       where: eq(entrySchema.project_id, Number(projectId)),
     });
-
-    console.log(allEntries, 'NENAPs');
-
-    set({
-      entries: allEntries,
+    set(state => {
+      const newState = {
+        entries: allEntries,
+        isAllCompleted: allEntries.length > 0 && allEntries.every(entry => entry.completed),
+      };
+      return newState;
     });
   },
   createEntry: async data => {
@@ -39,9 +42,13 @@ const useEntriesStore = create<EntriesState>()(set => ({
       });
 
     if (newEntry) {
-      set(state => ({
-        entries: [...state.entries, newEntry],
-      }));
+      set(state => {
+        const newEntries = [...state.entries, newEntry];
+        return {
+          entries: newEntries,
+          isAllCompleted: newEntries.every(entry => entry.completed),
+        };
+      });
       return true;
     }
     return false;
@@ -62,11 +69,15 @@ const useEntriesStore = create<EntriesState>()(set => ({
         .where(eq(entrySchema.id, entryId));
 
       if (updated.changes) {
-        set(state => ({
-          entries: state.entries.map(entry =>
+        set(state => {
+          const newEntries = state.entries.map(entry =>
             entry.id === entryId ? { ...entry, completed } : entry,
-          ),
-        }));
+          );
+          return {
+            entries: newEntries,
+            isAllCompleted: newEntries.length > 0 && newEntries.every(entry => entry.completed),
+          };
+        });
         return true;
       }
       return false;
@@ -79,6 +90,7 @@ const useEntriesStore = create<EntriesState>()(set => ({
 
 export const useEntries = () => {
   const entries = useEntriesStore(state => state.entries);
+  const isAllCompleted = useEntriesStore(state => state.isAllCompleted);
   const getEntries = useEntriesStore(state => state.getEntries);
   const createEntry = useEntriesStore(state => state.createEntry);
   const getCompletedEntriesCount = useEntriesStore(state => state.getCompletedEntriesCount);
@@ -86,6 +98,7 @@ export const useEntries = () => {
 
   return {
     entries,
+    isAllCompleted,
     getEntries,
     createEntry,
     getCompletedEntriesCount,

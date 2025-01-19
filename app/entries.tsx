@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View, TextInput, FlatList } from 'react-native';
-import React, { useCallback, useRef, useState } from 'react';
-import { Link, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -17,7 +17,13 @@ const Entries = () => {
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
-  const { entries, createEntry, getEntries } = useEntries();
+  const { entries, createEntry, getEntries, isAllCompleted } = useEntries();
+
+  useEffect(() => {
+    if (isAllCompleted) {
+      router.replace('/success');
+    }
+  }, [isAllCompleted]);
 
   useFocusEffect(
     useCallback(() => {
@@ -78,9 +84,6 @@ const Entries = () => {
               renderItem={({ item }) => <Checklist item={item} />}
             />
           )}
-          <Link href={'/success'}>
-            <ThemedText>hi</ThemedText>
-          </Link>
           <Button onPress={openSheet} />
         </ThemedView>
       </Pressable>
