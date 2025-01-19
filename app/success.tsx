@@ -2,33 +2,24 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Trophy from '@/components/Trophy';
 import { Colors } from '@/constants/Colors';
+import { useEntries } from '@/store/entries';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-// const resetProject = async () => {
-//   const data = await db
-//     .update(entrySchema)
-//     .set({ completed: false })
-//     .where(eq(entrySchema.project_id, Number(projectId)))
-//     .returning({
-//       id: entrySchema.id,
-//       title: entrySchema.title,
-//       completed: entrySchema.completed,
-//       createdAt: entrySchema.createdAt,
-//       project_id: entrySchema.project_id,
-//     });
-
-//   console.log(data, 'HHU');
-
-//   if (data) {
-//     // setEntries(data);
-//     setAllCompleted(false);
-//   }
-// };
 export default function Success() {
-  const onResetEntries = async () => {};
+  const router = useRouter();
+  const { resetAllEntriesStatus } = useEntries();
+  const { projectId } = useLocalSearchParams<{ projectId: string }>();
+
+  const onResetEntries = async () => {
+    const updated = await resetAllEntriesStatus(Number(projectId));
+    if (updated) {
+      router.back();
+    }
+  };
   return (
     <ThemedView style={styles.container}>
       <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} />
@@ -41,7 +32,7 @@ export default function Success() {
         All tasks completed
       </Animated.Text>
       <Pressable onPress={onResetEntries} style={styles.button}>
-        <ThemedText style={{}}>Reset checklist</ThemedText>
+        <ThemedText>Reset checklist</ThemedText>
       </Pressable>
     </ThemedView>
   );

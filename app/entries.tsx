@@ -21,9 +21,12 @@ const Entries = () => {
 
   useEffect(() => {
     if (isAllCompleted) {
-      router.replace('/success');
+      router.replace({
+        pathname: '/success',
+        params: { projectId },
+      });
     }
-  }, [isAllCompleted]);
+  }, [isAllCompleted, projectId]);
 
   useFocusEffect(
     useCallback(() => {

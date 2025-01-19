@@ -10,6 +10,7 @@ interface EntriesState {
   getCompletedEntriesCount: (projectId: number) => Promise<number>;
   updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
   isAllCompleted: boolean;
+  resetAllEntriesStatus: (projectId: number) => Promise<boolean>;
 }
 
 const db = getDb();
@@ -86,6 +87,14 @@ const useEntriesStore = create<EntriesState>()(set => ({
       return false;
     }
   },
+  resetAllEntriesStatus: async (projectId: number) => {
+    const updated = await db
+      .update(entrySchema)
+      .set({ completed: false })
+      .where(eq(entrySchema.project_id, projectId));
+    if (updated.changes) return true;
+    return false;
+  },
 }));
 
 export const useEntries = () => {
@@ -95,6 +104,7 @@ export const useEntries = () => {
   const createEntry = useEntriesStore(state => state.createEntry);
   const getCompletedEntriesCount = useEntriesStore(state => state.getCompletedEntriesCount);
   const updateEntryStatus = useEntriesStore(state => state.updateEntryStatus);
+  const resetAllEntriesStatus = useEntriesStore(state => state.resetAllEntriesStatus);
 
   return {
     entries,
@@ -103,5 +113,6 @@ export const useEntries = () => {
     createEntry,
     getCompletedEntriesCount,
     updateEntryStatus,
+    resetAllEntriesStatus,
   };
 };
