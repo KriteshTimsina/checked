@@ -11,6 +11,8 @@ import Checklist from '@/components/Checklist';
 import Button from '@/components/Button';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
+import { MAX_INPUT_LENGTH } from '@/constants/constants';
+import { toast } from '@/utils/toast';
 
 export default function Entries() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -47,15 +49,18 @@ export default function Entries() {
   );
 
   const handleAddEntry = async () => {
-    if (inputText.trim()) {
-      const entry = await createEntry({
-        project_id: Number(projectId),
-        title: inputText.trim(),
-      });
-      if (entry) {
-        haptics.success();
-        closeSheet();
-      }
+    if (inputText.trim().length > MAX_INPUT_LENGTH * 2) {
+      return toast('Task name is too long.');
+    }
+
+    const entry = await createEntry({
+      project_id: Number(projectId),
+      title: inputText.trim(),
+    });
+
+    if (entry) {
+      haptics.success();
+      closeSheet();
     }
   };
 

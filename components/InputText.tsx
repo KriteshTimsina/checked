@@ -13,6 +13,8 @@ type InputTextProps = {
   inputRef: React.RefObject<TextInput>;
 } & TextInputProps;
 
+const ENTRY_MAX_INPUT_LENGTH = MAX_INPUT_LENGTH * 2;
+
 const InputText: FC<InputTextProps> = ({
   inputRef,
   inputText,
@@ -35,9 +37,12 @@ const InputText: FC<InputTextProps> = ({
 
       <View style={styles.counter}>
         <ThemedText
-          style={[styles.countText, inputText.trim().length > MAX_INPUT_LENGTH && styles.error]}
+          style={[
+            styles.countText,
+            inputText.trim().length > ENTRY_MAX_INPUT_LENGTH && styles.error,
+          ]}
         >
-          {inputText.trim().length}/{MAX_INPUT_LENGTH}
+          {inputText.trim().length}/{ENTRY_MAX_INPUT_LENGTH}
         </ThemedText>
       </View>
 
