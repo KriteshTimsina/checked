@@ -1,11 +1,11 @@
-import { FlatList, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import GorhomBottomSheet from '@gorhom/bottom-sheet';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
+import BottomSheet from '@/components/BottomSheet';
 import ProjectItem from '@/components/ProjectItem';
 import InputText from '@/components/InputText';
 import Button from '@/components/Button';
@@ -15,10 +15,9 @@ import { toast } from '@/utils/toast';
 
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { Colors } from '@/constants/Colors';
-import { globals } from '@/styles/globals';
 
 export default function Home() {
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
   const inputRef = useRef<TextInput>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -62,53 +61,39 @@ export default function Home() {
   };
   return (
     <>
-      <Pressable onPress={closeSheet} style={globals.flex}>
-        <ThemedView style={{ ...globals.flex, ...styles.container }}>
-          <ThemedText type="subtitle">Projects</ThemedText>
-          <View style={styles.projectContainer}>
-            {projects.length > 0 ? (
-              <FlatList
-                refreshControl={
-                  <RefreshControl
-                    colors={[Colors.primary]}
-                    refreshing={loading}
-                    onRefresh={fetchProjects}
-                  ></RefreshControl>
-                }
-                data={projects}
-                keyExtractor={item => String(item.id)}
-                renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}
-                contentContainerStyle={styles.contentContainer}
-              />
-            ) : (
-              <EmptyProject />
-            )}
-          </View>
-          <Button onPress={openSheet} />
-        </ThemedView>
-      </Pressable>
-
-      <BottomSheet
-        index={-1}
-        enablePanDownToClose={true}
-        backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
-        ref={bottomSheetRef}
-      >
-        <BottomSheetView style={styles.inputContainer}>
-          <View style={styles.inputContainer}>
-            <ThemedText type="subtitle" style={styles.sheetTitle}>
-              Add New Project
-            </ThemedText>
-            <InputText
-              placeholder="Enter your project title..."
-              inputRef={inputRef}
-              inputText={inputText}
-              setInputText={setInputText}
-              onClose={closeSheet}
-              onSubmit={onAddProject}
+      <ThemedView style={styles.container}>
+        <ThemedText type="subtitle">Projects</ThemedText>
+        <View style={styles.projectContainer}>
+          {projects.length > 0 ? (
+            <FlatList
+              refreshControl={
+                <RefreshControl
+                  colors={[Colors.primary]}
+                  refreshing={loading}
+                  onRefresh={fetchProjects}
+                ></RefreshControl>
+              }
+              data={projects}
+              keyExtractor={item => String(item.id)}
+              renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}
+              contentContainerStyle={styles.contentContainer}
             />
-          </View>
-        </BottomSheetView>
+          ) : (
+            <EmptyProject />
+          )}
+        </View>
+        <Button onPress={openSheet} />
+      </ThemedView>
+
+      <BottomSheet bottomSheetRef={bottomSheetRef} title="Add New Project">
+        <InputText
+          placeholder="Enter your project title..."
+          inputRef={inputRef}
+          inputText={inputText}
+          setInputText={setInputText}
+          onClose={closeSheet}
+          onSubmit={onAddProject}
+        />
       </BottomSheet>
     </>
   );
@@ -116,6 +101,7 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
   },
   projectContainer: {
@@ -125,14 +111,5 @@ const styles = StyleSheet.create({
   contentContainer: {
     gap: 10,
     paddingBottom: 20,
-  },
-  inputContainer: {
-    flex: 1,
-    gap: 20,
-    paddingHorizontal: 10,
-    height: 200,
-  },
-  sheetTitle: {
-    textAlign: 'center',
   },
 });

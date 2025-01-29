@@ -1,10 +1,10 @@
-import { Pressable, StyleSheet, View, TextInput, FlatList } from 'react-native';
+import { StyleSheet, TextInput, FlatList } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import GorhomBottomSheet from '@gorhom/bottom-sheet';
 
 import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
+import BottomSheet from '@/components/BottomSheet';
 import EmptyProject from '@/components/EmptyProject';
 import InputText from '@/components/InputText';
 import Checklist from '@/components/Checklist';
@@ -12,10 +12,8 @@ import Button from '@/components/Button';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
 
-import { Colors } from '@/constants/Colors';
-
 const Entries = () => {
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
@@ -48,10 +46,6 @@ const Entries = () => {
     }, [getEntries, projectId]),
   );
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-
   const handleAddEntry = async () => {
     if (inputText.trim()) {
       const entry = await createEntry({
@@ -77,44 +71,29 @@ const Entries = () => {
 
   return (
     <>
-      <Pressable onPress={closeSheet} style={{ flex: 1 }}>
-        <ThemedView style={{ flex: 1, padding: 20 }}>
-          {entries.length === 0 ? (
-            <EmptyProject type="checklist" />
-          ) : (
-            <FlatList
-              contentContainerStyle={styles.scrollContainer}
-              data={entries}
-              keyExtractor={item => String(item.id)}
-              renderItem={({ item }) => <Checklist item={item} />}
-              // style={{ marginBottom: 50 }}
-            />
-          )}
-          <Button onPress={openSheet} />
-        </ThemedView>
-      </Pressable>
-      <BottomSheet
-        index={-1}
-        onChange={handleSheetChanges}
-        enablePanDownToClose={true}
-        backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
-        ref={bottomSheetRef}
-      >
-        <BottomSheetView style={styles.contentContainer}>
-          <View style={styles.contentContainer}>
-            <ThemedText type="subtitle" style={styles.sheetTitle}>
-              Add New Task
-            </ThemedText>
-            <InputText
-              placeholder="Enter your task title..."
-              inputRef={inputRef}
-              inputText={inputText}
-              setInputText={setInputText}
-              onSubmit={handleAddEntry}
-              onClose={closeSheet}
-            />
-          </View>
-        </BottomSheetView>
+      <ThemedView style={styles.container}>
+        {entries.length === 0 ? (
+          <EmptyProject type="checklist" />
+        ) : (
+          <FlatList
+            contentContainerStyle={styles.scrollContainer}
+            data={entries}
+            keyExtractor={item => String(item.id)}
+            renderItem={({ item }) => <Checklist item={item} />}
+            // style={{ marginBottom: 50 }}
+          />
+        )}
+        <Button onPress={openSheet} />
+      </ThemedView>
+      <BottomSheet title="Add Task" bottomSheetRef={bottomSheetRef}>
+        <InputText
+          placeholder="Enter your task title..."
+          inputRef={inputRef}
+          inputText={inputText}
+          setInputText={setInputText}
+          onSubmit={handleAddEntry}
+          onClose={closeSheet}
+        />
       </BottomSheet>
     </>
   );
@@ -123,6 +102,10 @@ const Entries = () => {
 export default Entries;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
   contentContainer: {
     flex: 1,
     gap: 20,
@@ -133,8 +116,5 @@ const styles = StyleSheet.create({
     gap: 15,
     marginVertical: 15,
     paddingBottom: 20,
-  },
-  sheetTitle: {
-    textAlign: 'center',
   },
 });
