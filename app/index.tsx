@@ -14,6 +14,8 @@ import ProjectItem from '@/components/ProjectItem';
 import EmptyProject from '@/components/EmptyProject';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
+import { MAX_INPUT_LENGTH } from '@/constants/constants';
+import { toast } from '@/utils/toast';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -33,8 +35,12 @@ export default function Home() {
   };
 
   const onAddProject = async () => {
+    if (inputText.trim().length > MAX_INPUT_LENGTH) {
+      return toast('Project name is too long.');
+    }
+
     const created = await createProject({
-      title: inputText,
+      title: inputText.trim(),
       description: 'Testing',
       createdAt: new Date(),
     });
@@ -96,13 +102,23 @@ export default function Home() {
             <View style={styles.inputContainer}>
               <TextInput
                 ref={inputRef}
-                multiline
                 value={inputText}
                 onChangeText={setInputText}
                 placeholder="Enter your task title..."
                 placeholderTextColor="white"
                 style={styles.input}
               />
+
+              <View style={styles.counter}>
+                <ThemedText
+                  style={[
+                    styles.countText,
+                    inputText.trim().length > MAX_INPUT_LENGTH && styles.error,
+                  ]}
+                >
+                  {inputText.trim().length}/{MAX_INPUT_LENGTH}
+                </ThemedText>
+              </View>
 
               <View style={styles.buttonContainer}>
                 <Pressable hitSlop={5} onPress={closeSheet} style={styles.iconButton}>
@@ -152,7 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    minHeight: 40,
+    height: 40,
     textAlignVertical: 'top',
   },
   buttonContainer: {
@@ -182,5 +198,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  counter: { position: 'absolute', right: 10, top: 0 },
+  countText: {
+    fontSize: 12,
+  },
+  error: {
+    color: 'red',
   },
 });

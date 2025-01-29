@@ -54,7 +54,7 @@ const Entries = () => {
     if (inputText.trim()) {
       const entry = await createEntry({
         project_id: Number(projectId),
-        title: inputText,
+        title: inputText.trim(),
       });
       if (entry) {
         haptics.success();
@@ -105,7 +105,6 @@ const Entries = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 ref={inputRef}
-                multiline
                 value={inputText}
                 onChangeText={setInputText}
                 placeholder="Enter your task title..."

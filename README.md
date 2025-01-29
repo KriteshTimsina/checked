@@ -1,50 +1,10 @@
-# Welcome to your Expo app 👋
+# Checked ✅
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Checked** is an open-source project designed to streamline project tracking through intuitive checklists. With Checked, you can effortlessly organize your to-dos and ensure nothing slips through the cracks. Whether you're managing personal tasks or a team projects, Checked keeps you on track, helping you stay productive and never miss a deadline again. Simplify your workflow and achieve your goals with ease—now with Checked!
 
-## Get started
+## Features:
 
-1. Install dependencies
+- **Set Checks:** Mark tasks as completed with a simple check, helping you track progress and stay motivated as you move through your to-dos.
+- **Reset projects:** Once all tasks in a project are checked, reset the project to start fresh or reuse the checklist for recurring workflows.
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Checked is your go-to tool for staying organized, efficient, and in control of your projects!
