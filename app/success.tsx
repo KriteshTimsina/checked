@@ -1,13 +1,17 @@
+import React from 'react';
+import { StyleSheet, Pressable } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import ConfettiCannon from 'react-native-confetti-cannon';
+
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Trophy from '@/components/Trophy';
-import { Colors } from '@/constants/Colors';
 import { useEntries } from '@/store/entries';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
-import ConfettiCannon from 'react-native-confetti-cannon';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+
+import { Colors } from '@/constants/Colors';
+
+const ORIGIN = { x: -10, y: 0 };
 
 export default function Success() {
   const router = useRouter();
@@ -22,7 +26,7 @@ export default function Success() {
   };
   return (
     <ThemedView style={styles.container}>
-      <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} />
+      <ConfettiCannon count={200} origin={ORIGIN} />
       <Trophy />
       <Animated.Text
         entering={FadeInDown.delay(200)}

@@ -1,5 +1,5 @@
 import { FlatList, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import GorhomBottomSheet from '@gorhom/bottom-sheet';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -15,6 +15,8 @@ import { toast } from '@/utils/toast';
 
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { Colors } from '@/constants/Colors';
+import GearIcon from '@/components/GearIcon';
+import { useNavigation } from 'expo-router';
 
 export default function Home() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -22,6 +24,13 @@ export default function Home() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const { projects, getAllProjects, createProject } = useProject();
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <GearIcon />,
+    });
+  }, []);
 
   useEffect(() => {
     fetchProjects();

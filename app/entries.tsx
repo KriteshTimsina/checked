@@ -12,7 +12,7 @@ import Button from '@/components/Button';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
 
-const Entries = () => {
+export default function Entries() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
@@ -97,9 +97,7 @@ const Entries = () => {
       </BottomSheet>
     </>
   );
-};
-
-export default Entries;
+}
 
 const styles = StyleSheet.create({
   container: {

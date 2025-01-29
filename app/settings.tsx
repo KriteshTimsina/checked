@@ -11,7 +11,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { Colors } from '@/constants/Colors';
 import { colors } from '@/constants/data';
 
-const Settings = () => {
+export default function Settings() {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const { selectedTheme, onThemeSelect } = useTheme();
   const colorScheme = useColorScheme();
@@ -132,9 +132,7 @@ const Settings = () => {
       </BottomSheet>
     </>
   );
-};
-
-export default Settings;
+}
 
 const Footer = () => {
   return (

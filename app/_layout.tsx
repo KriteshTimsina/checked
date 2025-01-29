@@ -14,8 +14,8 @@ import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import AppThemeProvider from '@/context/ThemeContext';
 import { StackScreenDefaultOptions } from '@/constants/layout';
-import UserIcon from '@/components/UserIcon';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import GearIcon from '@/components/GearIcon';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,11 +57,11 @@ export default function RootLayout() {
                 }}
               >
                 <Stack.Screen
+                  name="index"
                   options={{
                     headerTitle: 'Hello 👋',
-                    headerRight: () => <UserIcon />,
+                    headerRight: () => <GearIcon />,
                   }}
-                  name="index"
                 />
                 <Stack.Screen
                   name="entries"

@@ -1,17 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { FC, useEffect, useRef } from 'react';
-import { ThemedText } from './ThemedText';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
+
 import trophy from '@/assets/lottie/success.json';
-import { ThemedView } from './ThemedView';
 
 const Trophy = () => {
-  const animation = useRef<LottieView>(null);
+  const animation = useRef<LottieView | null>(null);
 
   useEffect(() => {
-    animation.current?.play();
+    const currentAnimation = animation.current;
+    if (!currentAnimation) return;
+    currentAnimation.play();
 
-    return () => animation.current?.pause();
+    return () => {
+      currentAnimation.reset();
+    };
   }, []);
   return <LottieView autoPlay ref={animation} style={styles.trophy} source={trophy} />;
 };
