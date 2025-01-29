@@ -15,6 +15,7 @@ import { toast } from '@/utils/toast';
 
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { Colors } from '@/constants/Colors';
+import { globals } from '@/styles/globals';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -61,8 +62,8 @@ export default function Home() {
   };
   return (
     <>
-      <Pressable onPress={closeSheet} style={{ flex: 1 }}>
-        <ThemedView style={styles.container}>
+      <Pressable onPress={closeSheet} style={globals.flex}>
+        <ThemedView style={{ ...globals.flex, ...styles.container }}>
           <ThemedText type="subtitle">Projects</ThemedText>
           <View style={styles.projectContainer}>
             {projects.length > 0 ? (
@@ -77,7 +78,7 @@ export default function Home() {
                 data={projects}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}
-                contentContainerStyle={{ gap: 10 }}
+                contentContainerStyle={styles.contentContainer}
               />
             ) : (
               <EmptyProject />
@@ -93,8 +94,8 @@ export default function Home() {
         backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
         ref={bottomSheetRef}
       >
-        <BottomSheetView style={styles.contentContainer}>
-          <View style={styles.contentContainer}>
+        <BottomSheetView style={styles.inputContainer}>
+          <View style={styles.inputContainer}>
             <ThemedText type="subtitle" style={styles.sheetTitle}>
               Add New Project
             </ThemedText>
@@ -115,7 +116,6 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   projectContainer: {
@@ -123,6 +123,10 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   contentContainer: {
+    gap: 10,
+    paddingBottom: 20,
+  },
+  inputContainer: {
     flex: 1,
     gap: 20,
     paddingHorizontal: 10,

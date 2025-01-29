@@ -87,6 +87,7 @@ const Entries = () => {
               data={entries}
               keyExtractor={item => String(item.id)}
               renderItem={({ item }) => <Checklist item={item} />}
+              // style={{ marginBottom: 50 }}
             />
           )}
           <Button onPress={openSheet} />
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     gap: 15,
     marginVertical: 15,
+    paddingBottom: 20,
   },
   sheetTitle: {
     textAlign: 'center',
