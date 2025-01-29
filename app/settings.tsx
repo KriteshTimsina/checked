@@ -65,14 +65,14 @@ export default function Settings() {
                 <MaterialCommunityIcons name="volume-vibrate" color={Colors.primary} size={24} />
                 <ThemedText>Enable haptics</ThemedText>
               </View>
-              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+              <Switch onValueChange={() => {}} value={darkMode} thumbColor={Colors.primary} />
             </View>
             <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <Ionicons name="notifications-sharp" color={Colors.primary} size={24} />
                 <ThemedText>Enable Notifications</ThemedText>
               </View>
-              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+              <Switch onValueChange={() => {}} value={darkMode} thumbColor={Colors.primary} />
             </View>
             <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -109,9 +109,7 @@ export default function Settings() {
                       color.selected ? styles.selected : null,
                       { backgroundColor: color.primary },
                     ]}
-                  >
-                    {color.selected && <Ionicons size={20} name="checkmark-outline" />}
-                  </Pressable>
+                  ></Pressable>
                 );
               })}
             </View>
@@ -125,7 +123,9 @@ export default function Settings() {
                 marginTop: 20,
               }}
             >
-              <ThemedText style={{ textAlign: 'center' }}>Apply</ThemedText>
+              <ThemedText style={{ textAlign: 'center', color: Colors.dark.text }}>
+                Apply
+              </ThemedText>
             </Pressable>
           </View>
         </BottomSheetView>
@@ -136,7 +136,7 @@ export default function Settings() {
 
 const Footer = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+    <View style={styles.footer}>
       <ThemedText>
         Created with love by <ThemedText type="link">Kritesh Timsina</ThemedText>
       </ThemedText>
@@ -174,4 +174,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.dark.tabIconDefault,
   },
+  footer: { flex: 1, justifyContent: 'flex-end', alignItems: 'center' },
 });
