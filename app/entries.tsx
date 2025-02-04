@@ -1,18 +1,19 @@
-import { StyleSheet, TextInput, FlatList } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import GorhomBottomSheet from '@gorhom/bottom-sheet';
 
-import { ThemedView } from '@/components/ThemedView';
-import BottomSheet from '@/components/BottomSheet';
-import EmptyProject from '@/components/EmptyProject';
+import { FlatList, StyleSheet, TextInput } from 'react-native';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+
+import { toast } from '@/utils/toast';
+import Button from '@/components/Button';
+import { haptics } from '@/utils/haptics';
+import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
 import Checklist from '@/components/Checklist';
-import Button from '@/components/Button';
-import { useEntries } from '@/store/entries';
-import { haptics } from '@/utils/haptics';
+import BottomSheet from '@/components/BottomSheet';
+import GorhomBottomSheet from '@gorhom/bottom-sheet';
+import { ThemedView } from '@/components/ThemedView';
+import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
-import { toast } from '@/utils/toast';
 
 export default function Entries() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -45,7 +46,7 @@ export default function Entries() {
       return () => {
         isActive = false;
       };
-    }, [getEntries, projectId]),
+    }, [getEntries, projectId, router]),
   );
 
   const handleAddEntry = async () => {
@@ -85,7 +86,6 @@ export default function Entries() {
             data={entries}
             keyExtractor={item => String(item.id)}
             renderItem={({ item }) => <Checklist item={item} />}
-            // style={{ marginBottom: 50 }}
           />
         )}
         <Button onPress={openSheet} />

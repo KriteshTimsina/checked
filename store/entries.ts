@@ -92,7 +92,16 @@ const useEntriesStore = create<EntriesState>()(set => ({
       .update(entrySchema)
       .set({ completed: false })
       .where(eq(entrySchema.project_id, projectId));
-    if (updated.changes) return true;
+    if (updated.changes) {
+      set(state => ({
+        entries: state.entries.map(entry => ({
+          ...entry,
+          completed: false,
+        })),
+        isAllCompleted: false,
+      }));
+      return true;
+    }
     return false;
   },
 }));

@@ -20,6 +20,7 @@ export default function Success() {
 
   const onResetEntries = async () => {
     const updated = await resetAllEntriesStatus(Number(projectId));
+
     if (updated) {
       router.back();
     }
