@@ -1,5 +1,7 @@
 # Checked ✅
 
+![Checked](https://github.com/KriteshTimsina/checked/blob/master/website/public/og-image.png)
+
 **Checked** is an open-source project designed to streamline project tracking through intuitive checklists. With Checked, you can effortlessly organize your to-dos and ensure nothing slips through the cracks. Whether you're managing personal tasks or a team projects, Checked keeps you on track, helping you stay productive and never miss a deadline again. Simplify your workflow and achieve your goals with ease—now with Checked!
 
 ## Features:
