@@ -37,6 +37,7 @@ const InputText: FC<InputTextProps> = ({
 
       <View style={styles.counter}>
         <ThemedText
+          lightColor={Colors.dark.text}
           style={[
             styles.countText,
             inputText.trim().length > ENTRY_MAX_INPUT_LENGTH && styles.error,

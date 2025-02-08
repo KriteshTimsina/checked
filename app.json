@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "checklist",
-    "slug": "checklist",
+    "name": "Checked",
+    "slug": "checked",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

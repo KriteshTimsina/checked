@@ -95,10 +95,18 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
       >
         <Animated.View entering={FadeInDown.delay(100 * (index + 1))} style={styles.projectItem}>
           <View>
-            <ThemedText type="defaultSemiBold" darkColor={Colors.light.text}>
+            <ThemedText
+              type="defaultSemiBold"
+              darkColor={Colors.light.text}
+              lightColor={Colors.dark.text}
+            >
               {item.title}
             </ThemedText>
-            <ThemedText style={styles.completed} darkColor={Colors.light.icon}>
+            <ThemedText
+              style={styles.completed}
+              darkColor={Colors.light.icon}
+              lightColor={Colors.light.shade}
+            >
               {completedCount} completed
             </ThemedText>
           </View>

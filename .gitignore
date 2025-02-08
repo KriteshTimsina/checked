@@ -41,3 +41,6 @@ app-example
 #output
 .out
 out.*
+
+#todo
+todos.md

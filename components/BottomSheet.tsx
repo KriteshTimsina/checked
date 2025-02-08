@@ -57,7 +57,7 @@ const BottomSheet: FC<BottomSheetProps> = ({
       <BottomSheetView style={containerStyles}>
         <View style={containerStyles}>
           {title && (
-            <ThemedText type="subtitle" style={titleStyles}>
+            <ThemedText type="subtitle" lightColor={Colors.dark.text} style={titleStyles}>
               {title}
             </ThemedText>
           )}
