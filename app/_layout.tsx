@@ -25,6 +25,13 @@ const CustomDarkTheme = {
     background: Colors.dark.background,
   },
 };
+const CustomDefaultTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: Colors.light.background,
+  },
+};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,7 +40,7 @@ export default function RootLayout() {
   const fontsLoaded = useFontLoading();
   const colorScheme = useColorScheme();
 
-  const appTheme = colorScheme === 'dark' ? CustomDarkTheme : DefaultTheme;
+  const appTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
 
   useEffect(() => {
     const initializeApp = async () => {
