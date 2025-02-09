@@ -54,13 +54,13 @@ export default function RootLayout() {
 
               <Stack
                 screenOptions={{
-                  ...StackScreenDefaultOptions,
                   headerShown: false,
                 }}
               >
                 <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
                 <Stack.Screen name="(checklist)" />
                 <Stack.Screen name="(notes)" />
+                <Stack.Screen name="settings" />
                 {/* <Stack.Screen
                   name="index"
                   options={{

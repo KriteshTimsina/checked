@@ -46,7 +46,7 @@ export default function Entry() {
       return () => {
         isActive = false;
       };
-    }, [getEntries, projectId, router]),
+    }, [getEntries, projectId]),
   );
 
   const handleAddEntry = async () => {
