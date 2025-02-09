@@ -3,11 +3,11 @@ import React, { memo } from 'react';
 
 import { ThemedText } from './ThemedText';
 import { MaterialIcons } from '@expo/vector-icons';
-import { INotes } from '@/app/(tabs)/notes';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { INote } from '@/db/schema';
 
-const NoteItem = ({ item }: { item: INotes }) => {
+const NoteItem = ({ item }: { item: INote }) => {
   const router = useRouter();
   const onDeleteNote = (id: number) => {
     Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
@@ -39,7 +39,7 @@ const NoteItem = ({ item }: { item: INotes }) => {
       style={({ pressed }) => [
         styles.card,
         {
-          backgroundColor: item.theme ?? Colors.primary,
+          backgroundColor: item?.theme ?? Colors.primary,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
@@ -54,7 +54,7 @@ const NoteItem = ({ item }: { item: INotes }) => {
         >
           {item.title}
         </ThemedText>
-        {item.clip !== '' && <MaterialIcons name="multitrack-audio" size={20} />}
+        {item?.clip !== '' && <MaterialIcons name="multitrack-audio" size={20} />}
       </View>
 
       <ThemedText numberOfLines={6} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
