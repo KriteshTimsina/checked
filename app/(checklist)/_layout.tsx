@@ -11,7 +11,6 @@ export default function ChecklistLayout() {
     <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen
         options={({ route }) => ({
-          presentation: 'card',
           headerShown: true,
           headerTitle: (route.params as ChecklistParamList['index'])?.title ?? 'Checklist',
         })}

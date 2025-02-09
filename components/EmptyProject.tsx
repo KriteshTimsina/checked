@@ -8,10 +8,11 @@ import { ThemedView } from './ThemedView';
 const TITLE = {
   project: 'No Projects. Add one to view.',
   checklist: 'Checklist is empty. Add one to view.',
+  notes: 'Notes is empty. Add one to view.',
 };
 
 type EmptyProjectProps = {
-  type?: 'project' | 'checklist';
+  type?: 'project' | 'checklist' | 'notes';
 };
 
 const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {

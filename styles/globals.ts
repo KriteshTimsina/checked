@@ -5,4 +5,8 @@ export const globals = StyleSheet.create({
   center: { alignItems: 'center', justifyContent: 'center' },
   row: { flexDirection: 'row' },
   column: { flexDirection: 'column' },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
 });
