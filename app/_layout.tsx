@@ -51,12 +51,15 @@ export default function RootLayout() {
           <AppThemeProvider>
             <ThemeProvider value={appTheme}>
               <StatusBar style="auto" />
+
               <Stack
+                initialRouteName="(tabs)"
                 screenOptions={{
                   ...StackScreenDefaultOptions,
                 }}
               >
-                <Stack.Screen
+                <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
+                {/* <Stack.Screen
                   name="index"
                   options={{
                     headerTitle: 'Hello 👋',
@@ -81,7 +84,7 @@ export default function RootLayout() {
                   options={{
                     headerShown: false,
                   }}
-                />
+                /> */}
               </Stack>
             </ThemeProvider>
           </AppThemeProvider>
