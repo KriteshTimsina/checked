@@ -2,6 +2,8 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { Link } from 'expo-router';
+import GearIcon from './GearIcon';
 
 function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarProps) {
   return (
@@ -82,6 +84,7 @@ function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarPro
           </TouchableOpacity>
         );
       })}
+      <GearIcon />
     </View>
   );
 }

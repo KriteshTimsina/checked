@@ -15,6 +15,8 @@ import { Loading } from '@/components/Loading';
 import AppThemeProvider from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '@/constants/Colors';
+import { globals } from '@/styles/globals';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const CustomDarkTheme = {
   ...DarkTheme,
@@ -54,7 +56,7 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={globals.flex}>
           <AppThemeProvider>
             <ThemeProvider value={appTheme}>
               <StatusBar style="auto" />
@@ -67,33 +69,7 @@ export default function RootLayout() {
                 <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
                 <Stack.Screen name="(checklist)" />
                 <Stack.Screen name="(notes)" />
-                <Stack.Screen name="settings" />
-                {/* <Stack.Screen
-                  name="index"
-                  options={{
-                    headerTitle: 'Hello 👋',
-                    headerRight: () => <GearIcon />,
-                  }}
-                />
-                <Stack.Screen
-                  name="entries"
-                  options={({ route }: any) => ({
-                    headerTitleAlign: 'center',
-                    headerTitle: route.params && route.params.title,
-                  })}
-                />
-                <Stack.Screen
-                  name="settings"
-                  options={{
-                    title: 'Settings',
-                  }}
-                />
-                <Stack.Screen
-                  name="success"
-                  options={{
-                    headerShown: false,
-                  }}
-                /> */}
+                <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
               </Stack>
             </ThemeProvider>
           </AppThemeProvider>

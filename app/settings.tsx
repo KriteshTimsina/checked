@@ -10,6 +10,8 @@ import { useTheme } from '@/context/ThemeContext';
 
 import { Colors } from '@/constants/Colors';
 import { colors } from '@/constants/data';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { globals } from '@/styles/globals';
 
 export default function Settings() {
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -30,8 +32,8 @@ export default function Settings() {
     Appearance.setColorScheme(newTheme);
   };
   return (
-    <>
-      <Pressable style={{ flex: 1 }} onPress={closeSheet}>
+    <SafeAreaView style={globals.flex}>
+      <Pressable style={globals.flex} onPress={closeSheet}>
         <ThemedView style={{ flex: 1, padding: 20 }}>
           <ThemedText type="subtitle">Settings</ThemedText>
 
@@ -130,7 +132,7 @@ export default function Settings() {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </>
+    </SafeAreaView>
   );
 }
 
