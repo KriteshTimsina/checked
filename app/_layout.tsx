@@ -13,9 +13,16 @@ import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import AppThemeProvider from '@/context/ThemeContext';
-import { StackScreenDefaultOptions } from '@/constants/layout';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import GearIcon from '@/components/GearIcon';
+import { Colors } from '@/constants/Colors';
+
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: Colors.dark.background,
+  },
+};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +31,7 @@ export default function RootLayout() {
   const fontsLoaded = useFontLoading();
   const colorScheme = useColorScheme();
 
-  const appTheme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
+  const appTheme = colorScheme === 'dark' ? CustomDarkTheme : DefaultTheme;
 
   useEffect(() => {
     const initializeApp = async () => {
