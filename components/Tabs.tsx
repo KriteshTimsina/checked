@@ -13,6 +13,7 @@ function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarPro
         width: '100%',
         alignSelf: 'center',
         marginTop: 20,
+        // display: state.index === 0 ? 'flex' : 'none',
       }}
     >
       {state.routes.map((route, index) => {
