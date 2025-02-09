@@ -17,7 +17,6 @@ export default function NotesLayout() {
           headerTitle: (route.params as NotesParamList['index'])?.title ?? 'Note',
         })}
       />
-      <Stack.Screen name="note" />
     </Stack>
   );
 }
