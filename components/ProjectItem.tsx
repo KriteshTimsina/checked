@@ -86,7 +86,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
     >
       <Link
         href={{
-          pathname: '/entries',
+          pathname: '/(checklist)',
           params: {
             projectId: item.id,
             title: item.title,

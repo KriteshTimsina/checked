@@ -53,12 +53,14 @@ export default function RootLayout() {
               <StatusBar style="auto" />
 
               <Stack
-                initialRouteName="(tabs)"
                 screenOptions={{
                   ...StackScreenDefaultOptions,
+                  headerShown: false,
                 }}
               >
                 <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
+                <Stack.Screen name="(checklist)" />
+                <Stack.Screen name="(notes)" />
                 {/* <Stack.Screen
                   name="index"
                   options={{
