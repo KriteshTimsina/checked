@@ -15,7 +15,6 @@ import { toast } from '@/utils/toast';
 
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { Colors } from '@/constants/Colors';
-import { Link } from 'expo-router';
 
 export default function Home() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);

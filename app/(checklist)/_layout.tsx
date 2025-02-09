@@ -1,19 +1,20 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { StackScreenDefaultOptions } from '@/constants/layout';
+
+type ChecklistParamList = {
+  index: { title?: string };
+  success: undefined;
+};
 
 export default function ChecklistLayout() {
   return (
-    <Stack
-      initialRouteName="index"
-      screenOptions={{ ...StackScreenDefaultOptions, headerShown: false }}
-    >
+    <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        options={{
+        options={({ route }) => ({
           presentation: 'card',
           headerShown: true,
-          headerTitle: 'Entry',
-        }}
+          headerTitle: (route.params as ChecklistParamList['index'])?.title ?? 'Checklist',
+        })}
         name="index"
       />
       <Stack.Screen name="success" />
