@@ -29,7 +29,6 @@ const NoteItem = ({ item }: { item: INote }) => {
       pathname: '/(notes)',
       params: {
         noteId: id,
-        title: item.title,
       },
     });
   };
@@ -39,7 +38,7 @@ const NoteItem = ({ item }: { item: INote }) => {
       style={({ pressed }) => [
         styles.card,
         {
-          backgroundColor: item?.theme ?? Colors.primary,
+          backgroundColor: Colors.primary,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
@@ -54,7 +53,7 @@ const NoteItem = ({ item }: { item: INote }) => {
         >
           {item.title}
         </ThemedText>
-        {item?.clip !== '' && <MaterialIcons name="multitrack-audio" size={20} />}
+        {/* {item?.clip !== '' && <MaterialIcons name="multitrack-audio" size={20} />} */}
       </View>
 
       <ThemedText numberOfLines={6} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>

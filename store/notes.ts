@@ -5,9 +5,9 @@ import { create } from 'zustand';
 
 interface NotesState {
   notes: INote[];
-  //   createEntry: (data: Pick<IEntry, 'title' | 'project_id'>) => Promise<boolean>;
-  getnotes: () => void;
-  //   getNote: (id: number) => Promise<INote | null>;
+  createNote: (data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
+  getNotes: () => void;
+  getNote: (id: number) => Promise<INote | null>;
   //   getCompletednotesCount: (projectId: number) => Promise<number>;
   //   updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
   //   isAllCompleted: boolean;
@@ -18,36 +18,41 @@ const db = getDb();
 
 const useNotesStore = create<NotesState>()(set => ({
   notes: [],
-  getnotes: async () => {
+  getNotes: async () => {
     const allnotes = await db.query.notes.findMany();
     set({
       notes: allnotes,
     });
   },
-  //   createEntry: async data => {
-  //     const [newEntry] = await db
-  //       .insert(entrySchema)
-  //       .values({ project_id: data.project_id, title: data.title, createdAt: new Date() })
-  //       .returning({
-  //         id: entrySchema.id,
-  //         title: entrySchema.title,
-  //         createdAt: entrySchema.createdAt,
-  //         completed: entrySchema.completed,
-  //         project_id: entrySchema.project_id,
-  //       });
+  createNote: async data => {
+    const [newEntry] = await db
+      .insert(notes)
+      .values({ title: data.title, content: data.content })
+      .returning({
+        id: notes.id,
+        title: notes.title,
+        content: notes.content,
+        createdAt: notes.createdAt,
+        updatedAt: notes.updatedAt,
+        position: notes.position,
+      });
 
-  //     if (newEntry) {
-  //       set(state => {
-  //         const newnotes = [...state.notes, newEntry];
-  //         return {
-  //           notes: newnotes,
-  //           isAllCompleted: newnotes.every(entry => entry.completed),
-  //         };
-  //       });
-  //       return true;
-  //     }
-  //     return false;
-  //   },
+    if (newEntry) {
+      set(state => {
+        const newnotes = [...state.notes, newEntry];
+        return {
+          notes: newnotes,
+        };
+      });
+      return true;
+    }
+    return false;
+  },
+  getNote: async (id: number) => {
+    const note = await db.query.notes.findFirst({ where: eq(notes.id, id) });
+    if (note) return note;
+    return null;
+  },
   //   getCompletednotesCount: async projectId => {
   //     const completedCount = await db.$count(
   //       entrySchema,
@@ -103,8 +108,9 @@ const useNotesStore = create<NotesState>()(set => ({
 export const useNotes = () => {
   const notes = useNotesStore(state => state.notes);
   //   const isAllCompleted = useNotesStore(state => state.isAllCompleted);
-  const getNotes = useNotesStore(state => state.getnotes);
-  //   const createEntry = useNotesStore(state => state.createEntry);
+  const getNotes = useNotesStore(state => state.getNotes);
+  const getNote = useNotesStore(state => state.getNote);
+  const createNote = useNotesStore(state => state.createNote);
   //   const getCompletednotesCount = useNotesStore(state => state.getCompletednotesCount);
   //   const updateEntryStatus = useNotesStore(state => state.updateEntryStatus);
   //   const resetAllnotesStatus = useNotesStore(state => state.resetAllnotesStatus);
@@ -112,6 +118,8 @@ export const useNotes = () => {
   return {
     notes,
     getNotes,
+    getNote,
+    createNote,
     // isAllCompleted,
     // getnotes,
     // createEntry,

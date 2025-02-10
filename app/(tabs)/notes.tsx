@@ -7,10 +7,12 @@ import Button from '@/components/Button';
 import NoteItem from '@/components/NoteItem';
 import { useNotes } from '@/store/notes';
 import { ThemedText } from '@/components/ThemedText';
+import { useRouter } from 'expo-router';
 
 export default function Notes() {
   const { notes, getNotes } = useNotes();
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchProjects();
@@ -20,6 +22,10 @@ export default function Notes() {
     setLoading(true);
     getNotes();
     setLoading(false);
+  };
+
+  const onAddProject = async () => {
+    router.push('/(notes)');
   };
   return (
     <ThemedView style={globals.container}>
@@ -34,7 +40,7 @@ export default function Notes() {
           numColumns={2}
         />
       </View>
-      <Button onPress={() => {}} />
+      <Button onPress={onAddProject} />
     </ThemedView>
   );
 }

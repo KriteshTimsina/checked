@@ -1,31 +1,85 @@
-import { TextInput, Dimensions, StyleSheet, View } from 'react-native';
-import React from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { TextInput, Dimensions, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { globals } from '@/styles/globals';
 import { Colors } from '@/constants/Colors';
-import PagerView from 'react-native-pager-view';
-import { ThemedText } from '@/components/ThemedText';
-import { notes } from '@/app/(tabs)/notes';
+import { useNotes } from '@/store/notes';
+import { INote } from '@/db/schema';
+import { toast } from '@/utils/toast';
+import { Ionicons } from '@expo/vector-icons';
 
 const contentHeight = Dimensions.get('screen').height / 2;
 
+export type NoteInput = Pick<INote, 'title' | 'content'>;
+
+const initialState = {
+  title: '',
+  content: '',
+};
+
 export default function Index() {
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
-  console.log(noteId);
-  const note = notes.find(note => note.id === Number(noteId));
+  const { getNote, createNote } = useNotes();
+  const [note, setNote] = useState<Partial<INote>>(initialState);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (noteId) {
+      fetchNote();
+    }
+  }, [noteId, getNote]);
+
+  useLayoutEffect(() => {
+    if (navigation && note?.title?.trim() !== '') {
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable onPress={onSaveNote}>
+            <Ionicons name="checkmark" color="white" size={28} />
+          </Pressable>
+        ),
+      });
+    }
+  }, [navigation, note]);
+
+  const fetchNote = async () => {
+    const note = await getNote(Number(noteId));
+    if (note) setNote(note);
+  };
+
+  const onSaveNote = async () => {
+    try {
+      if (note?.title?.trim() === '') {
+        return;
+      }
+      const created = await createNote(note as NoteInput);
+      if (created) {
+        toast('Saved');
+      }
+    } catch (error) {
+      console.error(error, 'Error saving note');
+      toast('Error saving note');
+    }
+  };
+
+  const onChangeText = (key: keyof NoteInput, text: string) => {
+    setNote(prev => ({ ...prev, [key]: text }));
+  };
+
   return (
     <ThemedView style={[globals.container, { paddingTop: 0 }]}>
       <TextInput
         autoFocus
         placeholder="Your title here"
-        // onChangeText={text => onChange('title', text)}
+        placeholderTextColor={Colors.dark.icon}
+        onChangeText={text => onChangeText('title', text)}
         style={styles.title}
         value={note?.title}
       />
       <TextInput
-        placeholder="Your song here"
-        // onChangeText={text => onChange('content', text)}
+        placeholder="Your content here"
+        placeholderTextColor={Colors.dark.icon}
+        onChangeText={text => onChangeText('content', text)}
         multiline
         style={styles.content}
         value={note?.content}

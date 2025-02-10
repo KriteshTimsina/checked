@@ -37,7 +37,7 @@ export const notes = sqliteTable('notes', {
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date()),
-  updateAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }),
 });
 
 export const recordings = sqliteTable('recordings', {
