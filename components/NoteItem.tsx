@@ -5,6 +5,7 @@ import { ThemedText } from './ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { INote } from '@/db/schema';
+import dayjs from 'dayjs';
 
 const NoteItem = ({ item }: { item: INote }) => {
   const router = useRouter();
@@ -54,8 +55,18 @@ const NoteItem = ({ item }: { item: INote }) => {
         </ThemedText>
       </View>
 
-      <ThemedText numberOfLines={6} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+      <ThemedText
+        style={styles.description}
+        numberOfLines={6}
+        darkColor={Colors.light.icon}
+        lightColor={Colors.light.shade}
+      >
         {item.content ?? 'No text'}
+      </ThemedText>
+      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+        {item?.updatedAt
+          ? dayjs(item?.updatedAt).format('MMM DD')
+          : dayjs(item?.createdAt).format('MMM DD')}
       </ThemedText>
     </Pressable>
   );
@@ -80,6 +91,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   description: {
-    color: Colors.highlight,
+    flex: 1,
+  },
+  date: {
+    fontSize: 12,
   },
 });

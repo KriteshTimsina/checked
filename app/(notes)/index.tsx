@@ -66,6 +66,8 @@ export default function Index() {
     setNote(prev => ({ ...prev, [key]: text }));
   };
 
+  console.log(note.title?.trim() === '' || note.title === undefined);
+
   return (
     <ThemedView style={[globals.container, { paddingTop: 0 }]}>
       <TextInput
