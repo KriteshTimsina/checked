@@ -48,7 +48,7 @@ function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarPro
               />
             ) : (
               <FontAwesome
-                size={30}
+                size={28}
                 name={isFocused ? 'sticky-note' : 'sticky-note-o'}
                 color={isFocused ? Colors.primary : Colors.dark.icon}
               />

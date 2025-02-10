@@ -1,6 +1,6 @@
 import { TextInput, Dimensions, StyleSheet, Pressable } from 'react-native';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { globals } from '@/styles/globals';
 import { Colors } from '@/constants/Colors';
@@ -8,6 +8,7 @@ import { useNotes } from '@/store/notes';
 import { INote } from '@/db/schema';
 import { toast } from '@/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
+import Button from '@/components/Button';
 
 const contentHeight = Dimensions.get('screen').height / 2;
 
@@ -22,7 +23,6 @@ export default function Index() {
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { getNote, createNote } = useNotes();
   const [note, setNote] = useState<Partial<INote>>(initialState);
-  const navigation = useNavigation();
 
   useEffect(() => {
     if (noteId) {
@@ -30,26 +30,14 @@ export default function Index() {
     }
   }, [noteId, getNote]);
 
-  useLayoutEffect(() => {
-    if (navigation && note?.title?.trim() !== '') {
-      navigation.setOptions({
-        headerRight: () => (
-          <Pressable onPress={onSaveNote}>
-            <Ionicons name="checkmark" color="white" size={28} />
-          </Pressable>
-        ),
-      });
-    }
-  }, [navigation, note]);
-
   const fetchNote = async () => {
     const note = await getNote(Number(noteId));
     if (note) setNote(note);
   };
 
-  const onSaveNote = async () => {
+  const onSaveNote = useCallback(async () => {
     try {
-      if (note?.title?.trim() === '') {
+      if (note?.title === '') {
         return;
       }
       const created = await createNote(note as NoteInput);
@@ -60,14 +48,11 @@ export default function Index() {
       console.error(error, 'Error saving note');
       toast('Error saving note');
     }
-  };
+  }, [note, createNote]);
 
   const onChangeText = (key: keyof NoteInput, text: string) => {
     setNote(prev => ({ ...prev, [key]: text }));
   };
-
-  console.log(note.title?.trim() === '' || note.title === undefined);
-
   return (
     <ThemedView style={[globals.container, { paddingTop: 0 }]}>
       <TextInput
@@ -86,6 +71,8 @@ export default function Index() {
         style={styles.content}
         value={note?.content ?? ''}
       />
+
+      {note?.title !== '' && <Button type="save" onPress={onSaveNote} />}
 
       {/* <View style={styles.recordings}>
           {recordedUri && (
@@ -132,6 +119,12 @@ export default function Index() {
     </ThemedView>
   );
 }
+
+const SaveNoteButton = ({ onPress }: { onPress: () => void }) => (
+  <Pressable hitSlop={5} onPress={onPress}>
+    <Ionicons name="checkmark" size={24} color="white" />
+  </Pressable>
+);
 
 const styles = StyleSheet.create({
   title: {
