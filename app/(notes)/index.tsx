@@ -1,5 +1,5 @@
-import { TextInput, Dimensions, StyleSheet, Pressable } from 'react-native';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { TextInput, Dimensions, StyleSheet, Pressable, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { globals } from '@/styles/globals';
@@ -11,6 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/Button';
 import { ThemedText } from '@/components/ThemedText';
 import dayjs from 'dayjs';
+import BottomSheet from '@/components/BottomSheet';
+import GorhomBottomSheet from '@gorhom/bottom-sheet';
 
 const contentHeight = Dimensions.get('screen').height / 2;
 
@@ -25,6 +27,7 @@ export default function Index() {
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { getNote, createNote, updateNote } = useNotes();
   const [note, setNote] = useState<Partial<INote>>(initialState);
+  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
 
   useEffect(() => {
     if (noteId) {
@@ -86,59 +89,51 @@ export default function Index() {
         value={note?.content ?? ''}
       />
 
-      {note?.title !== '' && <Button type="save" onPress={onSaveNote} />}
+      {/* {note?.title !== '' && <Button type="save" onPress={onSaveNote} />} */}
 
-      {/* <View style={styles.recordings}>
-          {recordedUri && (
-            <Recording
-              onStartPlay={onStartPlay}
-              onStopPlay={onStopPlay}
-              isPlaying={isPlaying}
-              duration={duration}
-              playTime={playTime}
-              records={recordedUri}
-            />
-          )}
-        </View> */}
+      <NoteControls onSaveNote={onSaveNote} onOpen={() => bottomSheetRef.current?.expand()} />
 
-      {/* {isKeyboardVisible && (
-        <NoteControls
-          isRecording={isRecording}
-          onStopRecord={onStopRecord}
-          onStartRecord={onStartRecord}
-          saveNote={saveNote}
-        />
-      )} */}
-
-      {/* <Portal>
-        <Modal
-          visible={themeModalVisible}
-          onDismiss={closeThemeModal}
-          contentContainerStyle={styles.modalContainer}
-        >
-          <Text>Choose color background</Text>
-          <View style={styles.colors}>
-            {backgrounds.map(background => {
-              return (
-                <TouchableOpacity
-                  onPress={() => onChangeTheme(background)}
-                  key={background}
-                  style={[styles.colorContainer, { backgroundColor: background }]}
-                />
-              );
-            })}
-          </View>
-        </Modal>
-      </Portal> */}
+      <BottomSheet snapPoints={['100%']} bottomSheetRef={bottomSheetRef} title="Recordings">
+        <ThemedText>TEST</ThemedText>
+      </BottomSheet>
     </ThemedView>
   );
 }
 
-const SaveNoteButton = ({ onPress }: { onPress: () => void }) => (
-  <Pressable hitSlop={5} onPress={onPress}>
-    <Ionicons name="checkmark" size={24} color="white" />
-  </Pressable>
-);
+const NoteControls = ({ onOpen, onSaveNote }: { onOpen: () => void; onSaveNote: () => void }) => {
+  return (
+    <View style={styles.controls}>
+      <Pressable
+        onLongPress={() => toast('Start Recording')}
+        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
+        onPress={onOpen}
+      >
+        <Ionicons name="mic" size={24} color="white" />
+      </Pressable>
+      <Pressable
+        onLongPress={() => toast('View Recordings')}
+        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
+        onPress={onSaveNote}
+      >
+        <Ionicons name="list" size={24} color="white" />
+      </Pressable>
+      <Pressable
+        onLongPress={() => toast('Add to Favourite')}
+        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
+        onPress={onSaveNote}
+      >
+        <Ionicons name="heart-outline" size={24} color="white" />
+      </Pressable>
+      <Pressable
+        onLongPress={() => toast('Save Note')}
+        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
+        onPress={onSaveNote}
+      >
+        <Ionicons name="checkmark" size={24} color="white" />
+      </Pressable>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   title: {
@@ -162,5 +157,24 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
+  },
+  button: {
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controls: {
+    position: 'absolute',
+    bottom: '3%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    gap: 5,
+    backgroundColor: Colors.dark.shade,
+    borderRadius: 100,
+    width: '100%',
+    alignItems: 'center',
+    marginHorizontal: 'auto',
+    alignSelf: 'center',
   },
 });
