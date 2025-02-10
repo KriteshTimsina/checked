@@ -9,7 +9,7 @@ interface NotesState {
   getNotes: () => void;
   getNote: (id: number) => Promise<INote | null>;
   //   getCompletednotesCount: (projectId: number) => Promise<number>;
-  //   updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
+  updateNote: (id: number, data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
   //   isAllCompleted: boolean;
   //   resetAllnotesStatus: (projectId: number) => Promise<boolean>;
 }
@@ -44,6 +44,33 @@ const useNotesStore = create<NotesState>()(set => ({
           notes: newnotes,
         };
       });
+      return true;
+    }
+    return false;
+  },
+  updateNote: async (id, data) => {
+    const exists = await db.query.notes.findFirst({ where: eq(notes.id, id) });
+    console.log(exists, 'WHATTTTT');
+    if (!exists) return false;
+    const [updateEntry] = await db
+      .update(notes)
+      .set({ title: data.title, content: data.content, updatedAt: new Date() })
+      .where(eq(notes.id, id))
+      .returning({
+        id: notes.id,
+        title: notes.title,
+        content: notes.content,
+        createdAt: notes.createdAt,
+        updatedAt: notes.updatedAt,
+        position: notes.position,
+      });
+
+    console.log('UPDATE ENTTR', updateEntry);
+
+    if (updateEntry) {
+      set(state => ({
+        notes: state.notes.map(note => (note.id === id ? updateEntry : note)),
+      }));
       return true;
     }
     return false;
@@ -112,7 +139,7 @@ export const useNotes = () => {
   const getNote = useNotesStore(state => state.getNote);
   const createNote = useNotesStore(state => state.createNote);
   //   const getCompletednotesCount = useNotesStore(state => state.getCompletednotesCount);
-  //   const updateEntryStatus = useNotesStore(state => state.updateEntryStatus);
+  const updateNote = useNotesStore(state => state.updateNote);
   //   const resetAllnotesStatus = useNotesStore(state => state.resetAllnotesStatus);
 
   return {
@@ -120,6 +147,7 @@ export const useNotes = () => {
     getNotes,
     getNote,
     createNote,
+    updateNote,
     // isAllCompleted,
     // getnotes,
     // createEntry,

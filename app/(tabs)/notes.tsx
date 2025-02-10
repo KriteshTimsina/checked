@@ -11,18 +11,11 @@ import { useRouter } from 'expo-router';
 
 export default function Notes() {
   const { notes, getNotes } = useNotes();
-  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = () => {
-    setLoading(true);
     getNotes();
-    setLoading(false);
-  };
+  }, [getNotes]);
 
   const onAddProject = async () => {
     router.push('/(notes)');

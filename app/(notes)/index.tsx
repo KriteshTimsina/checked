@@ -9,6 +9,8 @@ import { INote } from '@/db/schema';
 import { toast } from '@/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/Button';
+import { ThemedText } from '@/components/ThemedText';
+import dayjs from 'dayjs';
 
 const contentHeight = Dimensions.get('screen').height / 2;
 
@@ -21,7 +23,7 @@ const initialState = {
 
 export default function Index() {
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
-  const { getNote, createNote } = useNotes();
+  const { getNote, createNote, updateNote } = useNotes();
   const [note, setNote] = useState<Partial<INote>>(initialState);
 
   useEffect(() => {
@@ -36,33 +38,45 @@ export default function Index() {
   };
 
   const onSaveNote = useCallback(async () => {
+    if (!note?.title?.trim()) return;
+
     try {
-      if (note?.title === '') {
-        return;
-      }
-      const created = await createNote(note as NoteInput);
-      if (created) {
+      const saveOperation = note?.id
+        ? () => updateNote(Number(noteId), note as NoteInput)
+        : () => createNote(note as NoteInput);
+
+      const saved = await saveOperation();
+
+      if (saved) {
         toast('Saved');
       }
     } catch (error) {
       console.error(error, 'Error saving note');
       toast('Error saving note');
     }
-  }, [note, createNote]);
+  }, [note, createNote, updateNote]);
 
   const onChangeText = (key: keyof NoteInput, text: string) => {
     setNote(prev => ({ ...prev, [key]: text }));
   };
+
   return (
-    <ThemedView style={[globals.container, { paddingTop: 0 }]}>
+    <ThemedView style={globals.container}>
       <TextInput
-        autoFocus
+        autoFocus={noteId === undefined}
         placeholder="Your title here"
         placeholderTextColor={Colors.dark.icon}
         onChangeText={text => onChangeText('title', text)}
         style={styles.title}
         value={note?.title}
       />
+      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+        {note?.updatedAt
+          ? dayjs(note?.updatedAt).format('DD MMMM YYYY h:mm A')
+          : note?.createdAt
+          ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
+          : ''}
+      </ThemedText>
       <TextInput
         placeholder="Your content here"
         placeholderTextColor={Colors.dark.icon}
@@ -145,5 +159,8 @@ const styles = StyleSheet.create({
   page: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  date: {
+    fontSize: 12,
   },
 });
