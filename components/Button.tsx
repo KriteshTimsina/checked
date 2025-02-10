@@ -1,16 +1,17 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import React, { FC } from 'react';
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 
 type ButtonProps = {
   onPress: () => void;
+  type?: 'add' | 'save';
 };
 
-const Button: FC<ButtonProps> = ({ onPress }) => {
+const Button: FC<ButtonProps> = ({ onPress, type = 'add' }) => {
   return (
     <Pressable onPress={onPress} style={styles.button}>
-      <AntDesign name="plus" size={35} color="white" />
+      <Ionicons name={type === 'add' ? 'add' : 'checkmark'} size={35} color="white" />
     </Pressable>
   );
 };

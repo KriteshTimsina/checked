@@ -2,34 +2,33 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import React, { memo } from 'react';
 
 import { ThemedText } from './ThemedText';
-import { MaterialIcons } from '@expo/vector-icons';
-import { INotes } from '@/app/(tabs)/notes';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { INote } from '@/db/schema';
+import dayjs from 'dayjs';
 
-const NoteItem = ({ item }: { item: INotes }) => {
+const NoteItem = ({ item }: { item: INote }) => {
   const router = useRouter();
-  const onDeleteNote = (id: number) => {
-    Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
-      {
-        text: 'Cancel',
-        onPress: () => {},
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        onPress: async () => {},
-        style: 'destructive',
-      },
-    ]);
-  };
+  // const onDeleteNote = (id: number) => {
+  //   Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
+  //     {
+  //       text: 'Cancel',
+  //       onPress: () => {},
+  //       style: 'cancel',
+  //     },
+  //     {
+  //       text: 'Delete',
+  //       onPress: async () => {},
+  //       style: 'destructive',
+  //     },
+  //   ]);
+  // };
 
   const onViewNote = (id: number) => {
     router.push({
       pathname: '/(notes)',
       params: {
         noteId: id,
-        title: item.title,
       },
     });
   };
@@ -39,7 +38,7 @@ const NoteItem = ({ item }: { item: INotes }) => {
       style={({ pressed }) => [
         styles.card,
         {
-          backgroundColor: item.theme ?? Colors.primary,
+          backgroundColor: Colors.primary,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
@@ -54,11 +53,20 @@ const NoteItem = ({ item }: { item: INotes }) => {
         >
           {item.title}
         </ThemedText>
-        {item.clip !== '' && <MaterialIcons name="multitrack-audio" size={20} />}
       </View>
 
-      <ThemedText numberOfLines={6} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
-        {item.content}
+      <ThemedText
+        style={styles.description}
+        numberOfLines={6}
+        darkColor={Colors.light.icon}
+        lightColor={Colors.light.shade}
+      >
+        {item.content ?? 'No text'}
+      </ThemedText>
+      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+        {item?.updatedAt
+          ? dayjs(item?.updatedAt).format('MMM DD')
+          : dayjs(item?.createdAt).format('MMM DD')}
       </ThemedText>
     </Pressable>
   );
@@ -83,6 +91,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   description: {
-    color: Colors.highlight,
+    flex: 1,
+  },
+  date: {
+    fontSize: 12,
   },
 });

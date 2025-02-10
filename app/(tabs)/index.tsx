@@ -62,7 +62,7 @@ export default function Home() {
   return (
     <>
       <ThemedView style={styles.container}>
-        <ThemedText type="subtitle">Checklists</ThemedText>
+        <ThemedText type="subtitle">✅ Your checklists</ThemedText>
         <View style={styles.projectContainer}>
           {projects.length > 0 ? (
             <FlatList

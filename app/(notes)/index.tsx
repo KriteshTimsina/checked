@@ -1,35 +1,92 @@
-import { TextInput, Dimensions, StyleSheet, View } from 'react-native';
-import React from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { TextInput, Dimensions, StyleSheet, Pressable } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { Stack, useLocalSearchParams, useNavigation } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { globals } from '@/styles/globals';
 import { Colors } from '@/constants/Colors';
-import PagerView from 'react-native-pager-view';
+import { useNotes } from '@/store/notes';
+import { INote } from '@/db/schema';
+import { toast } from '@/utils/toast';
+import { Ionicons } from '@expo/vector-icons';
+import Button from '@/components/Button';
 import { ThemedText } from '@/components/ThemedText';
-import { notes } from '@/app/(tabs)/notes';
+import dayjs from 'dayjs';
 
 const contentHeight = Dimensions.get('screen').height / 2;
 
+export type NoteInput = Pick<INote, 'title' | 'content'>;
+
+const initialState = {
+  title: '',
+  content: null,
+};
+
 export default function Index() {
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
-  console.log(noteId);
-  const note = notes.find(note => note.id === Number(noteId));
+  const { getNote, createNote, updateNote } = useNotes();
+  const [note, setNote] = useState<Partial<INote>>(initialState);
+
+  useEffect(() => {
+    if (noteId) {
+      fetchNote();
+    }
+  }, [noteId, getNote]);
+
+  const fetchNote = async () => {
+    const note = await getNote(Number(noteId));
+    if (note) setNote(note);
+  };
+
+  const onSaveNote = useCallback(async () => {
+    if (!note?.title?.trim()) return;
+
+    try {
+      const saveOperation = note?.id
+        ? () => updateNote(Number(noteId), note as NoteInput)
+        : () => createNote(note as NoteInput);
+
+      const saved = await saveOperation();
+
+      if (saved) {
+        toast('Saved');
+      }
+    } catch (error) {
+      console.error(error, 'Error saving note');
+      toast('Error saving note');
+    }
+  }, [note, createNote, updateNote]);
+
+  const onChangeText = (key: keyof NoteInput, text: string) => {
+    setNote(prev => ({ ...prev, [key]: text }));
+  };
+
   return (
-    <ThemedView style={[globals.container, { paddingTop: 0 }]}>
+    <ThemedView style={globals.container}>
       <TextInput
-        autoFocus
+        autoFocus={noteId === undefined}
         placeholder="Your title here"
-        // onChangeText={text => onChange('title', text)}
+        placeholderTextColor={Colors.dark.icon}
+        onChangeText={text => onChangeText('title', text)}
         style={styles.title}
         value={note?.title}
       />
+      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+        {note?.updatedAt
+          ? dayjs(note?.updatedAt).format('DD MMMM YYYY h:mm A')
+          : note?.createdAt
+          ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
+          : ''}
+      </ThemedText>
       <TextInput
-        placeholder="Your song here"
-        // onChangeText={text => onChange('content', text)}
+        placeholder="Your content here"
+        placeholderTextColor={Colors.dark.icon}
+        onChangeText={text => onChangeText('content', text)}
         multiline
         style={styles.content}
-        value={note?.content}
+        value={note?.content ?? ''}
       />
+
+      {note?.title !== '' && <Button type="save" onPress={onSaveNote} />}
 
       {/* <View style={styles.recordings}>
           {recordedUri && (
@@ -77,6 +134,12 @@ export default function Index() {
   );
 }
 
+const SaveNoteButton = ({ onPress }: { onPress: () => void }) => (
+  <Pressable hitSlop={5} onPress={onPress}>
+    <Ionicons name="checkmark" size={24} color="white" />
+  </Pressable>
+);
+
 const styles = StyleSheet.create({
   title: {
     fontSize: 22,
@@ -96,5 +159,8 @@ const styles = StyleSheet.create({
   page: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  date: {
+    fontSize: 12,
   },
 });
