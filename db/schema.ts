@@ -32,7 +32,7 @@ export const userPreferences = sqliteTable('user_preferences', {
 export const notes = sqliteTable('notes', {
   id: integer().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
-  content: text().notNull(),
+  content: text(),
   position: integer().notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()

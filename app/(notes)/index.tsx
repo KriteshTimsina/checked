@@ -15,7 +15,7 @@ export type NoteInput = Pick<INote, 'title' | 'content'>;
 
 const initialState = {
   title: '',
-  content: '',
+  content: null,
 };
 
 export default function Index() {
@@ -82,7 +82,7 @@ export default function Index() {
         onChangeText={text => onChangeText('content', text)}
         multiline
         style={styles.content}
-        value={note?.content}
+        value={note?.content ?? ''}
       />
 
       {/* <View style={styles.recordings}>
