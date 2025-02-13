@@ -9,20 +9,6 @@ import dayjs from 'dayjs';
 
 const NoteItem = ({ item }: { item: INote }) => {
   const router = useRouter();
-  // const onDeleteNote = (id: number) => {
-  //   Alert.alert('Delete Note', 'Are you sure you want to delete this note?', [
-  //     {
-  //       text: 'Cancel',
-  //       onPress: () => {},
-  //       style: 'cancel',
-  //     },
-  //     {
-  //       text: 'Delete',
-  //       onPress: async () => {},
-  //       style: 'destructive',
-  //     },
-  //   ]);
-  // };
 
   const onViewNote = (id: number) => {
     router.push({
