@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { View, Modal, Pressable, StyleSheet, Text } from 'react-native';
+import { Modal, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import { useNoteStore } from './note-store';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from './ThemedText';
 import { toast } from '@/utils/toast';

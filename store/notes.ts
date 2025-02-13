@@ -1,7 +1,6 @@
-import { notes, IEntry, INote, recordings } from '@/db/schema';
+import { notes, INote, recordings } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { toast } from '@/utils/toast';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface NotesState {
@@ -12,8 +11,6 @@ interface NotesState {
   getNote: (id: number) => Promise<INote | null>;
   deleteNote: (noteId: number) => Promise<boolean>;
   updateNote: (id: number, data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
-  //   isAllCompleted: boolean;
-  //   resetAllnotesStatus: (projectId: number) => Promise<boolean>;
 }
 
 const db = getDb();
@@ -60,7 +57,6 @@ const useNotesStore = create<NotesState>()(set => ({
   },
   updateNote: async (id, data) => {
     const exists = await db.query.notes.findFirst({ where: eq(notes.id, id) });
-    console.log(exists, 'WHATTTTT');
     if (!exists) return false;
     const [updateEntry] = await db
       .update(notes)
@@ -107,8 +103,6 @@ const useNotesStore = create<NotesState>()(set => ({
 
         const deleted = await tx.delete(notes).where(eq(notes.id, noteId));
 
-        console.log(deleted, 'Delete result');
-
         if (deleted.changes === 1) {
           isDeleted = true;
           set(state => ({
@@ -126,56 +120,6 @@ const useNotesStore = create<NotesState>()(set => ({
       return false;
     }
   },
-  //   getCompletednotesCount: async projectId => {
-  //     const completedCount = await db.$count(
-  //       entrySchema,
-  //       and(eq(entrySchema.completed, true), eq(entrySchema.project_id, projectId)),
-  //     );
-
-  //     return completedCount;
-  //   },
-  //   updateEntryStatus: async (entryId: number, completed: boolean) => {
-  //     try {
-  //       const updated = await db
-  //         .update(entrySchema)
-  //         .set({ completed })
-  //         .where(eq(entrySchema.id, entryId));
-
-  //       if (updated.changes) {
-  //         set(state => {
-  //           const newnotes = state.notes.map(entry =>
-  //             entry.id === entryId ? { ...entry, completed } : entry,
-  //           );
-  //           return {
-  //             notes: newnotes,
-  //             isAllCompleted: newnotes.length > 0 && newnotes.every(entry => entry.completed),
-  //           };
-  //         });
-  //         return true;
-  //       }
-  //       return false;
-  //     } catch (error) {
-  //       console.error('Error updating entry status:', error);
-  //       return false;
-  //     }
-  //   },
-  //   resetAllnotesStatus: async (projectId: number) => {
-  //     const updated = await db
-  //       .update(entrySchema)
-  //       .set({ completed: false })
-  //       .where(eq(entrySchema.project_id, projectId));
-  //     if (updated.changes) {
-  //       set(state => ({
-  //         notes: state.notes.map(entry => ({
-  //           ...entry,
-  //           completed: false,
-  //         })),
-  //         isAllCompleted: false,
-  //       }));
-  //       return true;
-  //     }
-  //     return false;
-  //   },
 }));
 
 export const useNotes = () => {
@@ -186,7 +130,6 @@ export const useNotes = () => {
   const createNote = useNotesStore(state => state.createNote);
   const deleteNote = useNotesStore(state => state.deleteNote);
   const updateNote = useNotesStore(state => state.updateNote);
-  //   const resetAllnotesStatus = useNotesStore(state => state.resetAllnotesStatus);
 
   return {
     notes,
@@ -196,11 +139,5 @@ export const useNotes = () => {
     createNote,
     updateNote,
     deleteNote,
-    // isAllCompleted,
-    // getnotes,
-    // createEntry,
-    // getCompletednotesCount,
-    // updateEntryStatus,
-    // resetAllnotesStatus,
   };
 };

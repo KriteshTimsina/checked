@@ -1,14 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { View, TextInput, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Dimensions,
+  ScrollView,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { ThemedText } from '@/components/ThemedText';
 import dayjs from 'dayjs';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useNotes } from '@/store/notes';
 import { INote } from '@/db/schema';
 import { toast } from '@/utils/toast';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { EmbeddedRecording } from '@/components/EmbeddedRecording';
 import { ThemedView } from '@/components/ThemedView';
 
@@ -26,6 +35,7 @@ const initialState = {
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 const contentHeight = Dimensions.get('window').height - 200;
 
 export default function Note() {
@@ -36,10 +46,12 @@ export default function Note() {
   const [isRecording, setIsRecording] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { getNote, createNote, updateNote } = useNotes();
   const [note, setNote] = useState<Partial<INote>>(initialState);
+  const titleOpacity = useSharedValue(1);
+  const [showHeaderTitle, setShowHeaderTitle] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (noteId) {
@@ -53,6 +65,16 @@ export default function Note() {
       setNote(note);
       setContent(note.content || '');
     }
+  };
+
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollY = e.nativeEvent.contentOffset.y;
+    titleOpacity.value = 1 - scrollY / 100;
+    setShowHeaderTitle(scrollY > 50);
+
+    navigation.setOptions({
+      headerTitle: scrollY > 50 ? note.title : '',
+    });
   };
 
   const onSaveNote = useCallback(async () => {
@@ -190,32 +212,41 @@ export default function Note() {
     const newContent = content.slice(0, start) + newText + content.slice(end);
     setContent(newContent);
   };
-
+  const titleStyles = useAnimatedStyle(() => ({
+    opacity: titleOpacity.value,
+  }));
   return (
     <ThemedView style={styles.container}>
-      <TextInput
-        placeholder="Your title here"
-        placeholderTextColor={Colors.dark.icon}
-        style={styles.title}
-        value={note.title}
-        onChangeText={text => onChangeText('title', text)}
-      />
-      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
-        {note?.updatedAt
-          ? dayjs(note?.updatedAt).format('DD MMMM YYYY h:mm A')
-          : note?.createdAt
-          ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
-          : ''}
-      </ThemedText>
-
       <ScrollView
-        ref={scrollViewRef}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         style={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
+        {!showHeaderTitle && (
+          <AnimatedTextInput
+            placeholder="Your title here"
+            placeholderTextColor={Colors.dark.icon}
+            style={[styles.title, titleStyles]}
+            value={note.title}
+            onChangeText={text => onChangeText('title', text)}
+          />
+        )}
+        {noteId && (
+          <ThemedText
+            style={styles.date}
+            darkColor={Colors.light.icon}
+            lightColor={Colors.light.shade}
+          >
+            {note?.updatedAt
+              ? dayjs(note?.updatedAt).format('DD MMMM YYYY h:mm A')
+              : note?.createdAt
+              ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
+              : ''}
+          </ThemedText>
+        )}
         <View style={{ flexGrow: 1 }}>{renderContent()}</View>
       </ScrollView>
-
       <View style={styles.recordingButton}>
         {note?.title && (
           <AnimatedPressable
