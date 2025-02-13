@@ -9,7 +9,7 @@ import { Colors } from '@/constants/Colors';
 import { ThemedText } from './ThemedText';
 
 interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
-  title?: string;
+  title?: string | React.ReactNode;
   children: React.ReactNode;
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
@@ -56,10 +56,12 @@ const BottomSheet: FC<BottomSheetProps> = ({
     >
       <BottomSheetView style={containerStyles}>
         <View style={containerStyles}>
-          {title && (
+          {title && typeof title === 'string' ? (
             <ThemedText type="subtitle" lightColor={Colors.dark.text} style={titleStyles}>
               {title}
             </ThemedText>
+          ) : (
+            title
           )}
           {children}
         </View>

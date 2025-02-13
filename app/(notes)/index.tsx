@@ -1,20 +1,22 @@
-import { TextInput, Dimensions, StyleSheet, Pressable, View } from 'react-native';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Stack, useLocalSearchParams, useNavigation } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
-import { globals } from '@/styles/globals';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { View, TextInput, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { ThemedText } from '@/components/ThemedText';
+import dayjs from 'dayjs';
+import { useLocalSearchParams } from 'expo-router';
 import { useNotes } from '@/store/notes';
 import { INote } from '@/db/schema';
 import { toast } from '@/utils/toast';
-import { Ionicons } from '@expo/vector-icons';
-import Button from '@/components/Button';
-import { ThemedText } from '@/components/ThemedText';
-import dayjs from 'dayjs';
-import BottomSheet from '@/components/BottomSheet';
-import GorhomBottomSheet from '@gorhom/bottom-sheet';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { EmbeddedRecording } from '@/components/EmbeddedRecording';
+import { ThemedView } from '@/components/ThemedView';
 
-const contentHeight = Dimensions.get('screen').height / 2;
+export interface Recording {
+  id: string;
+  uri: string;
+  duration: number;
+}
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
 
@@ -23,11 +25,21 @@ const initialState = {
   content: null,
 };
 
-export default function Index() {
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const contentHeight = Dimensions.get('window').height - 200;
+
+export default function Note() {
+  const [content, setContent] = useState('');
+  const [recordings, setRecordings] = useState<
+    Array<{ id: string; position: number; recording: Recording }>
+  >([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { getNote, createNote, updateNote } = useNotes();
   const [note, setNote] = useState<Partial<INote>>(initialState);
-  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
 
   useEffect(() => {
     if (noteId) {
@@ -37,7 +49,10 @@ export default function Index() {
 
   const fetchNote = async () => {
     const note = await getNote(Number(noteId));
-    if (note) setNote(note);
+    if (note) {
+      setNote(note);
+      setContent(note.content || '');
+    }
   };
 
   const onSaveNote = useCallback(async () => {
@@ -45,11 +60,10 @@ export default function Index() {
 
     try {
       const saveOperation = note?.id
-        ? () => updateNote(Number(noteId), note as NoteInput)
-        : () => createNote(note as NoteInput);
+        ? () => updateNote(Number(noteId), { title: note.title, content } as NoteInput)
+        : () => createNote({ title: note.title, content } as NoteInput);
 
       const saved = await saveOperation();
-
       if (saved) {
         toast('Saved');
       }
@@ -57,21 +71,134 @@ export default function Index() {
       console.error(error, 'Error saving note');
       toast('Error saving note');
     }
-  }, [note, createNote, updateNote]);
+  }, [note, content, createNote, updateNote, noteId]);
 
   const onChangeText = (key: keyof NoteInput, text: string) => {
     setNote(prev => ({ ...prev, [key]: text }));
   };
 
-  return (
-    <ThemedView style={globals.container}>
+  const handlePlay = (uri: string) => {
+    if (currentlyPlaying === uri) {
+      setCurrentlyPlaying(null);
+    } else {
+      setCurrentlyPlaying(uri);
+    }
+  };
+
+  const startRecording = () => {
+    setIsRecording(true);
+    setTimeout(() => {
+      const newRecording: Recording = {
+        id: Date.now().toString(),
+        uri: `recording-${Date.now()}`,
+        duration: 2,
+      };
+      insertRecording(newRecording);
+      setIsRecording(false);
+    }, 2000);
+  };
+
+  const insertRecording = (recording: Recording) => {
+    const recordingMarker = `\u200B[RECORDING_${recording.id}]\u200B`; // Using zero-width spaces
+    const newContent =
+      content.slice(0, cursorPosition) + recordingMarker + content.slice(cursorPosition);
+
+    setContent(newContent);
+    setRecordings([
+      ...recordings,
+      {
+        id: recording.id,
+        position: cursorPosition,
+        recording,
+      },
+    ]);
+  };
+
+  const handleDelete = (id: string) => {
+    const recordingToDelete = recordings.find(r => r.id === id);
+    if (recordingToDelete) {
+      const marker = `\u200B[RECORDING_${id}]\u200B`;
+      const newContent = content.replace(marker, '');
+      setContent(newContent);
+      setRecordings(recordings.filter(r => r.id !== id));
+    }
+  };
+
+  const renderContent = () => {
+    let lastIndex = 0;
+    const elements = [];
+    const sortedRecordings = [...recordings].sort((a, b) => a.position - b.position);
+
+    sortedRecordings.forEach(({ id, position, recording }) => {
+      const marker = `\u200B[RECORDING_${id}]\u200B`;
+      if (position > lastIndex) {
+        elements.push(
+          <TextInput
+            key={`text-${lastIndex}-${position}`}
+            style={styles.content}
+            multiline
+            value={content.slice(lastIndex, position).replace(/\u200B/g, '')} // Remove zero-width spaces
+            onChangeText={text => updateTextPortion(lastIndex, position, text)}
+            onSelectionChange={event => {
+              setCursorPosition(event.nativeEvent.selection.start + lastIndex);
+            }}
+            scrollEnabled={false}
+            placeholder="Your note here..."
+            placeholderTextColor={Colors.dark.icon}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />,
+        );
+      }
+
+      elements.push(
+        <EmbeddedRecording
+          key={`recording-${id}`}
+          recording={recording}
+          onPlay={handlePlay}
+          onDelete={handleDelete}
+          isPlaying={currentlyPlaying === recording.uri}
+        />,
+      );
+
+      lastIndex = position + marker.length;
+    });
+
+    // Add remaining text
+    elements.push(
       <TextInput
-        autoFocus={noteId === undefined}
+        key={`text-${lastIndex}-end`}
+        style={styles.content}
+        scrollEnabled={false}
+        multiline
+        value={content.slice(lastIndex).replace(/\u200B/g, '')} // Remove zero-width spaces
+        onChangeText={text => updateTextPortion(lastIndex, content.length, text)}
+        onSelectionChange={event => {
+          setCursorPosition(event.nativeEvent.selection.start + lastIndex);
+        }}
+        placeholder="Your note here..."
+        placeholderTextColor={Colors.dark.icon}
+        autoCorrect={false}
+        autoCapitalize="none"
+      />,
+    );
+
+    return elements;
+  };
+
+  const updateTextPortion = (start: number, end: number, newText: string) => {
+    const newContent = content.slice(0, start) + newText + content.slice(end);
+    setContent(newContent);
+  };
+
+  return (
+    <ThemedView style={styles.container}>
+      <TextInput
         placeholder="Your title here"
         placeholderTextColor={Colors.dark.icon}
-        onChangeText={text => onChangeText('title', text)}
         style={styles.title}
-        value={note?.title}
+        value={note.title}
+        onChangeText={text => onChangeText('title', text)}
       />
       <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
         {note?.updatedAt
@@ -80,62 +207,65 @@ export default function Index() {
           ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
           : ''}
       </ThemedText>
-      <TextInput
-        placeholder="Your content here"
-        placeholderTextColor={Colors.dark.icon}
-        onChangeText={text => onChangeText('content', text)}
-        multiline
-        style={styles.content}
-        value={note?.content ?? ''}
-      />
 
-      {/* {note?.title !== '' && <Button type="save" onPress={onSaveNote} />} */}
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={{ flexGrow: 1 }}>{renderContent()}</View>
+      </ScrollView>
 
-      <NoteControls onSaveNote={onSaveNote} onOpen={() => bottomSheetRef.current?.expand()} />
-
-      <BottomSheet snapPoints={['100%']} bottomSheetRef={bottomSheetRef} title="Recordings">
-        <ThemedText>TEST</ThemedText>
-      </BottomSheet>
+      <View style={styles.recordingButton}>
+        {note?.title && (
+          <AnimatedPressable
+            entering={FadeInDown.delay(200)}
+            onPress={onSaveNote}
+            style={[styles.recordButton, isRecording && styles.recordingActive]}
+          >
+            <Ionicons name={'checkmark'} size={24} color="white" />
+          </AnimatedPressable>
+        )}
+        <AnimatedPressable
+          entering={FadeInDown.delay(100)}
+          onPress={isRecording ? () => {} : startRecording}
+          style={[styles.recordButton, isRecording && styles.recordingActive]}
+        >
+          <Ionicons name={isRecording ? 'stop' : 'mic'} size={24} color="white" />
+        </AnimatedPressable>
+      </View>
     </ThemedView>
   );
 }
 
-const NoteControls = ({ onOpen, onSaveNote }: { onOpen: () => void; onSaveNote: () => void }) => {
-  return (
-    <View style={styles.controls}>
-      <Pressable
-        onLongPress={() => toast('Start Recording')}
-        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
-        onPress={onOpen}
-      >
-        <Ionicons name="mic" size={24} color="white" />
-      </Pressable>
-      <Pressable
-        onLongPress={() => toast('View Recordings')}
-        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
-        onPress={onSaveNote}
-      >
-        <Ionicons name="list" size={24} color="white" />
-      </Pressable>
-      <Pressable
-        onLongPress={() => toast('Add to Favourite')}
-        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
-        onPress={onSaveNote}
-      >
-        <Ionicons name="heart-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable
-        onLongPress={() => toast('Save Note')}
-        style={({ pressed }) => [styles.button, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
-        onPress={onSaveNote}
-      >
-        <Ionicons name="checkmark" size={24} color="white" />
-      </Pressable>
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+    padding: 20,
+  },
+  scrollContainer: {
+    flex: 1,
+    height: contentHeight,
+  },
+
+  recordingButton: {
+    position: 'absolute',
+    bottom: '10%',
+    right: '10%',
+    gap: 10,
+  },
+  recordButton: {
+    backgroundColor: Colors.dark.shade,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recordingActive: {
+    backgroundColor: Colors.primary,
+  },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -143,38 +273,10 @@ const styles = StyleSheet.create({
   },
   content: {
     fontSize: 18,
-    flex: 1,
-    textAlignVertical: 'top',
-    minHeight: contentHeight,
     color: Colors.dark.icon,
-  },
-  recordings: {
-    gap: 10,
-  },
-  page: {
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   date: {
     fontSize: 12,
-  },
-  button: {
-    height: 50,
-    width: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  controls: {
-    position: 'absolute',
-    bottom: '3%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    gap: 5,
-    backgroundColor: Colors.dark.shade,
-    borderRadius: 100,
-    width: '100%',
-    alignItems: 'center',
-    marginHorizontal: 'auto',
-    alignSelf: 'center',
+    marginBottom: 10,
   },
 });
