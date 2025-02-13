@@ -1,14 +1,16 @@
 import { notes, IEntry, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
+import { toast } from '@/utils/toast';
 import { and, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface NotesState {
   notes: INote[];
+  isLoading: boolean;
   createNote: (data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
   getNotes: () => void;
   getNote: (id: number) => Promise<INote | null>;
-  //   getCompletednotesCount: (projectId: number) => Promise<number>;
+  deleteNote: (noteId: number) => Promise<boolean>;
   updateNote: (id: number, data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
   //   isAllCompleted: boolean;
   //   resetAllnotesStatus: (projectId: number) => Promise<boolean>;
@@ -18,11 +20,19 @@ const db = getDb();
 
 const useNotesStore = create<NotesState>()(set => ({
   notes: [],
+  isLoading: false,
   getNotes: async () => {
-    const allnotes = await db.query.notes.findMany();
-    set({
-      notes: allnotes,
-    });
+    set({ isLoading: true });
+    try {
+      const allNotes = await db.query.notes.findMany();
+      set({
+        notes: allNotes,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      set({ isLoading: false });
+    }
   },
   createNote: async data => {
     const [newEntry] = await db
@@ -65,8 +75,6 @@ const useNotesStore = create<NotesState>()(set => ({
         position: notes.position,
       });
 
-    console.log('UPDATE ENTTR', updateEntry);
-
     if (updateEntry) {
       set(state => ({
         notes: state.notes.map(note => (note.id === id ? updateEntry : note)),
@@ -79,6 +87,34 @@ const useNotesStore = create<NotesState>()(set => ({
     const note = await db.query.notes.findFirst({ where: eq(notes.id, id) });
     if (note) return note;
     return null;
+  },
+  deleteNote: async noteId => {
+    set({ isLoading: true });
+    try {
+      const note = await db.query.notes.findFirst({ where: eq(notes.id, noteId) });
+
+      if (!note) {
+        set({ isLoading: false });
+        return false;
+      }
+
+      const deleted = await db.delete(notes).where(eq(notes.id, noteId));
+
+      if (deleted.changes === 1) {
+        set(state => ({
+          notes: state.notes.filter(note => note.id !== noteId),
+          isLoading: false,
+        }));
+        return true;
+      }
+
+      set({ isLoading: false });
+      return false;
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      set({ isLoading: false });
+      return false;
+    }
   },
   //   getCompletednotesCount: async projectId => {
   //     const completedCount = await db.$count(
@@ -134,20 +170,22 @@ const useNotesStore = create<NotesState>()(set => ({
 
 export const useNotes = () => {
   const notes = useNotesStore(state => state.notes);
-  //   const isAllCompleted = useNotesStore(state => state.isAllCompleted);
+  const isLoading = useNotesStore(state => state.isLoading);
   const getNotes = useNotesStore(state => state.getNotes);
   const getNote = useNotesStore(state => state.getNote);
   const createNote = useNotesStore(state => state.createNote);
-  //   const getCompletednotesCount = useNotesStore(state => state.getCompletednotesCount);
+  const deleteNote = useNotesStore(state => state.deleteNote);
   const updateNote = useNotesStore(state => state.updateNote);
   //   const resetAllnotesStatus = useNotesStore(state => state.resetAllnotesStatus);
 
   return {
     notes,
+    isLoading,
     getNotes,
     getNote,
     createNote,
     updateNote,
+    deleteNote,
     // isAllCompleted,
     // getnotes,
     // createEntry,
