@@ -41,7 +41,7 @@ const contentHeight = Dimensions.get('window').height - 200;
 export default function Note() {
   const [content, setContent] = useState('');
   const [recordings, setRecordings] = useState<
-    Array<{ id: string; position: number; recording: Recording }>
+    { id: string; position: number; recording: Recording }[]
   >([]);
   const [isRecording, setIsRecording] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);

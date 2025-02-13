@@ -16,7 +16,6 @@ import AppThemeProvider from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '@/constants/Colors';
 import { globals } from '@/styles/globals';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const CustomDarkTheme = {
   ...DarkTheme,
