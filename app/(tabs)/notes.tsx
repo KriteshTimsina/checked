@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View } from 'react-native';
+import { StyleSheet, FlatList, View, RefreshControl } from 'react-native';
 import React, { useEffect } from 'react';
 import EmptyProject from '@/components/EmptyProject';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,9 +8,10 @@ import NoteItem from '@/components/NoteItem';
 import { useNotes } from '@/store/notes';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
+import { Colors } from '@/constants/Colors';
 
 export default function Notes() {
-  const { notes, getNotes } = useNotes();
+  const { notes, getNotes, isLoading } = useNotes();
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +32,11 @@ export default function Notes() {
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => <NoteItem item={item} />}
           numColumns={2}
+          // refreshing={isLoading}
+          refreshControl={
+            <RefreshControl colors={[Colors.primary]} onRefresh={getNotes} refreshing={isLoading} />
+          }
+          // onRefresh={getNotes}
         />
       </View>
       <Button onPress={onAddProject} />
