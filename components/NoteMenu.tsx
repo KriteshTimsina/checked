@@ -16,28 +16,21 @@ interface NoteMenuProps {
 
 export function NoteMenu({ noteId }: NoteMenuProps) {
   const [menuVisible, setMenuVisible] = useState(false);
-  //   const [showDatePicker, setShowDatePicker] = useState(false);
   const { deleteNote, getNotes } = useNotes();
   const router = useRouter();
 
   const handleDelete = async () => {
-    const response = await deleteNote(noteId);
+    const success = await deleteNote(noteId);
 
-    if (response) {
+    if (success) {
       await getNotes();
       closeMenu();
       router.back();
-      return toast('Note deleted');
+      toast('Note deleted');
+    } else {
+      toast('Failed deleting note.');
     }
-    toast('Failed deleting note.');
   };
-
-  //todo
-  //   const handleSetReminder = (date: Date) => {
-  //     // setReminder(noteId, date);
-  //     setShowDatePicker(false);
-  //     setMenuVisible(false);
-  //   };
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
@@ -62,8 +55,6 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
                 onPress={() => {
                   toast('Coming soon...');
                   closeMenu();
-                  //   setShowDatePicker(true);
-                  //   setMenuVisible(false);
                 }}
               >
                 <Ionicons name="time-outline" size={20} style={styles.menuIcon} />
@@ -77,21 +68,6 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
           </ThemedView>
         </Pressable>
       </Modal>
-
-      {/* Date Picker */}
-      {/* {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="datetime"
-          display="default"
-          onChange={(event, date) => {
-            if (event.type === 'set' && date) {
-              handleSetReminder(date);
-            }
-            setShowDatePicker(false);
-          }}
-        />
-      )} */}
     </>
   );
 }
@@ -111,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 4,
     minWidth: 200,
-    shadowColor: '#000',
+    shadowColor: '#71717B',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -119,6 +95,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    backgroundColor: Colors.dark.background,
   },
   menuItem: {
     flexDirection: 'row',
@@ -149,42 +126,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  },
-  alertTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.dark.text,
-    marginBottom: 12,
-  },
-  alertMessage: {
-    fontSize: 16,
-    color: Colors.dark.text,
-    marginBottom: 20,
-  },
-  alertButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-  },
-  alertButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-    minWidth: 80,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: Colors.dark.shade,
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  deleteButtonText: {
-    color: 'white',
   },
 });

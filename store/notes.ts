@@ -1,4 +1,4 @@
-import { notes, IEntry, INote } from '@/db/schema';
+import { notes, IEntry, INote, recordings } from '@/db/schema';
 import { getDb } from '@/utils/db';
 import { toast } from '@/utils/toast';
 import { and, eq } from 'drizzle-orm';
@@ -91,25 +91,35 @@ const useNotesStore = create<NotesState>()(set => ({
   deleteNote: async noteId => {
     set({ isLoading: true });
     try {
-      const note = await db.query.notes.findFirst({ where: eq(notes.id, noteId) });
+      const note = await db.query.notes.findFirst({
+        where: eq(notes.id, noteId),
+      });
 
       if (!note) {
         set({ isLoading: false });
         return false;
       }
 
-      const deleted = await db.delete(notes).where(eq(notes.id, noteId));
+      let isDeleted = false;
 
-      if (deleted.changes === 1) {
-        set(state => ({
-          notes: state.notes.filter(note => note.id !== noteId),
-          isLoading: false,
-        }));
-        return true;
-      }
+      await db.transaction(async tx => {
+        await tx.delete(recordings).where(eq(recordings.noteId, noteId));
+
+        const deleted = await tx.delete(notes).where(eq(notes.id, noteId));
+
+        console.log(deleted, 'Delete result');
+
+        if (deleted.changes === 1) {
+          isDeleted = true;
+          set(state => ({
+            notes: state.notes.filter(note => note.id !== noteId),
+            isLoading: false,
+          }));
+        }
+      });
 
       set({ isLoading: false });
-      return false;
+      return isDeleted;
     } catch (error) {
       console.error('Error deleting note:', error);
       set({ isLoading: false });

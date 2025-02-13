@@ -221,7 +221,7 @@ export default function Note() {
           <AnimatedPressable
             entering={FadeInDown.delay(200)}
             onPress={onSaveNote}
-            style={[styles.recordButton, isRecording && styles.recordingActive]}
+            style={styles.recordButton}
           >
             <Ionicons name={'checkmark'} size={24} color="white" />
           </AnimatedPressable>
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   recordButton: {
-    backgroundColor: Colors.dark.shade,
+    backgroundColor: Colors.primary,
     width: 50,
     height: 50,
     borderRadius: 25,
