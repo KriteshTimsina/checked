@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React, { FC, useEffect, useRef } from 'react';
 import { ThemedText } from './ThemedText';
 import LottieView from 'lottie-react-native';
@@ -19,9 +19,11 @@ const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {
   const animation = useRef<LottieView>(null);
 
   useEffect(() => {
-    animation.current?.play();
+    const current = animation.current;
+    if (!current) return;
+    current?.play();
 
-    return () => animation.current?.pause();
+    return () => current?.pause();
   }, []);
   return (
     <ThemedView style={styles.container}>

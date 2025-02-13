@@ -1,4 +1,4 @@
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import React, { memo } from 'react';
 
 import { ThemedText } from './ThemedText';
@@ -51,7 +51,7 @@ const NoteItem = ({ item }: { item: INote }) => {
       </ThemedText>
       <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
         {item?.updatedAt
-          ? dayjs(item?.updatedAt).format('MMM DD')
+          ? dayjs(item?.updatedAt).format('MMM DD, hh:mm A')
           : dayjs(item?.createdAt).format('MMM DD')}
       </ThemedText>
     </Pressable>

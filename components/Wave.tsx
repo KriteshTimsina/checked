@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
 import LottieView from 'lottie-react-native';
 
 import wave from '@/assets/lottie/audio-wave.json';
@@ -22,10 +21,3 @@ const Wave = ({ play }: { play: boolean }) => {
 };
 
 export default Wave;
-
-const styles = StyleSheet.create({
-  //   trophy: {
-  //     width: 160,
-  //     height: 70,
-  //   },
-});

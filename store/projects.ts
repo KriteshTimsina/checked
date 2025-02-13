@@ -24,7 +24,8 @@ export const useProjectStore = create<ProjectState>()(set => ({
       }
       set({ projects });
     } catch (error) {
-      return toast('Failed retrieving projects. ');
+      console.log(error, 'Failed retrieving projects. ');
+      return toast('Failed retrieving projects.');
     }
   },
   createProject: async (data: Partial<IProject>) => {
