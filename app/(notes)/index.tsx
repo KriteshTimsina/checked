@@ -221,10 +221,12 @@ export default function Note() {
         onScroll={onScroll}
         scrollEventThrottle={16}
         style={styles.scrollContainer}
+        contentContainerStyle={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
       >
         {!showHeaderTitle && (
           <AnimatedTextInput
+            autoFocus={noteId ? false : true}
             placeholder="Your title here"
             placeholderTextColor={Colors.dark.icon}
             style={[styles.title, titleStyles]}
@@ -243,9 +245,10 @@ export default function Note() {
               : note?.createdAt
               ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
               : ''}
+            19 May 2023
           </ThemedText>
         )}
-        <View style={{ flexGrow: 1 }}>{renderContent()}</View>
+        <View>{renderContent()}</View>
       </ScrollView>
       <View style={styles.recordingButton}>
         {note?.title && (
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: contentHeight,
   },
-
+  contentContainer: { gap: 2 },
   recordingButton: {
     position: 'absolute',
     bottom: '10%',
@@ -308,6 +311,5 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    marginBottom: 10,
   },
 });
