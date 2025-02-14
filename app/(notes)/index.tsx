@@ -20,6 +20,7 @@ import { toast } from '@/utils/toast';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { EmbeddedRecording } from '@/components/EmbeddedRecording';
 import { ThemedView } from '@/components/ThemedView';
+import { haptics } from '@/utils/haptics';
 
 export interface Recording {
   id: string;
@@ -87,9 +88,11 @@ export default function Note() {
 
       const saved = await saveOperation();
       if (saved) {
+        haptics.success();
         toast('Saved');
       }
     } catch (error) {
+      haptics.error();
       console.error(error, 'Error saving note');
       toast('Error saving note');
     }
@@ -164,7 +167,7 @@ export default function Note() {
             onSelectionChange={event => {
               setCursorPosition(event.nativeEvent.selection.start + lastIndex);
             }}
-            scrollEnabled={false}
+            // scrollEnabled={false}
             placeholder="Your note here..."
             placeholderTextColor={Colors.dark.icon}
             autoCorrect={false}
@@ -191,7 +194,7 @@ export default function Note() {
       <TextInput
         key={`text-${lastIndex}-end`}
         style={styles.content}
-        scrollEnabled={false}
+        // scrollEnabled={false}
         multiline
         value={content.slice(lastIndex).replace(/\u200B/g, '')} // Remove zero-width spaces
         onChangeText={text => updateTextPortion(lastIndex, content.length, text)}

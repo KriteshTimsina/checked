@@ -7,6 +7,7 @@ import { ThemedText } from './ThemedText';
 import { toast } from '@/utils/toast';
 import { useNotes } from '@/store/notes';
 import { useRouter } from 'expo-router';
+import { haptics } from '@/utils/haptics';
 
 interface NoteMenuProps {
   noteId: number;
@@ -21,11 +22,13 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
     const success = await deleteNote(noteId);
 
     if (success) {
+      haptics.success();
       await getNotes();
       closeMenu();
       router.back();
       toast('Note deleted');
     } else {
+      haptics.error();
       toast('Failed deleting note.');
     }
   };
