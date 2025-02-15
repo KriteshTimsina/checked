@@ -9,11 +9,11 @@ export default function DownloadSection() {
       </h1>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         <Link
-          href="/apk/checklist-1.0.0.apk"
+          href="/apk/checked-1.0.2.apk"
           download={true}
-          className="flex items-center bg-white text-[#4B4ACF] px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-colors w-full sm:w-auto justify-center"
+          className="group flex items-center bg-white text-[#4B4ACF] px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-colors w-full sm:w-auto justify-center"
         >
-          <Smartphone className="mr-2 h-5 w-5" />
+          <Smartphone className="mr-2 h-5 w-5 group-hover:-translate-y-1 transition-transform group-hover:rotate-12 " />
           Download for android
         </Link>
         {/* <Link
