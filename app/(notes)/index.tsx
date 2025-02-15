@@ -167,7 +167,7 @@ export default function Note() {
             onSelectionChange={event => {
               setCursorPosition(event.nativeEvent.selection.start + lastIndex);
             }}
-            // scrollEnabled={false}
+            scrollEnabled={false}
             placeholder="Your note here..."
             placeholderTextColor={Colors.dark.icon}
             autoCorrect={false}
@@ -189,14 +189,13 @@ export default function Note() {
       lastIndex = position + marker.length;
     });
 
-    // Add remaining text
     elements.push(
       <TextInput
         key={`text-${lastIndex}-end`}
         style={styles.content}
-        // scrollEnabled={false}
+        scrollEnabled={false}
         multiline
-        value={content.slice(lastIndex).replace(/\u200B/g, '')} // Remove zero-width spaces
+        value={content.slice(lastIndex).replace(/\u200B/g, '')}
         onChangeText={text => updateTextPortion(lastIndex, content.length, text)}
         onSelectionChange={event => {
           setCursorPosition(event.nativeEvent.selection.start + lastIndex);
@@ -263,13 +262,13 @@ export default function Note() {
             <Ionicons name={'checkmark'} size={24} color="white" />
           </AnimatedPressable>
         )}
-        <AnimatedPressable
+        {/* <AnimatedPressable
           entering={FadeInDown.delay(100)}
           onPress={isRecording ? () => {} : startRecording}
           style={[styles.recordButton, isRecording && styles.recordingActive]}
         >
           <Ionicons name={isRecording ? 'stop' : 'mic'} size={24} color="white" />
-        </AnimatedPressable>
+        </AnimatedPressable> */}
       </View>
     </ThemedView>
   );
