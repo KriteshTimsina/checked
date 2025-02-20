@@ -1,6 +1,8 @@
+import * as Print from 'expo-print';
+import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from './ThemedText';
@@ -8,6 +10,7 @@ import { toast } from '@/utils/toast';
 import { useNotes } from '@/store/notes';
 import { useRouter } from 'expo-router';
 import { haptics } from '@/utils/haptics';
+import { generateNoteHTML } from '@/utils/htmlTempelates';
 
 interface NoteMenuProps {
   noteId: number;
@@ -15,7 +18,7 @@ interface NoteMenuProps {
 
 export function NoteMenu({ noteId }: NoteMenuProps) {
   const [menuVisible, setMenuVisible] = useState(false);
-  const { deleteNote, getNotes } = useNotes();
+  const { deleteNote, getNotes, getNote } = useNotes();
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -30,6 +33,19 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
     } else {
       haptics.error();
       toast('Failed deleting note.');
+    }
+  };
+
+  const printToFile = async () => {
+    const isSharingAvailable = await isAvailableAsync();
+
+    if (isSharingAvailable) {
+      const note = await getNote(noteId);
+      if (!note) return toast('Failed');
+      const html = generateNoteHTML(note);
+      const { uri } = await Print.printToFileAsync({ html });
+      closeMenu();
+      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
     }
   };
 
@@ -50,6 +66,10 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
       >
         <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
           <ThemedView style={styles.menuContent}>
+            <Pressable style={styles.menuItem} onPress={printToFile}>
+              <AntDesign name="pdffile1" size={20} style={styles.menuIcon} />
+              <ThemedText style={styles.menuText}>Share as PDF</ThemedText>
+            </Pressable>
             <Pressable
               style={styles.menuItem}
               onPress={() => {
