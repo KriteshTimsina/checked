@@ -1,13 +1,15 @@
+import * as Print from 'expo-print';
+
+import { ThemedView } from '@/components/ThemedView';
+import { Colors } from '@/constants/Colors';
+import { useEntries } from '@/store/entries';
+import { generateChecklistHTML } from '@/utils/htmlTempelates';
+import { Ionicons } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from './ThemedText';
-import { toast } from '@/utils/toast';
-import { useNotes } from '@/store/notes';
-import { useRouter } from 'expo-router';
-import { haptics } from '@/utils/haptics';
 
 interface MenuProps {
   title: string;
@@ -15,7 +17,18 @@ interface MenuProps {
 
 export function ChecklistMenu({ title }: MenuProps) {
   const [menuVisible, setMenuVisible] = useState(false);
-  const router = useRouter();
+  const { entries } = useEntries();
+
+  const printToFile = async () => {
+    const isSharingAvailable = await isAvailableAsync();
+
+    if (isSharingAvailable) {
+      const html = generateChecklistHTML(title, entries);
+      const { uri } = await Print.printToFileAsync({ html });
+      closeMenu();
+      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+    }
+  };
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
@@ -33,18 +46,10 @@ export function ChecklistMenu({ title }: MenuProps) {
         onRequestClose={closeMenu}
       >
         <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
-          <ThemedView>
-            <Pressable style={styles.menuContent}>
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  toast('Coming soon...');
-                  closeMenu();
-                }}
-              >
-                <Ionicons name="share-social-outline" size={20} style={styles.menuIcon} />
-                <ThemedText style={styles.menuText}>Share</ThemedText>
-              </Pressable>
+          <ThemedView style={styles.menuContent}>
+            <Pressable style={styles.menuItem} onPress={printToFile}>
+              <AntDesign name="pdffile1" size={20} style={styles.menuIcon} />
+              <ThemedText style={styles.menuText}>Share as PDF</ThemedText>
             </Pressable>
           </ThemedView>
         </Pressable>
@@ -107,5 +112,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  spacer: {
+    height: 8,
+  },
+  printer: {
+    textAlign: 'center',
   },
 });
