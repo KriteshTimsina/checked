@@ -49,22 +49,20 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
         onRequestClose={closeMenu}
       >
         <Pressable style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
-          <ThemedView>
-            <Pressable style={styles.menuContent}>
-              <Pressable
-                style={styles.menuItem}
-                onPress={() => {
-                  toast('Coming soon...');
-                  closeMenu();
-                }}
-              >
-                <Ionicons name="time-outline" size={20} style={styles.menuIcon} />
-                <ThemedText style={styles.menuText}>Set Reminder</ThemedText>
-              </Pressable>
-              <Pressable style={styles.menuItem} onPress={handleDelete}>
-                <Ionicons name="trash-outline" size={20} color={'red'} />
-                <ThemedText style={[styles.menuText, styles.deleteText]}>Delete Note</ThemedText>
-              </Pressable>
+          <ThemedView style={styles.menuContent}>
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                toast('Coming soon...');
+                closeMenu();
+              }}
+            >
+              <Ionicons name="time-outline" size={20} style={styles.menuIcon} />
+              <ThemedText style={styles.menuText}>Set Reminder</ThemedText>
+            </Pressable>
+            <Pressable style={styles.menuItem} onPress={handleDelete}>
+              <Ionicons name="trash-outline" size={20} color={'red'} />
+              <ThemedText style={[styles.menuText, styles.deleteText]}>Delete Note</ThemedText>
             </Pressable>
           </ThemedView>
         </Pressable>
