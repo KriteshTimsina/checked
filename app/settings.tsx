@@ -1,13 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Appearance, Pressable, StyleSheet, Switch, View } from 'react-native';
 
-import {
-  AntDesign,
-  FontAwesome,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -18,15 +12,15 @@ import { Colors } from '@/constants/Colors';
 import { tabs } from '@/constants/data';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { globals } from '@/styles/globals';
-import { usePreferences } from '@/store/preferences';
+import { type Tab, usePreferences } from '@/store/preferences';
+import { DevSettings } from 'react-native';
 
 export default function Settings() {
-  // const bottomSheetRef = useRef<BottomSheet>(null);
   const primaryTabRef = useRef<BottomSheet>(null);
-  const { selectedTheme, onThemeSelect } = useTheme();
+  const { selectedTheme } = useTheme();
   const colorScheme = useColorScheme();
   const [darkMode, setDarkMode] = useState(colorScheme === 'dark');
-  const { activeTab, switchTab } = usePreferences();
+  const { setPrimaryTab, primaryTab } = usePreferences();
 
   const openSheet = () => {
     primaryTabRef.current?.expand();
@@ -39,6 +33,11 @@ export default function Settings() {
     const newTheme = value ? 'dark' : 'light';
     setDarkMode(value);
     Appearance.setColorScheme(newTheme);
+  };
+
+  const togglePrimaryTab = (label: Tab) => {
+    setPrimaryTab(label);
+    DevSettings.reload();
   };
   return (
     <SafeAreaView style={globals.flex}>
@@ -168,18 +167,13 @@ export default function Settings() {
             </View>
             <View style={styles.tabs}>
               {tabs.map(tab => {
-                const tabBackground =
-                  activeTab === tab.label ? Colors.dark.background : Colors.light.icon;
+                const backgroundColor =
+                  primaryTab === tab.label ? Colors.dark.background : Colors.light.icon;
                 return (
                   <Pressable
-                    onPress={() => switchTab(tab.label)}
+                    onPress={() => togglePrimaryTab(tab.label as Tab)}
                     key={tab.id}
-                    style={[
-                      styles.tab,
-                      {
-                        backgroundColor: tabBackground,
-                      },
-                    ]}
+                    style={[styles.tab, { backgroundColor }]}
                   >
                     {tab.title === 'Checklist' ? (
                       <Ionicons color="white" size={25} name="checkbox" />

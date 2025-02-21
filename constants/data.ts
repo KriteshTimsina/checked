@@ -1,11 +1,3 @@
-import {
-  AntDesign,
-  FontAwesome,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from '@expo/vector-icons';
-
 export const data = [
   {
     title: 'App deployment checklist',
@@ -76,7 +68,7 @@ export const tabs = [
   {
     id: 1,
     title: 'Checklist',
-    label: 'checklist',
+    label: 'index',
   },
   {
     id: 2,
