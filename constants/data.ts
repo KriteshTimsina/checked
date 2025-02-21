@@ -1,3 +1,11 @@
+import {
+  AntDesign,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
+
 export const data = [
   {
     title: 'App deployment checklist',
@@ -62,5 +70,17 @@ export const colors = [
     primary: '#06b6d4',
     secondary: '#EAF8FF',
     selected: 0,
+  },
+];
+export const tabs = [
+  {
+    id: 1,
+    title: 'Checklist',
+    label: 'checklist',
+  },
+  {
+    id: 2,
+    title: 'Notes',
+    label: 'notes',
   },
 ];
