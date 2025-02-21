@@ -64,3 +64,15 @@ export const colors = [
     selected: 0,
   },
 ];
+export const tabs = [
+  {
+    id: 1,
+    title: 'Checklist',
+    label: 'index',
+  },
+  {
+    id: 2,
+    title: 'Notes',
+    label: 'notes',
+  },
+];
