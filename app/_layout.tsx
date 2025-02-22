@@ -12,7 +12,6 @@ import { useFontLoading } from '@/hooks/useFontLoading';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
-import AppThemeProvider from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '@/constants/Colors';
 import { globals } from '@/styles/globals';
@@ -63,22 +62,20 @@ export default function RootLayout() {
         useSuspense
       >
         <GestureHandlerRootView style={globals.flex}>
-          <AppThemeProvider>
-            <ThemeProvider value={appTheme}>
-              <StatusBar style="auto" />
+          <ThemeProvider value={appTheme}>
+            <StatusBar style="auto" />
 
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
-                <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
-                <Stack.Screen name="(checklist)" />
-                <Stack.Screen name="(notes)" />
-                <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
-              </Stack>
-            </ThemeProvider>
-          </AppThemeProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
+              <Stack.Screen name="(checklist)" />
+              <Stack.Screen name="(notes)" />
+              <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
+            </Stack>
+          </ThemeProvider>
         </GestureHandlerRootView>
       </SQLiteProvider>
     </Suspense>

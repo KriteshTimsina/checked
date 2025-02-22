@@ -1,6 +1,15 @@
-import * as Haptics from 'expo-haptics';
+import { usePreferencesStore } from '@/store/preferences';
+import { triggerHaptics } from '@/utils/haptics-base';
 
 export const haptics = {
-  success: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success),
-  error: () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error),
+  success: () => {
+    if (usePreferencesStore.getState().preferences.hapticsEnabled) {
+      return triggerHaptics.success();
+    }
+  },
+  error: () => {
+    if (usePreferencesStore.getState().preferences.hapticsEnabled) {
+      return triggerHaptics.error();
+    }
+  },
 };
