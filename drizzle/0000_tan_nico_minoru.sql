@@ -7,6 +7,15 @@ CREATE TABLE `entries` (
 	FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `notes` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`title` text NOT NULL,
+	`content` text,
+	`position` integer DEFAULT 0 NOT NULL,
+	`created_at` integer NOT NULL,
+	`updated_at` integer
+);
+--> statement-breakpoint
 CREATE TABLE `projects` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`title` text NOT NULL,
@@ -14,8 +23,10 @@ CREATE TABLE `projects` (
 	`created_at` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `user_preferences` (
+CREATE TABLE `recordings` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`app_theme_id` integer NOT NULL,
-	`app_theme_mode` text DEFAULT 'dark' NOT NULL
+	`recording_uri` text NOT NULL,
+	`recorded_at` integer NOT NULL,
+	`note_id` integer NOT NULL,
+	FOREIGN KEY (`note_id`) REFERENCES `notes`(`id`) ON UPDATE no action ON DELETE cascade
 );

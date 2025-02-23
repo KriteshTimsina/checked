@@ -8,7 +8,6 @@ interface ProjectState {
   projects: IProject[];
   getAllProjects: () => void;
   deleteProject: (id: number) => Promise<boolean>;
-  //   updateProject: (id: number, data: Partial<IProject>) => void;
   createProject: (data: Partial<IProject>) => Promise<boolean>;
 }
 

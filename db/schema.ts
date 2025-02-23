@@ -21,14 +21,6 @@ export const entries = sqliteTable('entries', {
     .references(() => projects.id, { onDelete: 'cascade' }),
 });
 
-export const userPreferences = sqliteTable('user_preferences', {
-  id: integer().primaryKey({ autoIncrement: true }),
-  app_theme_id: integer().notNull(),
-  app_theme_mode: text({ enum: ['dark', 'light'] })
-    .default('dark')
-    .notNull(),
-});
-
 export const notes = sqliteTable('notes', {
   id: integer().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
@@ -53,7 +45,6 @@ export const recordings = sqliteTable('recordings', {
 
 export type IProject = typeof projects.$inferSelect;
 export type IEntry = typeof entries.$inferSelect;
-export type IUserPreferences = typeof userPreferences.$inferSelect;
 
 export type INote = typeof notes.$inferSelect;
 export type IRecording = typeof recordings.$inferSelect;

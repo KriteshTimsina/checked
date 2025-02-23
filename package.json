@@ -14,7 +14,8 @@
     "db:generate": "npx drizzle-kit generate",
     "build:development": "eas build --platform android --profile development",
     "build:preview": "eas build --platform android --profile preview",
-    "build:release": "eas build --platform android --profile release"
+    "build:release": "eas build --platform android --profile release",
+    "cache:clean": "npm cache clean --force"
   },
   "jest": {
     "preset": "jest-expo"

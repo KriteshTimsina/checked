@@ -87,37 +87,20 @@ const useNotesStore = create<NotesState>()(set => ({
   deleteNote: async noteId => {
     set({ isLoading: true });
     try {
-      const note = await db.query.notes.findFirst({
-        where: eq(notes.id, noteId),
-      });
+      const deleted = await db.delete(notes).where(eq(notes.id, noteId));
 
-      if (!note) {
-        set({ isLoading: false });
-        return false;
+      if (deleted.changes === 1) {
+        set(state => ({
+          notes: state.notes.filter(note => note.id !== noteId),
+        }));
+        return true;
       }
-
-      let isDeleted = false;
-
-      await db.transaction(async tx => {
-        await tx.delete(recordings).where(eq(recordings.noteId, noteId));
-
-        const deleted = await tx.delete(notes).where(eq(notes.id, noteId));
-
-        if (deleted.changes === 1) {
-          isDeleted = true;
-          set(state => ({
-            notes: state.notes.filter(note => note.id !== noteId),
-            isLoading: false,
-          }));
-        }
-      });
-
-      set({ isLoading: false });
-      return isDeleted;
+      return false;
     } catch (error) {
       console.error('Error deleting note:', error);
-      set({ isLoading: false });
       return false;
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));
