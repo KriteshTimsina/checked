@@ -1,18 +1,20 @@
-import React, { useRef, useState } from 'react';
-import { Appearance, Pressable, StyleSheet, Switch, View } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { Appearance, Pressable, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+
+import { type Tab, usePreferences } from '@/store/preferences';
+import { reloadAppAsync } from 'expo';
 
 import { Colors } from '@/constants/Colors';
-import { tabs } from '@/constants/data';
-import { type Tab, usePreferences } from '@/store/preferences';
 import { globals } from '@/styles/globals';
-import { DevSettings } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { tabs } from '@/constants/data';
+import { haptics } from '@/utils/haptics';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheet>(null);
@@ -23,9 +25,6 @@ export default function Settings() {
   const openSheet = () => {
     primaryTabRef.current?.expand();
   };
-  const closeSheet = () => {
-    primaryTabRef.current?.close();
-  };
 
   const toggleTheme = async (value: boolean) => {
     const newTheme = value ? 'dark' : 'light';
@@ -33,84 +32,90 @@ export default function Settings() {
     Appearance.setColorScheme(newTheme);
   };
 
-  const onTogglePrimaryTab = (label: Tab) => {
-    setPrimaryTab(label);
-    DevSettings.reload();
+  const onTogglePrimaryTab = async (label: Tab) => {
+    if (label === primaryTab) return false;
+    try {
+      setPrimaryTab(label);
+      haptics.success();
+      await reloadAppAsync();
+    } catch (error) {
+      console.error('Failed to update primary tab:', error);
+    }
   };
 
   const onToggleHaptics = (enabled: boolean) => {
     toggleHaptics(enabled);
   };
 
+  const renderBackdrop = useCallback((props: any) => {
+    return <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />;
+  }, []);
+
   return (
     <SafeAreaView style={globals.flex}>
-      <Pressable style={globals.flex} onPress={closeSheet}>
-        <ThemedView style={{ flex: 1, padding: 20 }}>
-          <ThemedText type="subtitle">Settings</ThemedText>
+      <ThemedView style={{ flex: 1, padding: 20 }}>
+        <ThemedText type="subtitle">Settings</ThemedText>
 
-          <View style={{ marginVertical: 20, gap: 20 }}>
-            <Pressable
-              style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
-            >
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <Ionicons name="color-palette" color={Colors.primary} size={24} />
-                <ThemedText>Select Theme</ThemedText>
-              </View>
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 100,
-                  backgroundColor: Colors.primary,
-                }}
-              />
-            </Pressable>
-            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <Ionicons name="sunny-sharp" color={Colors.primary} size={24} />
-                <ThemedText>Dark mode</ThemedText>
-              </View>
-              <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+        <View style={{ marginVertical: 20, gap: 20 }}>
+          <Pressable style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Ionicons name="color-palette" color={Colors.primary} size={24} />
+              <ThemedText>Select Theme</ThemedText>
             </View>
-            <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <MaterialCommunityIcons name="volume-vibrate" color={Colors.primary} size={24} />
-                <ThemedText>Enable haptics</ThemedText>
-              </View>
-              <Switch
-                onValueChange={enabled => onToggleHaptics(enabled)}
-                value={hapticsEnabled}
-                thumbColor={Colors.primary}
-              />
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 100,
+                backgroundColor: Colors.primary,
+              }}
+            />
+          </Pressable>
+          <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Ionicons name="sunny-sharp" color={Colors.primary} size={24} />
+              <ThemedText>Dark mode</ThemedText>
             </View>
-            {/* <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+            <Switch onValueChange={toggleTheme} value={darkMode} thumbColor={Colors.primary} />
+          </View>
+          <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <MaterialCommunityIcons name="volume-vibrate" color={Colors.primary} size={24} />
+              <ThemedText>Enable haptics</ThemedText>
+            </View>
+            <Switch
+              onValueChange={enabled => onToggleHaptics(enabled)}
+              value={hapticsEnabled}
+              thumbColor={Colors.primary}
+            />
+          </View>
+          {/* <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <Ionicons name="notifications-sharp" color={Colors.primary} size={24} />
                 <ThemedText>Enable Notifications</ThemedText>
               </View>
               <Switch onValueChange={() => {}} value={darkMode} thumbColor={Colors.primary} />
             </View> */}
-            {/* <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
+          {/* <View style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <MaterialIcons name="settings-backup-restore" color={Colors.primary} size={24} />
                 <ThemedText>Reset preferences</ThemedText>
               </View>
               <Ionicons name="chevron-forward-sharp" size={25} color={Colors.light.icon} />
             </View> */}
-            <Pressable
-              onPress={openSheet}
-              style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
-            >
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <Ionicons name="home" color={Colors.primary} size={24} />
-                <ThemedText>Default tab</ThemedText>
-              </View>
-              <Ionicons name="chevron-forward-sharp" size={20} color={Colors.light.icon} />
-            </Pressable>
-          </View>
-          <Footer />
-        </ThemedView>
-      </Pressable>
+          <Pressable
+            onPress={openSheet}
+            style={[styles.settingItem, { backgroundColor: Colors[colorScheme!].shade }]}
+          >
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Ionicons name="home" color={Colors.primary} size={24} />
+              <ThemedText>Default tab</ThemedText>
+            </View>
+            <Ionicons name="chevron-forward-sharp" size={20} color={Colors.light.icon} />
+          </Pressable>
+        </View>
+        <Footer />
+      </ThemedView>
 
       {/* <BottomSheet
         index={-1}
@@ -157,6 +162,7 @@ export default function Settings() {
         </BottomSheetView>
       </BottomSheet> */}
       <BottomSheet
+        backdropComponent={renderBackdrop}
         index={-1}
         enablePanDownToClose={true}
         backgroundStyle={{ backgroundColor: Colors.primary, marginBottom: 20 }}
@@ -177,18 +183,19 @@ export default function Settings() {
                 const backgroundColor =
                   primaryTab === tab.label ? Colors.dark.background : Colors.light.icon;
                 return (
-                  <Pressable
+                  <TouchableOpacity
+                    activeOpacity={0.7}
                     onPress={() => onTogglePrimaryTab(tab.label as Tab)}
                     key={tab.id}
                     style={[styles.tab, { backgroundColor }]}
                   >
-                    {tab.title === 'Checklist' ? (
+                    {tab.label === 'index' ? (
                       <Ionicons color="white" size={25} name="checkbox" />
                     ) : (
                       <FontAwesome color="white" size={25} name="sticky-note" />
                     )}
                     <ThemedText>{tab.title}</ThemedText>
-                  </Pressable>
+                  </TouchableOpacity>
                 );
               })}
             </View>

@@ -15,7 +15,7 @@ interface PreferenceStoreProps {
   toggleHaptics: (enabled: boolean) => void;
 }
 
-const getPrimaryTab = (): PreferenceProps => {
+const getStoredPreferences = (): PreferenceProps => {
   const storedTab = storage.getString('preferences.primaryTab');
   const hapticsEnabled = storage.getBoolean('preferences.hapticsEnabled');
   return {
@@ -25,7 +25,7 @@ const getPrimaryTab = (): PreferenceProps => {
 };
 
 export const usePreferencesStore = create<PreferenceStoreProps>()(set => ({
-  preferences: getPrimaryTab(),
+  preferences: getStoredPreferences(),
   setPrimaryTab: tab => {
     storage.set('preferences.primaryTab', tab);
     set(({ preferences }) => ({
