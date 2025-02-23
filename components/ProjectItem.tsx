@@ -7,7 +7,7 @@ import { IProject } from '@/db/schema';
 import { Colors } from '@/constants/Colors';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
@@ -18,6 +18,8 @@ type ProjectItemProps = {
   item: IProject;
   index: number;
 };
+
+const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
 const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const [completedCount, setCompletedCount] = useState(0);
@@ -120,14 +122,14 @@ export default ProjectItem;
 
 const RightAction = ({ onDelete }: { onDelete: () => void }) => {
   return (
-    <Pressable onPress={onDelete} style={styles.deleteContainer}>
+    <AnimatedButton entering={FadeIn.delay(1000)} onPress={onDelete} style={styles.deleteContainer}>
       <MaterialCommunityIcons
         color="white"
         style={styles.deleteIcon}
         name="delete-outline"
         size={24}
       />
-    </Pressable>
+    </AnimatedButton>
   );
 };
 
