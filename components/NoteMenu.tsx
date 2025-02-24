@@ -1,7 +1,7 @@
 import * as Print from 'expo-print';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
-import React, { useState } from 'react';
-import { Modal, Pressable, StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { ThemedView } from '@/components/ThemedView';
@@ -11,6 +11,7 @@ import { useNotes } from '@/store/notes';
 import { useRouter } from 'expo-router';
 import { haptics } from '@/utils/haptics';
 import { generateNoteHTML } from '@/utils/htmlTempelates';
+import { debounce } from 'lodash';
 
 interface NoteMenuProps {
   noteId: number;
@@ -49,14 +50,18 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
     }
   };
 
-  const openMenu = () => setMenuVisible(true);
+  const openMenu = useCallback(
+    //debounced openMenu because it is called on onPressIn instead of onPress
+    debounce(() => setMenuVisible(true), 100),
+    [],
+  );
   const closeMenu = () => setMenuVisible(false);
 
   return (
     <>
-      <Pressable hitSlop={8} onPress={openMenu} style={styles.menuButton}>
+      <TouchableOpacity onPressIn={openMenu} hitSlop={8} style={styles.menuButton}>
         <Ionicons name="ellipsis-vertical" size={24} color={Colors.dark.icon} />
-      </Pressable>
+      </TouchableOpacity>
 
       <Modal
         visible={menuVisible}

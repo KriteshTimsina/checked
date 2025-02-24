@@ -7,9 +7,10 @@ import { generateChecklistHTML } from '@/utils/htmlTempelates';
 import { Ionicons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
-import React, { useState } from 'react';
-import { Modal, Pressable, StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { ThemedText } from './ThemedText';
+import { debounce } from 'lodash';
 
 interface MenuProps {
   title: string;
@@ -30,14 +31,18 @@ export function ChecklistMenu({ title }: MenuProps) {
     }
   };
 
-  const openMenu = () => setMenuVisible(true);
+  const openMenu = useCallback(
+    //debounced openMenu because it is called on onPressIn instead of onPress
+    debounce(() => setMenuVisible(true), 100),
+    [],
+  );
   const closeMenu = () => setMenuVisible(false);
 
   return (
     <>
-      <Pressable hitSlop={8} onPress={openMenu} style={styles.menuButton}>
+      <TouchableOpacity hitSlop={8} onPressIn={openMenu} style={styles.menuButton}>
         <Ionicons name="ellipsis-vertical" size={24} color={Colors.dark.icon} />
-      </Pressable>
+      </TouchableOpacity>
 
       <Modal
         visible={menuVisible}
