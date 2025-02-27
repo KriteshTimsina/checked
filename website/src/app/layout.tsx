@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.className}>
       <body>
-        <div className="h-screen bg-gradient-to-br from-emerald-400 to-green-400 text-white overflow-y-hidden">
+        <div className=" bg-gradient-to-br from-emerald-400 to-green-400 text-white">
           <Header />
           {children}
           <Footer />

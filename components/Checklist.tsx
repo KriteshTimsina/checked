@@ -11,11 +11,12 @@ import debounce from 'lodash/debounce';
 
 type ChecklistProps = {
   item: IEntry;
+  openEditDialog: (title: string) => void;
 };
 
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
-const Checklist: FC<ChecklistProps> = ({ item }) => {
+const Checklist: FC<ChecklistProps> = ({ item, openEditDialog }) => {
   const colorScheme = useColorScheme();
   const { updateEntryStatus } = useEntries();
 
@@ -29,6 +30,7 @@ const Checklist: FC<ChecklistProps> = ({ item }) => {
 
   return (
     <AnimatedButton
+      onLongPress={() => openEditDialog(item.title)}
       entering={FadeInDown.delay(200)}
       onPress={toggleCheckbox}
       android_ripple={{ color: Colors.light.icon }}

@@ -75,6 +75,11 @@ export default function Entry() {
     setInputText('');
   };
 
+  const onEditDialog = (title: string) => {
+    bottomSheetRef.current?.expand();
+    setInputText(title);
+  };
+
   return (
     <>
       <ThemedView style={styles.container}>
@@ -85,12 +90,16 @@ export default function Entry() {
             contentContainerStyle={styles.scrollContainer}
             data={entries}
             keyExtractor={item => String(item.id)}
-            renderItem={({ item }) => <Checklist item={item} />}
+            renderItem={({ item }) => <Checklist openEditDialog={onEditDialog} item={item} />}
           />
         )}
         <Button onPress={openSheet} />
       </ThemedView>
-      <BottomSheet title="Add Task" bottomSheetRef={bottomSheetRef}>
+      <BottomSheet
+        onClose={closeSheet}
+        title={inputText ? 'Edit Entry' : 'Add new Entry'}
+        bottomSheetRef={bottomSheetRef}
+      >
         <InputText
           placeholder="Enter your task title..."
           inputRef={inputRef}
