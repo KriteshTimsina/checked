@@ -14,13 +14,15 @@ import GorhomBottomSheet from '@gorhom/bottom-sheet';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
+import { IEntry } from '@/db/schema';
 
 export default function Entry() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
-  const { entries, createEntry, getEntries, isAllCompleted } = useEntries();
+  const { entries, createEntry, getEntries, isAllCompleted, updateEntry } = useEntries();
+  const [editingEntry, setEditingEntry] = useState<IEntry | null>(null);
 
   useEffect(() => {
     if (isAllCompleted) {
@@ -54,15 +56,41 @@ export default function Entry() {
       return toast('Task name is too long.');
     }
 
-    const entry = await createEntry({
-      project_id: Number(projectId),
-      title: inputText.trim(),
-    });
+    // if(editingEntry){
 
-    if (entry) {
-      haptics.success();
-      closeSheet();
+    // }
+
+    try {
+      const saveOperation = editingEntry?.id
+        ? () => updateEntry(editingEntry, inputText.trim())
+        : () =>
+            createEntry({
+              project_id: Number(projectId),
+              title: inputText.trim(),
+            });
+
+      const saved = await saveOperation();
+      if (saved) {
+        haptics.success();
+        closeSheet();
+        toast('Saved');
+        setEditingEntry(null);
+      }
+    } catch (error) {
+      haptics.error();
+      console.error(error, 'Error saving note');
+      toast('Error saving entry');
     }
+
+    // const entry = await createEntry({
+    //   project_id: Number(projectId),
+    //   title: inputText.trim(),
+    // });
+
+    // if (entry) {
+    //   haptics.success();
+    //   closeSheet();
+    // }
   };
 
   const openSheet = () => {
@@ -75,9 +103,10 @@ export default function Entry() {
     setInputText('');
   };
 
-  const onEditDialog = (title: string) => {
+  const onEditDialog = (item: IEntry) => {
     bottomSheetRef.current?.expand();
-    setInputText(title);
+    setEditingEntry(item);
+    setInputText(item.title);
   };
 
   return (
@@ -97,7 +126,7 @@ export default function Entry() {
       </ThemedView>
       <BottomSheet
         onClose={closeSheet}
-        title={inputText ? 'Edit Entry' : 'Add new Entry'}
+        title={editingEntry ? 'Edit Entry' : 'Add new Entry'}
         bottomSheetRef={bottomSheetRef}
       >
         <InputText

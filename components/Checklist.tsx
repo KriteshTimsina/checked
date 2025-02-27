@@ -11,7 +11,7 @@ import debounce from 'lodash/debounce';
 
 type ChecklistProps = {
   item: IEntry;
-  openEditDialog: (title: string) => void;
+  openEditDialog: (item: IEntry) => void;
 };
 
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
@@ -30,7 +30,7 @@ const Checklist: FC<ChecklistProps> = ({ item, openEditDialog }) => {
 
   return (
     <AnimatedButton
-      onLongPress={() => openEditDialog(item.title)}
+      onLongPress={() => openEditDialog(item)}
       entering={FadeInDown.delay(200)}
       onPress={toggleCheckbox}
       android_ripple={{ color: Colors.light.icon }}
