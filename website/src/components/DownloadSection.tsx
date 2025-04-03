@@ -9,7 +9,7 @@ export default function DownloadSection() {
       </h1>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         <Link
-          href="https://github/KriteshTimsina/checked/releases/download/v0.0.2-alpha/Checked-v0.1.1-alpha.apk"
+          href="https://github.com/KriteshTimsina/checked/releases/download/v0.0.2-alpha/Checked-v0.1.1-alpha.apk"
           download={true}
           className="group flex items-center bg-white text-[#4B4ACF] px-6 py-3 rounded-full font-medium hover:bg-white/90 transition-colors w-full sm:w-auto justify-center"
         >
