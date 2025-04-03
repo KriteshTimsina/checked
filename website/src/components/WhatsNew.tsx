@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 
 const updates = [
   {
-    version: '0.0.1',
+    version: 'v0.1.0-alpha',
     date: 'February 2024',
     highlights: [
       'Complete UI redesign with notes and checklist support',
@@ -11,6 +11,12 @@ const updates = [
       'Offline support',
     ],
     type: 'major',
+  },
+  {
+    version: 'v0.1.1-alpha',
+    date: 'April 2024',
+    highlights: ['Ability to update checklist'],
+    type: 'minor',
   },
 ];
 
