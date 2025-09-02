@@ -15,6 +15,7 @@ import { toast } from '@/utils/toast';
 
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { Colors } from '@/constants/Colors';
+import { globals } from '@/styles/globals';
 
 export default function Home() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -61,7 +62,7 @@ export default function Home() {
   };
   return (
     <>
-      <ThemedView style={styles.container}>
+      <ThemedView style={globals.container}>
         <ThemedText type="subtitle">✅ Your checklists</ThemedText>
         <View style={styles.projectContainer}>
           {projects.length > 0 ? (
@@ -100,10 +101,6 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
   projectContainer: {
     gap: 10,
     marginVertical: 20,

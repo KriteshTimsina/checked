@@ -52,7 +52,7 @@ export default function Settings() {
   }, []);
 
   return (
-    <SafeAreaView style={globals.flex}>
+    <>
       <ThemedView style={{ flex: 1, padding: 20 }}>
         <ThemedText type="subtitle">Settings</ThemedText>
 
@@ -202,7 +202,7 @@ export default function Settings() {
           </View>
         </BottomSheetView>
       </BottomSheet>
-    </SafeAreaView>
+    </>
   );
 }
 

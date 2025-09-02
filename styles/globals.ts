@@ -7,6 +7,6 @@ export const globals = StyleSheet.create({
   column: { flexDirection: 'column' },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
   },
 });

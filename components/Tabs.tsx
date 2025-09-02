@@ -69,7 +69,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     alignSelf: 'center',
-    marginTop: Platform.OS === 'ios' ? 50 : 20,
   },
   icon: {
     padding: 5,

@@ -15,6 +15,7 @@ import { Loading } from '@/components/Loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '@/constants/Colors';
 import { globals } from '@/styles/globals';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const CustomDarkTheme = {
   ...DarkTheme,
@@ -61,22 +62,24 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        <GestureHandlerRootView style={globals.flex}>
-          <ThemeProvider value={appTheme}>
-            <StatusBar style="auto" />
+        <SafeAreaView style={globals.flex}>
+          <GestureHandlerRootView style={globals.flex}>
+            <ThemeProvider value={appTheme}>
+              <StatusBar style="auto" />
 
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
-              <Stack.Screen name="(checklist)" />
-              <Stack.Screen name="(notes)" />
-              <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
-            </Stack>
-          </ThemeProvider>
-        </GestureHandlerRootView>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
+                <Stack.Screen name="(checklist)" />
+                <Stack.Screen name="(notes)" />
+                <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
+              </Stack>
+            </ThemeProvider>
+          </GestureHandlerRootView>
+        </SafeAreaView>
       </SQLiteProvider>
     </Suspense>
   );
