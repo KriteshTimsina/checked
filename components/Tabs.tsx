@@ -1,5 +1,5 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import { Colors } from '@/constants/Colors';
@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: Platform.OS === 'ios' ? 50 : 20,
   },
   icon: {
     padding: 5,
