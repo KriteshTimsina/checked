@@ -247,7 +247,6 @@ export default function Note() {
               : note?.createdAt
               ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
               : ''}
-            19 May 2023
           </ThemedText>
         )}
         <View>{renderContent()}</View>
