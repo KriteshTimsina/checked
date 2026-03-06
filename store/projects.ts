@@ -1,4 +1,4 @@
-import { IProject, projects as projectSchema } from '@/db/schema';
+import { IProject, projects, projects as projectSchema } from '@/db/schema';
 import { getDb } from '@/utils/db';
 import { toast } from '@/utils/toast';
 import { eq } from 'drizzle-orm';

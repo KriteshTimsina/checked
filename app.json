@@ -34,7 +34,11 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.kriteshtimsina.checklist"
+      "package": "com.kriteshtimsina.checklist",
+      "versionCode": 2,
+      "targetSdkVersion": 35,
+      "compileSdkVersion": 35,
+      "buildToolsVersion": "35.0.0"
     },
     "web": {
       "bundler": "metro",
