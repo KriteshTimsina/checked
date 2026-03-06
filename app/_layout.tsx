@@ -57,16 +57,10 @@ export default function RootLayout() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <SQLiteProvider
-        databaseName={DATABASE_NAME}
-        options={{ enableChangeListener: true }}
-        useSuspense
-      >
-        <SafeAreaView style={globals.flex}>
+      <SQLiteProvider databaseName={DATABASE_NAME} useSuspense>
+        <SafeAreaProvider style={globals.flex}>
           <GestureHandlerRootView style={globals.flex}>
             <ThemeProvider value={appTheme}>
-              <StatusBar style="auto" />
-
               <Stack
                 screenOptions={{
                   headerShown: false,
@@ -79,7 +73,7 @@ export default function RootLayout() {
               </Stack>
             </ThemeProvider>
           </GestureHandlerRootView>
-        </SafeAreaView>
+        </SafeAreaProvider>
       </SQLiteProvider>
     </Suspense>
   );

@@ -4,18 +4,20 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import { Colors } from '@/constants/Colors';
 import GearIcon from './GearIcon';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarProps) {
+  const { top } = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: top }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel
             : options.title !== undefined
-            ? options.title
-            : route.name;
+              ? options.title
+              : route.name;
 
         const isFocused = state.index === index;
 
