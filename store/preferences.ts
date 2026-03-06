@@ -7,12 +7,14 @@ export type Tab = 'index' | 'notes';
 interface PreferenceProps {
   primaryTab: Tab;
   hapticsEnabled: boolean;
+  onboardingCompleted?: boolean;
 }
 
 interface PreferenceStoreProps {
   preferences: PreferenceProps;
   setPrimaryTab: (tab: Tab) => void;
   toggleHaptics: (enabled: boolean) => void;
+  completeOnboarding: () => void;
 }
 
 const getStoredPreferences = (): PreferenceProps => {
@@ -45,6 +47,15 @@ export const usePreferencesStore = create<PreferenceStoreProps>()(set => ({
       },
     }));
   },
+  completeOnboarding: () => {
+    storage.set('preferences.onboardingCompleted', true);
+    set(({ preferences }) => ({
+      preferences: {
+        ...preferences,
+        onboardingCompleted: true,
+      },
+    }));
+  },
 }));
 
 export const usePreferences = () => {
@@ -52,11 +63,15 @@ export const usePreferences = () => {
   const hapticsEnabled = usePreferencesStore(state => state.preferences.hapticsEnabled);
   const setPrimaryTab = usePreferencesStore(state => state.setPrimaryTab);
   const toggleHaptics = usePreferencesStore(state => state.toggleHaptics);
+  const onboardingCompleted = usePreferencesStore(state => state.preferences.onboardingCompleted);
+  const completeOnboarding = usePreferencesStore(state => state.completeOnboarding);
 
   return {
     primaryTab,
     setPrimaryTab,
     hapticsEnabled,
     toggleHaptics,
+    onboardingCompleted,
+    completeOnboarding,
   };
 };

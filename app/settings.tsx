@@ -53,7 +53,7 @@ export default function Settings() {
 
   return (
     <>
-      <ThemedView style={{ flex: 1, padding: 20 }}>
+      <ThemedView isWrapper style={{ flex: 1, padding: 20 }}>
         <ThemedText type="subtitle">Settings</ThemedText>
 
         <View style={{ marginVertical: 20, gap: 20 }}>

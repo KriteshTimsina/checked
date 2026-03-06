@@ -70,6 +70,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(checklist)" />
                 <Stack.Screen name="(notes)" />
                 <Stack.Screen options={{ headerBackVisible: true }} name="settings" />
+                <Stack.Screen options={{ headerBackVisible: true }} name="onboarding" />
               </Stack>
             </ThemeProvider>
           </GestureHandlerRootView>
