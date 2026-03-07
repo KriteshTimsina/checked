@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Appearance, Pressable, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -12,7 +11,6 @@ import { type Tab, usePreferences } from '@/store/preferences';
 import { reloadAppAsync } from 'expo';
 
 import { Colors } from '@/constants/Colors';
-import { globals } from '@/styles/globals';
 import { tabs } from '@/constants/data';
 import { haptics } from '@/utils/haptics';
 
@@ -224,6 +222,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     borderRadius: 10,
+    paddingRight: 20,
   },
   contentContainer: {
     flex: 1,
