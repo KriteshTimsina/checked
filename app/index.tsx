@@ -1,11 +1,12 @@
-import { usePreferences } from '@/store/preferences';
+import { usePreferences } from '@/hooks/usePreferences';
 import { Redirect } from 'expo-router';
 
 export default function Index() {
-  const { primaryTab, onboardingCompleted } = usePreferences();
+  const { primaryTab, hasCompletedOnboarding } = usePreferences();
+  console.log(primaryTab, 'PT');
   const href = primaryTab === 'index' ? `/(tabs)` : `/(tabs)/notes`;
-  if (!onboardingCompleted) {
-    return <Redirect href="/onboarding" />;
-  }
+  // if (!hasCompletedOnboarding) {
+  //   return <Redirect href="/onboarding" />;
+  // }
   return <Redirect href={href} />;
 }

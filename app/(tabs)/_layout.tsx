@@ -1,5 +1,5 @@
 import { MaterialTopTabs } from '@/constants/layout';
-import { usePreferences } from '@/store/preferences';
+import { usePreferences } from '@/hooks/usePreferences';
 import Tabs from '@/components/Tabs';
 
 export default function TabsLayout() {
