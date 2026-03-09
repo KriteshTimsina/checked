@@ -20,9 +20,11 @@ interface PreferenceStoreProps {
 const getStoredPreferences = (): PreferenceProps => {
   const storedTab = storage.getString('preferences.primaryTab');
   const hapticsEnabled = storage.getBoolean('preferences.hapticsEnabled');
+  const onboardingCompleted = storage.getBoolean('preferences.onboardingCompleted');
   return {
     primaryTab: (storedTab ?? 'index') as Tab,
     hapticsEnabled: hapticsEnabled ?? true,
+    onboardingCompleted: onboardingCompleted ?? false,
   };
 };
 
