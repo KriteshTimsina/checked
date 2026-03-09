@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Recording } from '@/app/(notes)';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import Wave from './Wave';
 import useAudioRecorder from '@/hooks/useAudioRecorder';
 

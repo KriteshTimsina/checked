@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, type TextProps, StyleSheet } from 'react-native';
-
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { useTheme } from '@/hooks/useTheme';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -19,16 +19,18 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const { primary } = useTheme();
 
   return (
     <Text
       style={[
         { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
+        type === 'default' && styles.default,
+        type === 'title' && styles.title,
+        type === 'defaultSemiBold' && styles.defaultSemiBold,
+        type === 'subtitle' && styles.subtitle,
+        // link uses dynamic primary instead of hardcoded blue
+        type === 'link' && [styles.link, { color: primary }],
         style,
       ]}
       {...rest}
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   link: {
     lineHeight: 30,
     fontSize: 16,
-    color: '#0a7ea4',
     fontFamily: 'ClashGroteskMedium',
+    // color applied dynamically via primary above
   },
 });

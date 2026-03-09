@@ -1,5 +1,5 @@
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Colors } from './Colors';
+import { Colors } from './colors';
 import {
   createMaterialTopTabNavigator,
   MaterialTopTabNavigationEventMap,

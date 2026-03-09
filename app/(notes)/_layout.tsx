@@ -17,6 +17,8 @@ export default function NotesLayout() {
             headerShown: true,
             headerTitle: '',
             headerRight: () => noteId && <NoteMenu noteId={noteId} />,
+            headerBackButtonMenuEnabled: true,
+            headerBackButtonDisplayMode: 'minimal',
           };
         }}
       />

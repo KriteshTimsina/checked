@@ -5,8 +5,8 @@ import GorhomBottomSheet, {
   BottomSheetView,
   BottomSheetProps as GorhomBottomSheetProps,
 } from '@gorhom/bottom-sheet';
-import { Colors } from '@/constants/Colors';
 import { ThemedText } from './ThemedText';
+import { useTheme } from '@/hooks/useTheme';
 
 interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
   title?: string | React.ReactNode;
@@ -14,7 +14,7 @@ interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
   snapPoints?: string[];
-  backgroundColor?: string;
+  backgroundColor?: string; // optional override, defaults to primary
   bottomSheetRef: React.RefObject<GorhomBottomSheet>;
 }
 
@@ -24,25 +24,28 @@ const BottomSheet: FC<BottomSheetProps> = ({
   containerStyle,
   titleStyle,
   snapPoints = ['30%'],
-  backgroundColor = Colors.primary,
+  backgroundColor,
   enablePanDownToClose = true,
   index = -1,
   bottomSheetRef,
   ...restProps
 }) => {
-  const containerStyles = [styles.inputContainer, containerStyle];
-  const titleStyles = [styles.sheetTitle, titleStyle];
-  const backgroundStyle = {
-    ...styles.bottomSheet,
-    backgroundColor,
-  };
+  const { primary, text, card, primarySoft } = useTheme();
 
-  const renderBackdrop = useCallback((props: any) => {
-    const onPress = () => Keyboard.dismiss();
-    return (
-      <BottomSheetBackdrop onPress={onPress} appearsOnIndex={0} disappearsOnIndex={-1} {...props} />
-    );
-  }, []);
+  // Caller can override; otherwise falls back to theme primary
+  const sheetBg = backgroundColor ?? primary;
+
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        onPress={() => Keyboard.dismiss()}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        {...props}
+      />
+    ),
+    [],
+  );
 
   return (
     <GorhomBottomSheet
@@ -50,21 +53,27 @@ const BottomSheet: FC<BottomSheetProps> = ({
       enablePanDownToClose={enablePanDownToClose}
       ref={bottomSheetRef}
       snapPoints={snapPoints}
-      backgroundStyle={backgroundStyle}
+      backgroundStyle={[styles.bottomSheet, { backgroundColor: sheetBg }]}
+      handleIndicatorStyle={{ backgroundColor: `${text}40` }}
       backdropComponent={renderBackdrop}
       {...restProps}
     >
-      <BottomSheetView style={containerStyles}>
-        <View style={containerStyles}>
-          {title && typeof title === 'string' ? (
-            <ThemedText type="subtitle" lightColor={Colors.dark.text} style={titleStyles}>
+      <BottomSheetView style={[styles.container, containerStyle]}>
+        {title &&
+          (typeof title === 'string' ? (
+            <ThemedText
+              type="subtitle"
+              // title sits on primary-colored background — always use dark text
+              lightColor="#11181B"
+              darkColor="#11181B"
+              style={[styles.sheetTitle, titleStyle]}
+            >
               {title}
             </ThemedText>
           ) : (
             title
-          )}
-          {children}
-        </View>
+          ))}
+        {children}
       </BottomSheetView>
     </GorhomBottomSheet>
   );
@@ -72,10 +81,9 @@ const BottomSheet: FC<BottomSheetProps> = ({
 
 const styles = StyleSheet.create({
   bottomSheet: {
-    backgroundColor: Colors.primary,
     marginBottom: 20,
   },
-  inputContainer: {
+  container: {
     flex: 1,
     gap: 20,
     paddingHorizontal: 10,

@@ -1,7 +1,7 @@
 import * as Print from 'expo-print';
 
 import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import { useEntries } from '@/store/entries';
 import { generateChecklistHTML } from '@/utils/htmlTempelates';
 import { Ionicons } from '@expo/vector-icons';

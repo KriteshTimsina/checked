@@ -10,8 +10,9 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { useTheme } from '@/hooks/useTheme'; // ✅ our hook, not @react-navigation
 import dayjs from 'dayjs';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useNotes } from '@/store/notes';
@@ -19,7 +20,6 @@ import { INote } from '@/db/schema';
 import { toast } from '@/utils/toast';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { EmbeddedRecording } from '@/components/EmbeddedRecording';
-import { ThemedView } from '@/components/ThemedView';
 import { haptics } from '@/utils/haptics';
 
 export interface Recording {
@@ -30,11 +30,7 @@ export interface Recording {
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
 
-const initialState = {
-  title: '',
-  content: null,
-};
-
+const initialState = { title: '', content: null };
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 const contentHeight = Dimensions.get('window').height - 200;
@@ -47,24 +43,26 @@ export default function Note() {
   const [isRecording, setIsRecording] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [cursorPosition, setCursorPosition] = useState(0);
+  const [showHeaderTitle, setShowHeaderTitle] = useState(false);
+  const [note, setNote] = useState<Partial<INote>>(initialState);
+
   const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { getNote, createNote, updateNote } = useNotes();
-  const [note, setNote] = useState<Partial<INote>>(initialState);
-  const titleOpacity = useSharedValue(1);
-  const [showHeaderTitle, setShowHeaderTitle] = useState(false);
   const navigation = useNavigation();
+  const titleOpacity = useSharedValue(1);
+
+  // ✅ replaces: Colors.*, useTheme from @react-navigation
+  const { primary, text, textMuted, icon } = useTheme();
 
   useEffect(() => {
-    if (noteId) {
-      fetchNote();
-    }
+    if (noteId) fetchNote();
   }, [noteId, getNote]);
 
   const fetchNote = async () => {
-    const note = await getNote(Number(noteId));
-    if (note) {
-      setNote(note);
-      setContent(note.content || '');
+    const fetched = await getNote(Number(noteId));
+    if (fetched) {
+      setNote(fetched);
+      setContent(fetched.content || '');
     }
   };
 
@@ -72,20 +70,15 @@ export default function Note() {
     const scrollY = e.nativeEvent.contentOffset.y;
     titleOpacity.value = 1 - scrollY / 100;
     setShowHeaderTitle(scrollY > 50);
-
-    navigation.setOptions({
-      headerTitle: scrollY > 50 ? note.title : '',
-    });
+    navigation.setOptions({ headerTitle: scrollY > 50 ? note.title : '' });
   };
 
   const onSaveNote = useCallback(async () => {
     if (!note?.title?.trim()) return;
-
     try {
       const saveOperation = note?.id
         ? () => updateNote(Number(noteId), { title: note.title, content } as NoteInput)
         : () => createNote({ title: note.title, content } as NoteInput);
-
       const saved = await saveOperation();
       if (saved) {
         haptics.success();
@@ -98,84 +91,55 @@ export default function Note() {
     }
   }, [note, content, createNote, updateNote, noteId]);
 
-  const onChangeText = (key: keyof NoteInput, text: string) => {
-    setNote(prev => ({ ...prev, [key]: text }));
+  const onChangeText = (key: keyof NoteInput, value: string) => {
+    setNote(prev => ({ ...prev, [key]: value }));
   };
 
   const handlePlay = (uri: string) => {
-    if (currentlyPlaying === uri) {
-      setCurrentlyPlaying(null);
-    } else {
-      setCurrentlyPlaying(uri);
-    }
-  };
-
-  const startRecording = () => {
-    setIsRecording(true);
-    setTimeout(() => {
-      const newRecording: Recording = {
-        id: Date.now().toString(),
-        uri: `recording-${Date.now()}`,
-        duration: 2,
-      };
-      insertRecording(newRecording);
-      setIsRecording(false);
-    }, 2000);
+    setCurrentlyPlaying(prev => (prev === uri ? null : uri));
   };
 
   const insertRecording = (recording: Recording) => {
-    const recordingMarker = `\u200B[RECORDING_${recording.id}]\u200B`; // Using zero-width spaces
-    const newContent =
-      content.slice(0, cursorPosition) + recordingMarker + content.slice(cursorPosition);
-
+    const marker = `\u200B[RECORDING_${recording.id}]\u200B`;
+    const newContent = content.slice(0, cursorPosition) + marker + content.slice(cursorPosition);
     setContent(newContent);
-    setRecordings([
-      ...recordings,
-      {
-        id: recording.id,
-        position: cursorPosition,
-        recording,
-      },
-    ]);
+    setRecordings(prev => [...prev, { id: recording.id, position: cursorPosition, recording }]);
   };
 
   const handleDelete = (id: string) => {
-    const recordingToDelete = recordings.find(r => r.id === id);
-    if (recordingToDelete) {
-      const marker = `\u200B[RECORDING_${id}]\u200B`;
-      const newContent = content.replace(marker, '');
-      setContent(newContent);
-      setRecordings(recordings.filter(r => r.id !== id));
-    }
+    const marker = `\u200B[RECORDING_${id}]\u200B`;
+    setContent(prev => prev.replace(marker, ''));
+    setRecordings(prev => prev.filter(r => r.id !== id));
+  };
+
+  const updateTextPortion = (start: number, end: number, newText: string) => {
+    setContent(content.slice(0, start) + newText + content.slice(end));
   };
 
   const renderContent = () => {
     let lastIndex = 0;
-    const elements = [];
-    const sortedRecordings = [...recordings].sort((a, b) => a.position - b.position);
+    const elements: React.ReactNode[] = [];
+    const sorted = [...recordings].sort((a, b) => a.position - b.position);
 
-    sortedRecordings.forEach(({ id, position, recording }) => {
+    sorted.forEach(({ id, position, recording }) => {
       const marker = `\u200B[RECORDING_${id}]\u200B`;
       if (position > lastIndex) {
         elements.push(
           <TextInput
             key={`text-${lastIndex}-${position}`}
-            style={styles.content}
+            style={[styles.contentInput, { color: text }]}
             multiline
-            value={content.slice(lastIndex, position).replace(/\u200B/g, '')} // Remove zero-width spaces
-            onChangeText={text => updateTextPortion(lastIndex, position, text)}
-            onSelectionChange={event => {
-              setCursorPosition(event.nativeEvent.selection.start + lastIndex);
-            }}
+            value={content.slice(lastIndex, position).replace(/\u200B/g, '')}
+            onChangeText={t => updateTextPortion(lastIndex, position, t)}
+            onSelectionChange={e => setCursorPosition(e.nativeEvent.selection.start + lastIndex)}
             scrollEnabled={false}
             placeholder="Your note here..."
-            placeholderTextColor={Colors.dark.icon}
+            placeholderTextColor={icon}
             autoCorrect={false}
             autoCapitalize="none"
           />,
         );
       }
-
       elements.push(
         <EmbeddedRecording
           key={`recording-${id}`}
@@ -185,23 +149,20 @@ export default function Note() {
           isPlaying={currentlyPlaying === recording.uri}
         />,
       );
-
       lastIndex = position + marker.length;
     });
 
     elements.push(
       <TextInput
         key={`text-${lastIndex}-end`}
-        style={styles.content}
+        style={[styles.contentInput, { color: text }]}
         scrollEnabled={false}
         multiline
         value={content.slice(lastIndex).replace(/\u200B/g, '')}
-        onChangeText={text => updateTextPortion(lastIndex, content.length, text)}
-        onSelectionChange={event => {
-          setCursorPosition(event.nativeEvent.selection.start + lastIndex);
-        }}
+        onChangeText={t => updateTextPortion(lastIndex, content.length, t)}
+        onSelectionChange={e => setCursorPosition(e.nativeEvent.selection.start + lastIndex)}
         placeholder="Your note here..."
-        placeholderTextColor={Colors.dark.icon}
+        placeholderTextColor={icon}
         autoCorrect={false}
         autoCapitalize="none"
       />,
@@ -210,13 +171,8 @@ export default function Note() {
     return elements;
   };
 
-  const updateTextPortion = (start: number, end: number, newText: string) => {
-    const newContent = content.slice(0, start) + newText + content.slice(end);
-    setContent(newContent);
-  };
-  const titleStyles = useAnimatedStyle(() => ({
-    opacity: titleOpacity.value,
-  }));
+  const titleStyles = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
@@ -228,46 +184,38 @@ export default function Note() {
       >
         {!showHeaderTitle && (
           <AnimatedTextInput
-            autoFocus={noteId ? false : true}
+            autoFocus={!noteId}
             placeholder="Your title here"
-            placeholderTextColor={Colors.dark.icon}
-            style={[styles.title, titleStyles]}
+            placeholderTextColor={icon}
+            style={[styles.title, titleStyles, { color: text }]}
             value={note.title}
-            onChangeText={text => onChangeText('title', text)}
+            onChangeText={t => onChangeText('title', t)}
           />
         )}
+
         {noteId && (
-          <ThemedText
-            style={styles.date}
-            darkColor={Colors.light.icon}
-            lightColor={Colors.light.shade}
-          >
+          <ThemedText style={[styles.date, { color: textMuted }]}>
             {note?.updatedAt
-              ? dayjs(note?.updatedAt).format('DD MMMM YYYY h:mm A')
+              ? dayjs(note.updatedAt).format('DD MMMM YYYY h:mm A')
               : note?.createdAt
-              ? dayjs(note?.createdAt).format('DD MMMM YYYY H:mm A')
-              : ''}
+                ? dayjs(note.createdAt).format('DD MMMM YYYY H:mm A')
+                : ''}
           </ThemedText>
         )}
+
         <View>{renderContent()}</View>
       </ScrollView>
-      <View style={styles.recordingButton}>
+
+      <View style={styles.fab}>
         {note?.title && (
           <AnimatedPressable
             entering={FadeInDown.delay(200)}
             onPress={onSaveNote}
-            style={styles.recordButton}
+            style={[styles.fabButton, { backgroundColor: primary, shadowColor: primary }]}
           >
-            <Ionicons name={'checkmark'} size={24} color="white" />
+            <Ionicons name="checkmark" size={24} color="#fff" />
           </AnimatedPressable>
         )}
-        {/* <AnimatedPressable
-          entering={FadeInDown.delay(100)}
-          onPress={isRecording ? () => {} : startRecording}
-          style={[styles.recordButton, isRecording && styles.recordingActive]}
-        >
-          <Ionicons name={isRecording ? 'stop' : 'mic'} size={24} color="white" />
-        </AnimatedPressable> */}
       </View>
     </ThemedView>
   );
@@ -283,34 +231,34 @@ const styles = StyleSheet.create({
     flex: 1,
     height: contentHeight,
   },
-  contentContainer: { gap: 2 },
-  recordingButton: {
+  contentContainer: {
+    gap: 2,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  contentInput: {
+    fontSize: 18,
+  },
+  date: {
+    fontSize: 12,
+  },
+  fab: {
     position: 'absolute',
     bottom: '10%',
     right: '10%',
     gap: 10,
   },
-  recordButton: {
-    backgroundColor: Colors.primary,
+  fabButton: {
     width: 50,
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  recordingActive: {
-    backgroundColor: Colors.primary,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  content: {
-    fontSize: 18,
-    color: Colors.dark.icon,
-  },
-  date: {
-    fontSize: 12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });

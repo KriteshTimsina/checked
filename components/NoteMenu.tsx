@@ -3,7 +3,7 @@ import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import React, { useCallback, useState } from 'react';
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from './ThemedText';
 import { toast } from '@/utils/toast';

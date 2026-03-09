@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import React, { FC } from 'react';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
 import { IEntry } from '@/db/schema';

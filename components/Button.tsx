@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet } from 'react-native';
 import React, { FC } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 
 type ButtonProps = {

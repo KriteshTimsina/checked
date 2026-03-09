@@ -1,4 +1,4 @@
-import { getColors } from '@/constants/Colors';
+import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useMemo } from 'react';
 

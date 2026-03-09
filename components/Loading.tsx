@@ -1,7 +1,7 @@
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ThemedView } from './ThemedView';
 
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 
 export const Loading = () => (
   <ThemedView style={styles.container}>

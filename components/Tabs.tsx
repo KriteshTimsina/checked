@@ -2,7 +2,7 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import GearIcon from './GearIcon';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';

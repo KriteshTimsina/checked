@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import React, { memo } from 'react';
 
 import { ThemedText } from './ThemedText';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import { useRouter } from 'expo-router';
 import { INote } from '@/db/schema';
 import dayjs from 'dayjs';

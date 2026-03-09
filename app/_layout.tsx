@@ -16,7 +16,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // ✅ Now reads from MMKV store, not system
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { getColors } from '@/constants/Colors';
+import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
 
 SplashScreen.preventAutoHideAsync();

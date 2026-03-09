@@ -5,17 +5,16 @@ import { router } from 'expo-router';
 
 import { ThemedView } from '@/components/ThemedView';
 import { onboardingSteps } from '@/constants/onboardingSteps';
-import { usePreferences } from '@/store/preferences';
-import { updatePrimaryColor } from '@/constants/Colors';
+import { usePreferences } from '@/hooks/usePreferences';
 import OnboardingSlide from '@/components/ui/onboarding/OnboardingSlide';
 import OnboardingFooter from '@/components/ui/onboarding/OnboardingFooter';
-import { APP_THEMES, AppTheme, DEFAULT_THEME_ID } from '@/constants/themes';
+import { AppTheme, DEFAULT_THEME_ID } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');
 
 export default function Onboarding() {
   const { top, bottom } = useSafeAreaInsets();
-  const { completeOnboarding } = usePreferences();
+  const { completeOnboarding, setThemeId } = usePreferences();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedThemeId, setSelectedThemeId] = useState(DEFAULT_THEME_ID);
@@ -44,13 +43,11 @@ export default function Onboarding() {
     if (currentStep < onboardingSteps.length - 1) {
       goTo(currentStep + 1);
     } else {
-      // Apply the selected theme before navigating
-      const chosen = APP_THEMES.find(t => t.id === selectedThemeId) ?? APP_THEMES[0];
-      updatePrimaryColor(chosen.primary);
+      setThemeId(selectedThemeId); // ✅ persists to MMKV, useTheme() picks it up everywhere
       completeOnboarding();
       router.replace('/(tabs)');
     }
-  }, [currentStep, goTo, selectedThemeId, completeOnboarding]);
+  }, [currentStep, goTo, selectedThemeId, setThemeId, completeOnboarding]);
 
   return (
     <ThemedView style={[styles.root, { paddingTop: top }]}>

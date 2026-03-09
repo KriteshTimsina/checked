@@ -8,7 +8,7 @@ import NoteItem from '@/components/NoteItem';
 import { useNotes } from '@/store/notes';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 
 export default function Notes() {
   const { notes, getNotes, isLoading } = useNotes();

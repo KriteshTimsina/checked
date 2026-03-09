@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { usePreferences } from '@/hooks/usePreferences';
-import { getColors, AppColors } from '@/constants/Colors';
+import { getColors, AppColors } from '@/constants/colors';
 
 /**
  * useTheme — single hook to get all colors for the current theme + color scheme.

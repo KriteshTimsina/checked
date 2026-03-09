@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/ThemedView';
 import Trophy from '@/components/Trophy';
 import { useEntries } from '@/store/entries';
 
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 
 const ORIGIN = { x: -10, y: 0 };
 

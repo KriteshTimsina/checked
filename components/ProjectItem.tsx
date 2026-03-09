@@ -4,7 +4,7 @@ import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/Reanim
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useFocusEffect } from 'expo-router';
 import { IProject } from '@/db/schema';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
