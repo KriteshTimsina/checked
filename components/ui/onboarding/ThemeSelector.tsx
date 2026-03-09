@@ -1,6 +1,6 @@
+import { APP_THEMES, AppTheme } from '@/constants/themes';
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { APP_THEMES, AppTheme } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -98,6 +98,8 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
     </View>
   );
 });
+
+ThemeSelector.displayName = 'ThemeSelector';
 
 export default ThemeSelector;
 

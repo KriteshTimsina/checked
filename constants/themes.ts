@@ -19,6 +19,16 @@ export type AppTheme = {
 export const APP_THEMES: AppTheme[] = [
   {
     id: 0,
+    name: 'Sandy',
+    emoji: '🌾',
+    primary: '#B8864E', // darker warm brown instead of #e0c59e
+    accent: '#7A5230', // deeper accent
+    bg: '#FDF8F2', // keep the warm bg
+    cardBg: '#F0E4D0',
+    label: 'Warm & Minimal',
+  },
+  {
+    id: 1,
     name: 'Tomato',
     emoji: '🍅',
     primary: '#FF6B6B',
@@ -28,7 +38,7 @@ export const APP_THEMES: AppTheme[] = [
     label: 'Warm & Energetic',
   },
   {
-    id: 1,
+    id: 2,
     name: 'Lavender',
     emoji: '🪻',
     primary: '#C77DFF',
@@ -36,16 +46,6 @@ export const APP_THEMES: AppTheme[] = [
     bg: '#FAF5FF',
     cardBg: '#EDD9FF',
     label: 'Calm & Creative',
-  },
-  {
-    id: 2,
-    name: 'Sandy',
-    emoji: '🌾',
-    primary: '#e0c59e',
-    accent: '#A0785A',
-    bg: '#FDF8F2',
-    cardBg: '#F0E4D0',
-    label: 'Warm & Minimal',
   },
 ];
 

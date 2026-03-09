@@ -62,6 +62,8 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
   );
 });
 
+OnboardingSlide.displayName = 'OnboardingSlide'; // ← add this
+
 export default OnboardingSlide;
 
 const styles = StyleSheet.create({

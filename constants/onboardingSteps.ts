@@ -43,9 +43,9 @@ export const onboardingSteps: OnboardingStepProps[] = [
     title: 'Choose your',
     titleAccent: 'style.',
     subtitle: 'Pick a theme that feels like you. You can always change it later in settings.',
-    color: '#6BCB77',
-    accent: '#4D96FF',
-    bg: '#F5FFF7',
+    color: '#B8864E', // matches new Sandy primary
+    accent: '#7A5230',
+    bg: '#FDF8F2',
     cta: "Let's go →",
   },
 ];

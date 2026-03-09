@@ -6,10 +6,10 @@ import { router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { onboardingSteps } from '@/constants/onboardingSteps';
 import { usePreferences } from '@/store/preferences';
-import { APP_THEMES, AppTheme, DEFAULT_THEME_ID } from '@/constants/themes';
 import { updatePrimaryColor } from '@/constants/Colors';
 import OnboardingSlide from '@/components/ui/onboarding/OnboardingSlide';
 import OnboardingFooter from '@/components/ui/onboarding/OnboardingFooter';
+import { APP_THEMES, AppTheme, DEFAULT_THEME_ID } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -86,6 +86,7 @@ export default function Onboarding() {
         onDotPress={goTo}
         onCta={handleCta}
         bottomInset={bottom}
+        onboardingStepBackground={onboardingSteps[currentStep].bg}
       />
     </ThemedView>
   );
