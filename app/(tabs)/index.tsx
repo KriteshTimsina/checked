@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
 import BottomSheet from '@/components/BottomSheet';
-import ProjectItem from '@/components/ProjectItem';
+import ProjectItem from '@/components/ChecklistItem';
 import InputText from '@/components/InputText';
 import Button from '@/components/Button';
 import { useProject } from '@/store/projects';

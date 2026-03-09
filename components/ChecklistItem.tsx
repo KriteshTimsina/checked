@@ -4,13 +4,13 @@ import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/Reanim
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useFocusEffect } from 'expo-router';
 import { IProject } from '@/db/schema';
-import { Colors } from '@/constants/colors';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
+import { useTheme } from '@/hooks/useTheme';
 
 let currentSwipeable: SwipeableMethods | null = null;
 
@@ -21,18 +21,17 @@ type ProjectItemProps = {
 
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
-const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
+const ChecklistItem: FC<ProjectItemProps> = ({ item, index }) => {
   const [completedCount, setCompletedCount] = useState(0);
   const { deleteProject } = useProject();
   const { getCompletedEntriesCount } = useEntries();
   const swipeableRef = useRef<SwipeableMethods>(null);
+  const { primary, primarySoft, text, textMuted, isDark, accent, surface } = useTheme();
 
   useEffect(() => {
     const currentRef = swipeableRef.current;
     return () => {
-      if (currentSwipeable === currentRef) {
-        currentSwipeable = null;
-      }
+      if (currentSwipeable === currentRef) currentSwipeable = null;
     };
   }, []);
 
@@ -54,10 +53,9 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   const onDelete = async () => {
     try {
       const deleted = await deleteProject(item.id);
-
       if (deleted) {
         haptics.success();
-        return toast('Project deleted successfully.');
+        toast('Project deleted successfully.');
       }
     } catch (error) {
       haptics.error();
@@ -74,9 +72,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   };
 
   const onSwipeableWillClose = () => {
-    if (currentSwipeable === swipeableRef.current) {
-      currentSwipeable = null;
-    }
+    if (currentSwipeable === swipeableRef.current) currentSwipeable = null;
   };
 
   return (
@@ -89,26 +85,21 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
       <Link
         href={{
           pathname: '/(checklist)',
-          params: {
-            projectId: item.id,
-            title: item.title,
-          },
+          params: { projectId: item.id, title: item.title },
         }}
       >
-        <Animated.View entering={FadeInDown.delay(100 * (index + 1))} style={styles.projectItem}>
-          <View>
-            <ThemedText
-              type="defaultSemiBold"
-              darkColor={Colors.light.text}
-              lightColor={Colors.dark.text}
-            >
+        <Animated.View
+          entering={FadeInDown.delay(100 * (index + 1))}
+          style={[styles.projectItem, { backgroundColor: primarySoft }]}
+        >
+          {/* Left accent bar */}
+          <View style={[styles.accentBar, { backgroundColor: primary }]} />
+
+          <View style={styles.content}>
+            <ThemedText type="defaultSemiBold" style={{ color: isDark ? surface : text }}>
               {item.title}
             </ThemedText>
-            <ThemedText
-              style={styles.completed}
-              darkColor={Colors.light.icon}
-              lightColor={Colors.light.shade}
-            >
+            <ThemedText style={[styles.completed, { color: textMuted }]}>
               {completedCount} completed
             </ThemedText>
           </View>
@@ -118,37 +109,41 @@ const ProjectItem: FC<ProjectItemProps> = ({ item, index }) => {
   );
 };
 
-export default ProjectItem;
+export default ChecklistItem;
 
-const RightAction = ({ onDelete }: { onDelete: () => void }) => {
-  return (
-    <AnimatedButton entering={FadeIn.delay(1000)} onPress={onDelete} style={styles.deleteContainer}>
-      <MaterialCommunityIcons
-        color="white"
-        style={styles.deleteIcon}
-        name="delete-outline"
-        size={24}
-      />
-    </AnimatedButton>
-  );
-};
+const RightAction = ({ onDelete }: { onDelete: () => void }) => (
+  <AnimatedButton entering={FadeIn.delay(1000)} onPress={onDelete} style={styles.deleteContainer}>
+    <MaterialCommunityIcons color="white" name="delete-outline" size={24} />
+  </AnimatedButton>
+);
 
 const styles = StyleSheet.create({
   projectItem: {
-    backgroundColor: Colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
     minHeight: 60,
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 12,
+    overflow: 'hidden',
     width: '100%',
   },
+  accentBar: {
+    width: 4,
+    alignSelf: 'stretch',
+  },
+  content: {
+    flex: 1,
+    padding: 12,
+    gap: 2,
+  },
+  completed: {
+    fontSize: 13,
+  },
   deleteContainer: {
-    backgroundColor: 'red',
-    width: 50,
-    borderRadius: 10,
+    backgroundColor: '#ef4444',
+    width: 52,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
   },
-  deleteIcon: { textAlign: 'center' },
-  completed: { fontSize: 14 },
 });

@@ -26,5 +26,6 @@ const styles = StyleSheet.create({
   trophy: {
     width: 200,
     height: 200,
+    backgroundColor: 'transparent',
   },
 });
