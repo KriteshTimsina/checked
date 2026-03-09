@@ -6,7 +6,6 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
 import BottomSheet from '@/components/BottomSheet';
-import ProjectItem from '@/components/ChecklistItem';
 import InputText from '@/components/InputText';
 import Button from '@/components/Button';
 import { useProject } from '@/store/projects';
@@ -17,6 +16,7 @@ import { globals } from '@/styles/globals';
 
 // ✅ useTheme instead of static Colors
 import { useTheme } from '@/hooks/useTheme';
+import Checklist from '@/components/Checklist';
 
 export default function Home() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -77,7 +77,7 @@ export default function Home() {
               }
               data={projects}
               keyExtractor={item => String(item.id)}
-              renderItem={({ item, index }) => <ProjectItem item={item} index={index} />}
+              renderItem={({ item, index }) => <Checklist item={item} index={index} />}
               contentContainerStyle={styles.contentContainer}
             />
           ) : (

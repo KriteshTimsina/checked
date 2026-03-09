@@ -2,13 +2,14 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import React, { memo } from 'react';
 
 import { ThemedText } from './ThemedText';
-import { Colors } from '@/constants/colors';
 import { useRouter } from 'expo-router';
 import { INote } from '@/db/schema';
 import dayjs from 'dayjs';
+import { useTheme } from '@/hooks/useTheme';
 
 const NoteItem = ({ item }: { item: INote }) => {
   const router = useRouter();
+  const { primarySoft, text, textMuted, icon } = useTheme();
 
   const onViewNote = (id: number) => {
     router.push({
@@ -24,32 +25,23 @@ const NoteItem = ({ item }: { item: INote }) => {
       style={({ pressed }) => [
         styles.card,
         {
-          backgroundColor: Colors.primary,
+          backgroundColor: primarySoft,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
       onPress={() => onViewNote(item.id)}
     >
       <View style={styles.cardHeader}>
-        <ThemedText
-          numberOfLines={1}
-          type="defaultSemiBold"
-          darkColor={Colors.light.text}
-          lightColor={Colors.dark.text}
-        >
+        <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.title} darkColor={icon}>
           {item.title}
         </ThemedText>
       </View>
 
-      <ThemedText
-        style={styles.description}
-        numberOfLines={6}
-        darkColor={Colors.light.icon}
-        lightColor={Colors.light.shade}
-      >
-        {item.content ?? 'No text'}
+      <ThemedText style={[styles.description, { color: textMuted }]} numberOfLines={6}>
+        {item.content ?? 'No description...'}
       </ThemedText>
-      <ThemedText style={styles.date} darkColor={Colors.light.icon} lightColor={Colors.light.shade}>
+
+      <ThemedText style={[styles.date, { color: textMuted }]}>
         {item?.updatedAt
           ? dayjs(item?.updatedAt).format('MMM DD, hh:mm A')
           : dayjs(item?.createdAt).format('MMM DD')}
@@ -67,7 +59,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 6,
   },
-
   title: {
     width: '80%',
   },
@@ -78,6 +69,7 @@ const styles = StyleSheet.create({
   },
   description: {
     flex: 1,
+    fontSize: 14,
   },
   date: {
     fontSize: 12,

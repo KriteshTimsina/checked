@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { NoteMenu } from '@/components/NoteMenu';
+import { NoteMenu } from '@/components/ui/NotesMenu';
 
 type NoteParams = {
   index: { noteId?: number };
@@ -17,8 +17,6 @@ export default function NotesLayout() {
             headerShown: true,
             headerTitle: '',
             headerRight: () => noteId && <NoteMenu noteId={noteId} />,
-            headerBackButtonMenuEnabled: true,
-            headerBackButtonDisplayMode: 'minimal',
           };
         }}
       />

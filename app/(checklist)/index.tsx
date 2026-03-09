@@ -8,7 +8,7 @@ import Button from '@/components/Button';
 import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
-import Checklist from '@/components/Checklist';
+import ChecklistItem from '@/components/ChecklistItem';
 import BottomSheet from '@/components/BottomSheet';
 import GorhomBottomSheet from '@gorhom/bottom-sheet';
 import { ThemedView } from '@/components/ThemedView';
@@ -119,7 +119,7 @@ export default function Entry() {
             contentContainerStyle={styles.scrollContainer}
             data={entries}
             keyExtractor={item => String(item.id)}
-            renderItem={({ item }) => <Checklist openEditDialog={onEditDialog} item={item} />}
+            renderItem={({ item }) => <ChecklistItem openEditDialog={onEditDialog} item={item} />}
           />
         )}
         <Button onPress={openSheet} />

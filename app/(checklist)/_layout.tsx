@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { ChecklistMenu } from '@/components/ChecklistMenu';
+import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
 
 type ChecklistParamList = {
   index: { title?: string };

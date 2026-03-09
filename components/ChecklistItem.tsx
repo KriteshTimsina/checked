@@ -1,130 +1,76 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link, useFocusEffect } from 'expo-router';
-import { IProject } from '@/db/schema';
-import { toast } from '@/utils/toast';
+import React, { FC } from 'react';
+import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
-import { useProject } from '@/store/projects';
+import { IEntry } from '@/db/schema';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useEntries } from '@/store/entries';
-import { haptics } from '@/utils/haptics';
 import { useTheme } from '@/hooks/useTheme';
+import debounce from 'lodash/debounce';
 
-let currentSwipeable: SwipeableMethods | null = null;
-
-type ProjectItemProps = {
-  item: IProject;
-  index: number;
+type ChecklistItemProps = {
+  item: IEntry;
+  openEditDialog: (item: IEntry) => void;
 };
 
 const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
-const ChecklistItem: FC<ProjectItemProps> = ({ item, index }) => {
-  const [completedCount, setCompletedCount] = useState(0);
-  const { deleteProject } = useProject();
-  const { getCompletedEntriesCount } = useEntries();
-  const swipeableRef = useRef<SwipeableMethods>(null);
-  const { primary, primarySoft, text, textMuted, isDark, accent, surface } = useTheme();
+const ChecklistItem: FC<ChecklistItemProps> = ({ item, openEditDialog }) => {
+  const { primary, primarySoft, icon } = useTheme();
+  const { updateEntryStatus } = useEntries();
 
-  useEffect(() => {
-    const currentRef = swipeableRef.current;
-    return () => {
-      if (currentSwipeable === currentRef) currentSwipeable = null;
-    };
-  }, []);
-
-  const getCompletedTask = useCallback(async () => {
+  const toggleCheckbox = debounce(async () => {
     try {
-      const count = await getCompletedEntriesCount(item.id);
-      setCompletedCount(count);
+      await updateEntryStatus(item.id, !item.completed);
     } catch (error) {
-      console.error('Error fetching completed tasks:', error);
+      console.error('Error updating entry status:', error);
     }
-  }, [getCompletedEntriesCount, item.id]);
-
-  useFocusEffect(
-    useCallback(() => {
-      getCompletedTask();
-    }, [getCompletedTask]),
-  );
-
-  const onDelete = async () => {
-    try {
-      const deleted = await deleteProject(item.id);
-      if (deleted) {
-        haptics.success();
-        toast('Project deleted successfully.');
-      }
-    } catch (error) {
-      haptics.error();
-      toast('Failed deleting project');
-      console.error(error);
-    }
-  };
-
-  const onSwipeableWillOpen = () => {
-    if (currentSwipeable && currentSwipeable !== swipeableRef.current) {
-      currentSwipeable.close();
-    }
-    currentSwipeable = swipeableRef.current;
-  };
-
-  const onSwipeableWillClose = () => {
-    if (currentSwipeable === swipeableRef.current) currentSwipeable = null;
-  };
+  }, 100);
 
   return (
-    <Swipeable
-      ref={swipeableRef}
-      onSwipeableWillOpen={onSwipeableWillOpen}
-      onSwipeableWillClose={onSwipeableWillClose}
-      renderRightActions={() => <RightAction onDelete={onDelete} />}
+    <AnimatedButton
+      onLongPress={() => openEditDialog(item)}
+      entering={FadeInDown.delay(200)}
+      onPress={toggleCheckbox}
+      android_ripple={{ color: icon }}
+      style={[styles.container, { backgroundColor: primarySoft }]}
     >
-      <Link
-        href={{
-          pathname: '/(checklist)',
-          params: { projectId: item.id, title: item.title },
-        }}
-      >
-        <Animated.View
-          entering={FadeInDown.delay(100 * (index + 1))}
-          style={[styles.projectItem, { backgroundColor: primarySoft }]}
-        >
-          {/* Left accent bar */}
-          <View style={[styles.accentBar, { backgroundColor: primary }]} />
+      {/* Left accent bar — matches ChecklistItem */}
+      <View
+        style={[styles.accentBar, { backgroundColor: item.completed ? 'transparent' : primary }]}
+      />
 
-          <View style={styles.content}>
-            <ThemedText type="defaultSemiBold" style={{ color: isDark ? surface : text }}>
-              {item.title}
-            </ThemedText>
-            <ThemedText style={[styles.completed, { color: textMuted }]}>
-              {completedCount} completed
-            </ThemedText>
-          </View>
-        </Animated.View>
-      </Link>
-    </Swipeable>
+      <View style={styles.content}>
+        <Checkbox
+          style={styles.checkbox}
+          color={item.completed ? primary : undefined}
+          value={item.completed}
+          onValueChange={toggleCheckbox}
+        />
+        <ThemedText
+          style={{
+            flex: 1,
+            textDecorationLine: item.completed ? 'line-through' : 'none',
+            opacity: item.completed ? 0.45 : 1,
+          }}
+          darkColor={icon}
+        >
+          {item.title}
+        </ThemedText>
+      </View>
+    </AnimatedButton>
   );
 };
 
 export default ChecklistItem;
 
-const RightAction = ({ onDelete }: { onDelete: () => void }) => (
-  <AnimatedButton entering={FadeIn.delay(1000)} onPress={onDelete} style={styles.deleteContainer}>
-    <MaterialCommunityIcons color="white" name="delete-outline" size={24} />
-  </AnimatedButton>
-);
-
 const styles = StyleSheet.create({
-  projectItem: {
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 60,
     borderRadius: 12,
     overflow: 'hidden',
-    width: '100%',
+    minHeight: 60,
   },
   accentBar: {
     width: 4,
@@ -132,18 +78,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 12,
-    gap: 2,
-  },
-  completed: {
-    fontSize: 13,
-  },
-  deleteContainer: {
-    backgroundColor: '#ef4444',
-    width: 52,
-    borderRadius: 12,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 10,
+    gap: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  checkbox: {
+    borderRadius: 100,
+    width: 25,
+    height: 25,
   },
 });
