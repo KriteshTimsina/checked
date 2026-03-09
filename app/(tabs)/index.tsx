@@ -12,10 +12,11 @@ import Button from '@/components/Button';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
-
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
-import { Colors } from '@/constants/Colors';
 import { globals } from '@/styles/globals';
+
+// ✅ useTheme instead of static Colors
+import { useTheme } from '@/hooks/useTheme';
 
 export default function Home() {
   const bottomSheetRef = useRef<GorhomBottomSheet>(null);
@@ -23,6 +24,9 @@ export default function Home() {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const { projects, getAllProjects, createProject } = useProject();
+
+  // ✅ All colors from theme — re-renders when theme/dark mode changes
+  const { primary } = useTheme();
 
   useEffect(() => {
     fetchProjects();
@@ -38,13 +42,11 @@ export default function Home() {
     if (inputText.trim().length > MAX_INPUT_LENGTH) {
       return toast('Project name is too long.');
     }
-
     const created = await createProject({
       title: inputText.trim(),
       description: 'Testing',
       createdAt: new Date(),
     });
-
     if (created) {
       haptics.success();
       closeSheet();
@@ -55,11 +57,13 @@ export default function Home() {
     bottomSheetRef.current?.expand();
     inputRef.current?.focus();
   };
+
   const closeSheet = () => {
     bottomSheetRef.current?.close();
     inputRef.current?.blur();
     setInputText('');
   };
+
   return (
     <>
       <ThemedView style={globals.container}>
@@ -68,11 +72,8 @@ export default function Home() {
           {projects.length > 0 ? (
             <FlatList
               refreshControl={
-                <RefreshControl
-                  colors={[Colors.primary]}
-                  refreshing={loading}
-                  onRefresh={fetchProjects}
-                ></RefreshControl>
+                // ✅ Uses dynamic primary color
+                <RefreshControl colors={[primary]} refreshing={loading} onRefresh={fetchProjects} />
               }
               data={projects}
               keyExtractor={item => String(item.id)}

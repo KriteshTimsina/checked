@@ -3,10 +3,11 @@ import { Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/hooks/useTheme';
 
 const GearIcon = () => {
   const router = useRouter();
+  const { primary } = useTheme();
 
   const handlePress = () => {
     router.push('/settings');
@@ -16,7 +17,7 @@ const GearIcon = () => {
       onPress={handlePress}
       style={({ pressed }) => [styles.icon, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
     >
-      <Ionicons name="settings" size={26} color={Colors.primary} />
+      <Ionicons name="settings" size={26} color={primary} />
     </Pressable>
   );
 };

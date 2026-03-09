@@ -5,9 +5,11 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import GearIcon from './GearIcon';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@/hooks/useTheme';
 
 function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarProps) {
   const { top } = useSafeAreaInsets();
+  const { primary, icon } = useTheme();
   return (
     <View style={[styles.container, { marginTop: top }]}>
       {state.routes.map((route, index) => {
@@ -45,14 +47,14 @@ function Tabs({ state, descriptors, navigation, position }: MaterialTopTabBarPro
             {label === 'index' ? (
               <Ionicons
                 name={isFocused ? 'checkbox' : 'checkbox-outline'}
-                color={isFocused ? Colors.primary : Colors.dark.icon}
+                color={isFocused ? primary : icon}
                 size={30}
               />
             ) : (
               <FontAwesome
                 size={28}
                 name={isFocused ? 'sticky-note' : 'sticky-note-o'}
-                color={isFocused ? Colors.primary : Colors.dark.icon}
+                color={isFocused ? primary : icon}
               />
             )}
           </TouchableOpacity>

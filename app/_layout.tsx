@@ -6,80 +6,76 @@ import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
 import { SQLiteProvider } from 'expo-sqlite';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
 import { useFontLoading } from '@/hooks/useFontLoading';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Colors } from '@/constants/Colors';
 import { globals } from '@/styles/globals';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const CustomDarkTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: Colors.dark.background,
-  },
-};
-const CustomDefaultTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: Colors.light.background,
-  },
-};
+// ✅ Now reads from MMKV store, not system
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { getColors } from '@/constants/Colors';
+import { usePreferences } from '@/hooks/usePreferences';
 
 SplashScreen.preventAutoHideAsync();
+
+function AppNavigator() {
+  const colorScheme = useColorScheme();
+  const themeId = usePreferences(s => s.themeId);
+  const colors = getColors(themeId, colorScheme);
+
+  // React Navigation theme — background syncs with user's preference
+  const appTheme =
+    colorScheme === 'dark'
+      ? { ...DarkTheme, colors: { ...DarkTheme.colors, background: colors.background } }
+      : { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: colors.background } };
+
+  return (
+    <ThemeProvider value={appTheme}>
+      {/* StatusBar style flips automatically with colorScheme */}
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(checklist)" />
+        <Stack.Screen name="(notes)" />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerBackVisible: true,
+            headerShown: true,
+            headerTitle: 'Settings',
+          }}
+        />
+        <Stack.Screen name="onboarding" />
+      </Stack>
+    </ThemeProvider>
+  );
+}
 
 export default function RootLayout() {
   const { success: dbSuccess } = useDatabaseInit();
   const fontsLoaded = useFontLoading();
-  const colorScheme = useColorScheme();
-
-  const appTheme = colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme;
 
   useEffect(() => {
-    const initializeApp = async () => {
-      if (fontsLoaded && dbSuccess) {
-        await SplashScreen.hideAsync();
-      }
-    };
-
-    initializeApp();
+    if (fontsLoaded && dbSuccess) {
+      SplashScreen.hideAsync();
+    }
   }, [dbSuccess, fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return (
     <Suspense fallback={<Loading />}>
       <SQLiteProvider databaseName={DATABASE_NAME} useSuspense>
         <SafeAreaProvider style={globals.flex}>
           <GestureHandlerRootView style={globals.flex}>
-            <ThemeProvider value={appTheme}>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
-                <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
-                <Stack.Screen name="(checklist)" />
-                <Stack.Screen name="(notes)" />
-                <Stack.Screen
-                  options={{
-                    headerBackVisible: true,
-                    headerShown: true,
-                    headerTitle: 'Settings',
-                  }}
-                  name="settings"
-                />
-                <Stack.Screen name="onboarding" />
-              </Stack>
-            </ThemeProvider>
+            {/*
+              AppNavigator is separate so useColorScheme/usePreferences hooks
+              work inside a proper component body (not the root layout function)
+            */}
+            <AppNavigator />
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </SQLiteProvider>
