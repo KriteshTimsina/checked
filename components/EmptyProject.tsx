@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useMemo, useRef } from 'react';
 import { ThemedText } from './ThemedText';
 import LottieView from 'lottie-react-native';
 import emptyProject from '@/assets/lottie/empty-state.json';
 import { ThemedView } from './ThemedView';
+import { useTheme } from '@/hooks/useTheme';
 
 const TITLE = {
   project: 'No Projects. Add one to view.',
@@ -17,6 +18,20 @@ type EmptyProjectProps = {
 
 const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {
   const animation = useRef<LottieView>(null);
+  const { primary } = useTheme();
+
+  const colorFilters = useMemo(
+    () => [
+      { keypath: 'Folder back 2.Fill 1', color: primary },
+      { keypath: 'Folder back 2.Fill 6', color: primary },
+      { keypath: 'Folder Front 3.Fill 8', color: primary },
+      { keypath: 'Shape Layer 4', color: 'white' },
+      { keypath: 'Shape Layer 3', color: 'white' },
+      { keypath: 'Shape Layer 5.Shape 1.Stroke 1', color: 'white' },
+      { keypath: 'Shape Layer 2.Shape 1.Stroke 1', color: 'white' },
+    ],
+    [primary],
+  );
 
   useEffect(() => {
     const current = animation.current;
@@ -27,7 +42,13 @@ const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {
   }, []);
   return (
     <ThemedView style={styles.container}>
-      <LottieView autoPlay ref={animation} style={styles.empty} source={emptyProject} />
+      <LottieView
+        autoPlay
+        ref={animation}
+        style={styles.empty}
+        source={emptyProject}
+        colorFilters={colorFilters}
+      />
       <ThemedText style={{ textAlign: 'center' }}>{TITLE[type]}</ThemedText>
     </ThemedView>
   );
