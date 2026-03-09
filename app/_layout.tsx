@@ -20,6 +20,9 @@ import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
 import { NoteMenu } from '@/components/ui/NotesMenu';
 import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
+import { useAppIcon } from '@/hooks/useAppIcon';
+import { APP_THEMES } from '@/constants/themes';
+import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
 type NoteParams = {
   index: { noteId?: number };
@@ -88,6 +91,13 @@ function AppNavigator() {
 export default function RootLayout() {
   const { success: dbSuccess } = useDatabaseInit();
   const fontsLoaded = useFontLoading();
+  const { iconId } = usePreferences();
+
+  useEffect(() => {
+    const theme = APP_THEMES.find(t => t.id === iconId);
+    if (!theme) return;
+    setAppIcon(theme.iconKey);
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded && dbSuccess) {

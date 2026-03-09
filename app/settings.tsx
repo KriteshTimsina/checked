@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Appearance, StyleSheet, View } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
+import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -13,12 +14,14 @@ import { haptics } from '@/utils/haptics';
 import { SettingItem, SettingSection } from '@/components/ui/settings/SettingsItem';
 import { ThemeSheet } from '@/components/ui/settings/ThemeSheet';
 import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
+import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheet>(null);
   const themeSheetRef = useRef<BottomSheet>(null);
+  const appIconSheetRef = useRef<BottomSheet>(null);
 
-  const { primary, text, textMuted, surface } = useTheme();
+  const { primary, text, surface } = useTheme();
   const {
     setPrimaryTab,
     primaryTab,
@@ -26,12 +29,15 @@ export default function Settings() {
     toggleHaptics,
     themeId,
     setThemeId,
+    iconId, // add this to your usePreferences store
+    setIconId, // add this to your usePreferences store
     colorScheme,
     setColorScheme,
   } = usePreferences();
 
   const isDark = colorScheme === 'dark';
-  const currentThemeName = APP_THEMES.find(t => t.id === themeId)?.name ?? '';
+  const currentTheme = APP_THEMES.find(t => t.id === themeId);
+  const currentIcon = APP_THEMES.find(t => t.id === iconId) ?? currentTheme;
 
   const toggleDarkMode = (value: boolean) => {
     const scheme = value ? 'dark' : 'light';
@@ -42,6 +48,13 @@ export default function Settings() {
   const onSelectTheme = (theme: AppTheme) => {
     setThemeId(theme.id);
     themeSheetRef.current?.close();
+  };
+
+  const onSelectIcon = (theme: AppTheme) => {
+    setIconId(theme.id);
+    setAppIcon(theme.iconKey);
+    haptics.success();
+    appIconSheetRef.current?.close();
   };
 
   const onSelectTab = async (label: Tab) => {
@@ -61,11 +74,16 @@ export default function Settings() {
   );
 
   const ThemePreview = (
-    <View style={[styles.themePill, { backgroundColor: primary + '20' }]}>
-      <View style={[styles.themeDot, { backgroundColor: primary }]} />
-      <ThemedText style={[styles.themePillLabel, { color: primary }]}>
-        {currentThemeName}
-      </ThemedText>
+    <View style={[styles.pill, { backgroundColor: primary + '20' }]}>
+      <View style={[styles.pillDot, { backgroundColor: primary }]} />
+      <ThemedText style={[styles.pillLabel, { color: primary }]}>{currentTheme?.name}</ThemedText>
+    </View>
+  );
+
+  const IconPreview = (
+    <View style={[styles.pill, { backgroundColor: primary + '20' }]}>
+      <ThemedText style={styles.pillEmoji}>{currentIcon?.emoji}</ThemedText>
+      <ThemedText style={[styles.pillLabel, { color: primary }]}>{currentIcon?.name}</ThemedText>
     </View>
   );
 
@@ -84,6 +102,13 @@ export default function Settings() {
               label="Theme"
               rightElement={ThemePreview}
               onPress={() => themeSheetRef.current?.expand()}
+            />
+            <SettingItem
+              variant="info"
+              icon="apps-outline"
+              label="App Icon"
+              rightElement={IconPreview}
+              onPress={() => appIconSheetRef.current?.expand()}
             />
             <SettingItem
               variant="toggle"
@@ -122,6 +147,13 @@ export default function Settings() {
         renderBackdrop={renderBackdrop}
       />
 
+      <AppIconSheet
+        sheetRef={appIconSheetRef}
+        iconId={iconId ?? themeId}
+        onSelect={onSelectIcon}
+        renderBackdrop={renderBackdrop}
+      />
+
       <DefaultTabSheet
         sheetRef={primaryTabRef}
         primaryTab={primaryTab}
@@ -156,7 +188,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
     gap: 24,
   },
-  themePill: {
+  pill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -164,12 +196,15 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 20,
   },
-  themeDot: {
+  pillDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
   },
-  themePillLabel: {
+  pillEmoji: {
+    fontSize: 12,
+  },
+  pillLabel: {
     fontSize: 12,
     fontWeight: '700',
   },

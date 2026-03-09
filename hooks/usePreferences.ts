@@ -4,7 +4,6 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export const storage = new MMKV();
 
-// Zustand MMKV storage adapter
 const mmkvStorage = {
   getItem: (key: string) => storage.getString(key) ?? null,
   setItem: (key: string, value: string) => storage.set(key, value),
@@ -22,6 +21,10 @@ type PreferencesState = {
   // Theme
   themeId: number;
   setThemeId: (id: number) => void;
+
+  // App Icon
+  iconId: number;
+  setIconId: (id: number) => void;
 
   // Color scheme
   colorScheme: ColorSchemeType;
@@ -45,8 +48,12 @@ export const usePreferences = create<PreferencesState>()(
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
 
       // Theme
-      themeId: 0, // default: Sandy
+      themeId: 0,
       setThemeId: id => set({ themeId: id }),
+
+      // App Icon — defaults to themeId so they stay in sync initially
+      iconId: 0,
+      setIconId: id => set({ iconId: id }),
 
       // Color scheme
       colorScheme: 'light',

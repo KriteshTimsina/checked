@@ -65,6 +65,27 @@
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
+      ],
+      [
+        "@howincodes/expo-dynamic-app-icon",
+        {
+          "forest": {
+            "ios": "./assets/images/icon.png",
+            "android": "./assets/images/icon.png"
+          },
+          "sandy": {
+            "ios": "./assets/images/icon-1.png",
+            "android": "./assets/images/icon-1.png"
+          },
+          "tomato": {
+            "ios": "./assets/images/icon-2.png",
+            "android": "./assets/images/icon-2.png"
+          },
+          "lavender": {
+            "ios": "./assets/images/icon-3.png",
+            "android": "./assets/images/icon-3.png"
+          }
+        }
       ]
     ],
     "experiments": {

@@ -31,5 +31,61 @@
         <data android:scheme="exp+checklist"/>
       </intent-filter>
     </activity>
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivityforest" android:enabled="false" android:exported="true" android:icon="@mipmap/forest" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/forest_round">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="myapp"/>
+        <data android:scheme="com.kriteshtimsina.checklist"/>
+        <data android:scheme="exp+checklist"/>
+      </intent-filter>
+    </activity-alias>
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitysandy" android:enabled="false" android:exported="true" android:icon="@mipmap/sandy" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/sandy_round">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="myapp"/>
+        <data android:scheme="com.kriteshtimsina.checklist"/>
+        <data android:scheme="exp+checklist"/>
+      </intent-filter>
+    </activity-alias>
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitytomato" android:enabled="false" android:exported="true" android:icon="@mipmap/tomato" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/tomato_round">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="myapp"/>
+        <data android:scheme="com.kriteshtimsina.checklist"/>
+        <data android:scheme="exp+checklist"/>
+      </intent-filter>
+    </activity-alias>
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitylavender" android:enabled="false" android:exported="true" android:icon="@mipmap/lavender" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/lavender_round">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="myapp"/>
+        <data android:scheme="com.kriteshtimsina.checklist"/>
+        <data android:scheme="exp+checklist"/>
+      </intent-filter>
+    </activity-alias>
   </application>
 </manifest>
