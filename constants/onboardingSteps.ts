@@ -8,11 +8,10 @@ export type OnboardingStepProps = {
   color: string;
   accent: string;
   bg: string;
-  // illustration: React.ReactNode;
   cta: string;
 };
 
-export const onboardingSteps = [
+export const onboardingSteps: OnboardingStepProps[] = [
   {
     id: 0,
     emoji: '👋',
@@ -27,19 +26,6 @@ export const onboardingSteps = [
   },
   {
     id: 1,
-    emoji: '✅',
-    tag: 'Checklists & Habits',
-    title: 'Build habits',
-    titleAccent: 'that stick.',
-    subtitle:
-      'Track daily routines, crush checklists, and celebrate every little win with a satisfying ✓.',
-    color: '#6BCB77',
-    accent: '#4D96FF',
-    bg: '#F5FFF7',
-    cta: 'Sounds great!',
-  },
-  {
-    id: 2,
     emoji: '📝',
     tag: 'Notes',
     title: 'Capture every',
@@ -48,6 +34,18 @@ export const onboardingSteps = [
     color: '#C77DFF',
     accent: '#FF9F1C',
     bg: '#FAF5FF',
-    cta: 'Start for free →',
+    cta: 'Sounds good',
+  },
+  {
+    id: 2,
+    emoji: '🎨',
+    tag: 'Make it yours',
+    title: 'Choose your',
+    titleAccent: 'style.',
+    subtitle: 'Pick a theme that feels like you. You can always change it later in settings.',
+    color: '#6BCB77',
+    accent: '#4D96FF',
+    bg: '#F5FFF7',
+    cta: "Let's go →",
   },
 ];
