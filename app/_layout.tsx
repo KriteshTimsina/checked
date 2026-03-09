@@ -18,6 +18,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
+import { NoteMenu } from '@/components/ui/NotesMenu';
+import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
+
+type NoteParams = {
+  index: { noteId?: number };
+};
+type ChecklistParamList = {
+  index: { title?: string };
+  success: undefined;
+};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -37,13 +47,34 @@ function AppNavigator() {
       {/* StatusBar style flips automatically with colorScheme */}
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(checklist)" />
-        <Stack.Screen name="(notes)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="(checklist)"
+          options={({ route }) => {
+            const title = (route.params as ChecklistParamList['index'])?.title;
+
+            return {
+              headerShown: true,
+              headerTitle: (route.params as ChecklistParamList['index'])?.title ?? 'Checklist',
+              headerRight: () => title && <ChecklistMenu title={title} />,
+            };
+          }}
+        />
+        <Stack.Screen
+          name="(notes)"
+          options={({ route }) => {
+            const noteId = (route.params as NoteParams['index'])?.noteId;
+            return {
+              headerShown: true,
+              headerTitle: '',
+              headerRight: () => noteId && <NoteMenu noteId={noteId} />,
+              headerStyle: { backgroundColor: appTheme.colors.card },
+            };
+          }}
+        />
         <Stack.Screen
           name="settings"
           options={{
-            headerBackVisible: true,
             headerShown: true,
             headerTitle: 'Settings',
           }}

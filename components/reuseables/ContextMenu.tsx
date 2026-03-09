@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { debounce } from 'lodash';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -33,14 +32,12 @@ export function ContextMenu({
   actions,
   topOffset = 50,
 }: ContextMenuProps) {
-  const { card, text, textMuted, border, icon, isDark } = useTheme();
-
-  const debouncedOpen = useCallback(debounce(onOpen, 100), [onOpen]);
+  const { card, text, textMuted, border, isDark } = useTheme();
 
   return (
     <>
-      <TouchableOpacity onPressIn={debouncedOpen} hitSlop={8} style={styles.trigger}>
-        <Ionicons name="ellipsis-vertical" size={22} color={icon} />
+      <TouchableOpacity onPress={onOpen} hitSlop={8} style={styles.trigger}>
+        <Ionicons name="ellipsis-vertical" size={22} color={text} />
       </TouchableOpacity>
 
       <Modal
