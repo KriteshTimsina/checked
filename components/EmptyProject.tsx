@@ -7,8 +7,8 @@ import { ThemedView } from './ThemedView';
 import { useTheme } from '@/hooks/useTheme';
 
 const TITLE = {
-  project: 'No Projects. Add one to view.',
-  checklist: 'Checklist is empty. Add one to view.',
+  project: 'No Checklist. Add one to view.',
+  checklist: 'Checklist has no items. Add one to view.',
   notes: 'Notes is empty. Add one to view.',
 };
 

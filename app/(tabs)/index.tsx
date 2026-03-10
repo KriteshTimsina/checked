@@ -39,6 +39,9 @@ export default function Home() {
   };
 
   const onAddProject = async () => {
+    if (inputText.trim().length === 0) {
+      return toast('Project name cannot be empty.');
+    }
     if (inputText.trim().length > MAX_INPUT_LENGTH) {
       return toast('Project name is too long.');
     }
