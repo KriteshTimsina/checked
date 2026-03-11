@@ -1,7 +1,7 @@
 {
   "name": "checked",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "beta-0.1.0",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -15,7 +15,10 @@
     "build:development": "eas build --platform android --profile development",
     "build:preview": "eas build --platform android --profile preview",
     "build:release": "eas build --platform android --profile release",
-    "cache:clean": "npm cache clean --force"
+    "cache:clean": "npm cache clean --force",
+    "prebuild": "npx expo prebuild",
+    "prebuild:android": "npx expo prebuild --clean --platform android",
+    "prebuild:ios": "npx expo prebuild --clean --platform ios"
   },
   "jest": {
     "preset": "jest-expo"

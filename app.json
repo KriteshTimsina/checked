@@ -2,7 +2,7 @@
   "expo": {
     "name": "Checked",
     "slug": "checklist",
-    "version": "1.0.0",
+    "version": "beta-0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -35,7 +35,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.kriteshtimsina.checklist",
-      "versionCode": 2,
       "targetSdkVersion": 35,
       "compileSdkVersion": 35,
       "buildToolsVersion": "35.0.0"
