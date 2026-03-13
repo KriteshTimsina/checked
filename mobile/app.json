@@ -2,10 +2,10 @@
   "expo": {
     "name": "Checked",
     "slug": "checklist",
-    "version": "beta-0.1.0",
+    "version": "beta-0.1.1",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./src/assets/images/icon.png",
+    "scheme": "checked",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "githubUrl": "https://github.com/kriteshtimsina/checked",
@@ -31,7 +31,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./src/assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.kriteshtimsina.checklist",
@@ -42,7 +42,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./src/assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -50,7 +50,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon.png",
+          "image": "./src/assets/images/icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#FDF8F2",
@@ -69,20 +69,20 @@
         "@howincodes/expo-dynamic-app-icon",
         {
           "forest": {
-            "ios": "./assets/images/icon.png",
-            "android": "./assets/images/icon.png"
+            "ios": "./src/assets/images/icon.png",
+            "android": "./src/assets/images/icon.png"
           },
           "sandy": {
-            "ios": "./assets/images/icon-1.png",
-            "android": "./assets/images/icon-1.png"
+            "ios": "./src/assets/images/icon-1.png",
+            "android": "./src/assets/images/icon-1.png"
           },
           "tomato": {
-            "ios": "./assets/images/icon-2.png",
-            "android": "./assets/images/icon-2.png"
+            "ios": "./src/assets/images/icon-2.png",
+            "android": "./src/assets/images/icon-2.png"
           },
           "lavender": {
-            "ios": "./assets/images/icon-3.png",
-            "android": "./assets/images/icon-3.png"
+            "ios": "./src/assets/images/icon-3.png",
+            "android": "./src/assets/images/icon-3.png"
           }
         }
       ],
