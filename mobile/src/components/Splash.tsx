@@ -79,7 +79,7 @@ function LoaderBar() {
 
 export default function SplashScreen() {
   const { themeId } = usePreferences();
-  const { primary, primarySoft, textMuted } = useTheme();
+  const { primary, primarySoft, textMuted, text } = useTheme();
 
   const iconUrl = APP_THEMES.find(item => item.id === themeId)?.image;
   const iconOpacity = useSharedValue(0);
@@ -142,7 +142,7 @@ export default function SplashScreen() {
           <Image source={iconUrl!} style={styles.iconImage} resizeMode="cover" />
         </Animated.View>
 
-        <Animated.Text style={[styles.appName, nameStyle]}>
+        <Animated.Text style={[styles.appName, nameStyle, { color: text }]}>
           Ch<Text style={[styles.appNameAccent, { color: primary }]}>e</Text>cked
         </Animated.Text>
       </View>
@@ -185,9 +185,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 24,
-    // backgroundColor: COLORS.greenDim,
     borderWidth: 1,
-    // borderColor: COLORS.border,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 28,
@@ -195,29 +193,25 @@ const styles = StyleSheet.create({
   iconImage: {
     width: 56,
     height: 56,
-    borderRadius: 14, // iOS icon corner radius
+    borderRadius: 14,
   },
 
-  // App name
   appName: {
     fontSize: 44,
     letterSpacing: -1,
     fontWeight: '800',
-    color: 'white',
     fontFamily: 'ClashGroteskSemi',
   },
   appNameAccent: {
     fontStyle: 'italic',
   },
 
-  // Tagline
   tagline: {
     fontSize: 11,
     letterSpacing: 3,
     marginTop: 10,
   },
 
-  // Loader
   loaderWrap: {
     position: 'absolute',
     bottom: 110,
@@ -234,7 +228,6 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
 
-  // Version
   version: {
     position: 'absolute',
     bottom: 48,
