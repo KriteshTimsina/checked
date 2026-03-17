@@ -40,10 +40,10 @@ export default function Home() {
 
   const onAddProject = async () => {
     if (inputText.trim().length === 0) {
-      return toast('Project name cannot be empty.');
+      return toast('Tasks cannot be empty.');
     }
     if (inputText.trim().length > MAX_INPUT_LENGTH) {
-      return toast('Project name is too long.');
+      return toast('Task title is too long.');
     }
     const created = await createProject({
       title: inputText.trim(),
@@ -70,7 +70,7 @@ export default function Home() {
   return (
     <>
       <ThemedView style={globals.container}>
-        <ThemedText type="subtitle">✅ Your checklists</ThemedText>
+        <ThemedText type="subtitle">✅ Your Tasks</ThemedText>
         <View style={styles.projectContainer}>
           {projects.length > 0 ? (
             <FlatList
@@ -83,13 +83,13 @@ export default function Home() {
               contentContainerStyle={styles.contentContainer}
             />
           ) : (
-            <EmptyProject />
+            <EmptyProject type="todos" />
           )}
         </View>
         <Button onPress={openSheet} />
       </ThemedView>
 
-      <BottomSheet bottomSheetRef={bottomSheetRef} title="Add New Project">
+      <BottomSheet bottomSheetRef={bottomSheetRef} title="Add New Todo">
         <InputText
           placeholder="Enter your project title..."
           inputRef={inputRef}

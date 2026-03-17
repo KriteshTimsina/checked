@@ -13,8 +13,6 @@ type InputTextProps = {
   inputRef: React.RefObject<TextInput>;
 } & TextInputProps;
 
-const ENTRY_MAX_INPUT_LENGTH = MAX_INPUT_LENGTH * 2;
-
 const InputText: FC<InputTextProps> = ({
   inputRef,
   inputText,
@@ -31,7 +29,7 @@ const InputText: FC<InputTextProps> = ({
   const placeholderColor = isDark ? 'rgba(255,255,255,0.35)' : textMuted;
   const iconColor = isDark ? '#FAFAFA' : '#18181B';
 
-  const isOverLimit = inputText.trim().length > ENTRY_MAX_INPUT_LENGTH;
+  const isOverLimit = inputText.trim().length > MAX_INPUT_LENGTH;
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: containerBg }]}>
@@ -47,7 +45,7 @@ const InputText: FC<InputTextProps> = ({
 
       <View style={styles.counter}>
         <ThemedText style={[styles.countText, { color: isOverLimit ? '#ef4444' : textMuted }]}>
-          {inputText.trim().length}/{ENTRY_MAX_INPUT_LENGTH}
+          {inputText.trim().length}/{MAX_INPUT_LENGTH}
         </ThemedText>
       </View>
 

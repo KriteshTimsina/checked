@@ -51,7 +51,7 @@ function AppNavigator() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
-          name="(checklist)"
+          name="(todos)"
           options={({ route }) => {
             const title = (route.params as ChecklistParamList['index'])?.title;
 
@@ -102,7 +102,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded && dbSuccess) {
       SplashScreen.hideAsync();
-      const timer = setTimeout(() => setShowSplash(true), 3000);
+      const timer = setTimeout(() => setShowSplash(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [dbSuccess, fontsLoaded]);

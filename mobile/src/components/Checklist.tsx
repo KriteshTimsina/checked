@@ -84,7 +84,7 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
     >
       <Link
         href={{
-          pathname: '/(checklist)',
+          pathname: '/(todos)',
           params: { projectId: item.id, title: item.title },
         }}
       >

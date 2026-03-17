@@ -27,7 +27,7 @@ export default function Entry() {
   useEffect(() => {
     if (isAllCompleted) {
       router.replace({
-        pathname: '/(checklist)/success',
+        pathname: '/(todos)/success',
         params: { projectId },
       });
     }
@@ -113,7 +113,7 @@ export default function Entry() {
     <>
       <ThemedView style={styles.container}>
         {entries.length === 0 ? (
-          <EmptyProject type="checklist" />
+          <EmptyProject type="todoItem" />
         ) : (
           <FlatList
             contentContainerStyle={styles.scrollContainer}

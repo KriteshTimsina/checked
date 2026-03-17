@@ -7,16 +7,16 @@ import { ThemedView } from './ThemedView';
 import { useTheme } from '@/hooks/useTheme';
 
 const TITLE = {
-  project: 'No Checklist. Add one to view.',
-  checklist: 'Checklist has no items. Add one to view.',
+  todos: 'No Tasks. Add one to view.',
+  todoItem: 'Todo has no items. Add one to view.',
   notes: 'Notes is empty. Add one to view.',
 };
 
 type EmptyProjectProps = {
-  type?: 'project' | 'checklist' | 'notes';
+  type?: 'todos' | 'todoItem' | 'notes';
 };
 
-const EmptyProject: FC<EmptyProjectProps> = ({ type = 'project' }) => {
+const EmptyProject: FC<EmptyProjectProps> = ({ type = 'todos' }) => {
   const animation = useRef<LottieView>(null);
   const { primary } = useTheme();
 
