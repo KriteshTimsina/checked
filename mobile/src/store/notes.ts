@@ -6,7 +6,7 @@ import { create } from 'zustand';
 interface NotesState {
   notes: INote[];
   isLoading: boolean;
-  createNote: (data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
+  createNote: (data: Pick<INote, 'title' | 'content'>) => Promise<INote | null>;
   getNotes: () => void;
   getNote: (id: number) => Promise<INote | null>;
   deleteNote: (noteId: number) => Promise<boolean>;
@@ -45,15 +45,10 @@ const useNotesStore = create<NotesState>()(set => ({
       });
 
     if (newEntry) {
-      set(state => {
-        const newnotes = [...state.notes, newEntry];
-        return {
-          notes: newnotes,
-        };
-      });
-      return true;
+      set(state => ({ notes: [...state.notes, newEntry] }));
+      return newEntry;
     }
-    return false;
+    return null;
   },
   updateNote: async (id, data) => {
     const exists = await db.query.notes.findFirst({ where: eq(notes.id, id) });

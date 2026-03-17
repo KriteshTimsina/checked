@@ -1,19 +1,27 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import React, { FC } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/colors';
 import { useTheme } from '@/hooks/useTheme';
 
 type ButtonProps = {
   onPress: () => void;
   type?: 'add' | 'save';
+  sticky?: boolean;
 };
 
-const Button: FC<ButtonProps> = ({ onPress, type = 'add' }) => {
-  const { primary } = useTheme(); // You can replace this with useTheme() if you want it to be dynamic
+const Button: FC<ButtonProps> = ({ onPress, type = 'add', sticky = true }) => {
+  const { primary } = useTheme();
+
   return (
-    <Pressable onPress={onPress} style={[styles.button, { backgroundColor: primary }]}>
-      <Ionicons name={type === 'add' ? 'add' : 'checkmark'} size={35} color="white" />
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        sticky ? styles.sticky : styles.inline,
+        { backgroundColor: primary },
+        pressed && styles.pressed,
+      ]}
+    >
+      <Ionicons name={type === 'add' ? 'add' : 'checkmark'} size={sticky ? 28 : 20} color="white" />
     </Pressable>
   );
 };
@@ -21,14 +29,30 @@ const Button: FC<ButtonProps> = ({ onPress, type = 'add' }) => {
 export default Button;
 
 const styles = StyleSheet.create({
-  button: {
-    height: 50,
-    width: 50,
-    borderRadius: 100,
+  inline: {
+    height: 35,
+    width: 35,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  sticky: {
+    height: 56,
+    width: 56,
+    borderRadius: 18,
     position: 'absolute',
-    bottom: '10%',
-    right: '10%',
+    bottom: 28,
+    right: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  pressed: {
+    opacity: 0.75,
+    transform: [{ scale: 0.94 }],
   },
 });

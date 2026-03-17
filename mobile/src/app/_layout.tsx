@@ -67,9 +67,9 @@ function AppNavigator() {
           options={({ route }) => {
             const noteId = (route.params as NoteParams['index'])?.noteId;
             return {
-              headerShown: true,
+              headerShown: false,
               headerTitle: '',
-              headerRight: () => noteId && <NoteMenu noteId={noteId} />,
+              // headerRight: () => noteId && <NoteMenu noteId={noteId} />,
               headerStyle: { backgroundColor: appTheme.colors.card },
             };
           }}
