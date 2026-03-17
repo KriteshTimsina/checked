@@ -22,6 +22,8 @@ import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
 import { APP_THEMES } from '@/constants/themes';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 import Splash from '@/components/Splash';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/utils/toastConfig';
 
 type NoteParams = {
   index: { noteId?: number };
@@ -38,7 +40,6 @@ function AppNavigator() {
   const themeId = usePreferences(s => s.themeId);
   const colors = getColors(themeId, colorScheme);
 
-  // React Navigation theme — background syncs with user's preference
   const appTheme =
     colorScheme === 'dark'
       ? { ...DarkTheme, colors: { ...DarkTheme.colors, background: colors.background } }
@@ -117,6 +118,7 @@ export default function RootLayout() {
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </SQLiteProvider>
+      <Toast position="bottom" bottomOffset={20} config={toastConfig} />
     </Suspense>
   );
 }

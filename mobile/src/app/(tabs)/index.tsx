@@ -75,7 +75,6 @@ export default function Home() {
           {projects.length > 0 ? (
             <FlatList
               refreshControl={
-                // ✅ Uses dynamic primary color
                 <RefreshControl colors={[primary]} refreshing={loading} onRefresh={fetchProjects} />
               }
               data={projects}

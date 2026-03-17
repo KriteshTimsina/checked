@@ -18,8 +18,8 @@ export const useProjectStore = create<ProjectState>()(set => ({
   getAllProjects: async () => {
     try {
       const projects = await db.query.projects.findMany();
-      if (projects.length === 0) {
-        return toast('No projects. Add one to view.');
+      if (projects.length !== 0) {
+        return;
       }
       set({ projects });
     } catch (error) {
