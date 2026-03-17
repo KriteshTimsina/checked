@@ -67,7 +67,7 @@ export const colors = [
 export const tabs = [
   {
     id: 1,
-    title: 'Checklist',
+    title: 'Tasks',
     label: 'index',
   },
   {

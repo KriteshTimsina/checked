@@ -131,7 +131,7 @@ export default function Settings() {
               variant="navigate"
               icon="home-outline"
               label="Default tab"
-              rightLabel={primaryTab === 'index' ? 'Checklist' : 'Notes'}
+              rightLabel={primaryTab === 'index' ? 'Tasks' : 'Notes'}
               onPress={() => primaryTabRef.current?.expand()}
             />
           </SettingSection>

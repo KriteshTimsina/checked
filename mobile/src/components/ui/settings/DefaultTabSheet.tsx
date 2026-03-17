@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import { type Tab } from '@/store/preferences';
+import { type Tab } from '@/hooks/usePreferences';
 import { tabs } from '@/constants/data';
 
 type DefaultTabSheetProps = {
@@ -20,7 +20,7 @@ export const DefaultTabSheet: React.FC<DefaultTabSheetProps> = ({
   onSelect,
   renderBackdrop,
 }) => {
-  const { primary, primarySoft, text, textMuted } = useTheme();
+  const { primary } = useTheme();
 
   return (
     <BottomSheet
