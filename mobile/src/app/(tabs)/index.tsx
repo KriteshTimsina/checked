@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Keyboard, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -19,7 +19,6 @@ import InputText from '@/components/InputText';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const { projects, getAllProjects, createProject } = useProject();
 
@@ -35,21 +34,17 @@ export default function Home() {
     setLoading(false);
   };
 
-  const onAddProject = async () => {
-    if (inputText.trim().length === 0) {
-      return toast('Tasks cannot be empty.');
-    }
-    if (inputText.trim().length > MAX_INPUT_LENGTH) {
-      return toast('Task title is too long.');
-    }
+  const onAddProject = async (title: string) => {
+    if (title.trim().length === 0) return toast('Tasks cannot be empty.');
+    if (title.trim().length > MAX_INPUT_LENGTH) return toast('Task title is too long.');
+
     const created = await createProject({
-      title: inputText.trim(),
+      title: title.trim(),
       description: 'Testing',
       createdAt: new Date(),
     });
     if (created) {
       haptics.success();
-      setInputText('');
     }
   };
 
@@ -58,7 +53,7 @@ export default function Home() {
   };
 
   const closeSheet = () => {
-    setInputText('');
+    Keyboard.dismiss();
     bottomSheetRef.current?.dismiss();
   };
 
@@ -84,11 +79,9 @@ export default function Home() {
         <Button onPress={openSheet} />
       </ThemedView>
 
-      <BottomSheet title="Add new task" bottomSheetRef={bottomSheetRef}>
+      <BottomSheet onClose={closeSheet} title="Add new task" bottomSheetRef={bottomSheetRef}>
         <InputText
           placeholder="Enter your project title..."
-          inputText={inputText}
-          setInputText={setInputText}
           onClose={closeSheet}
           onSubmit={onAddProject}
         />

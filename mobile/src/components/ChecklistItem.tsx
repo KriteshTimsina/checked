@@ -1,52 +1,63 @@
+// ChecklistItem.tsx — remove entering prop, use useEffect + useAnimatedStyle instead
 import { Pressable, StyleSheet, View } from 'react-native';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
 import { IEntry } from '@/db/schema';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useEntries } from '@/store/entries';
 import { useTheme } from '@/hooks/useTheme';
-import debounce from 'lodash/debounce';
+import { useEffect } from 'react';
 
 type ChecklistItemProps = {
   item: IEntry;
-  openEditDialog: (item: IEntry) => void;
+  onEdit: (item: IEntry) => void;
 };
 
-const AnimatedButton = Animated.createAnimatedComponent(Pressable);
-
-const ChecklistItem: FC<ChecklistItemProps> = ({ item, openEditDialog }) => {
+const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
   const { primary, primarySoft, icon } = useTheme();
   const { updateEntryStatus } = useEntries();
 
-  const toggleCheckbox = debounce(async () => {
+  // ✅ animate only on mount, never replays on re-render
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(20);
+
+  useEffect(() => {
+    opacity.value = withSpring(1, { damping: 20 });
+    translateY.value = withSpring(0, { damping: 20 });
+  }, []); // ✅ empty deps — runs once on mount only
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const toggleCheckbox = useCallback(async () => {
     try {
       await updateEntryStatus(item.id, !item.completed);
     } catch (error) {
       console.error('Error updating entry status:', error);
     }
-  }, 100);
+  }, [item.id, item.completed, updateEntryStatus]);
+
+  const handleEdit = useCallback(() => {
+    onEdit(item);
+  }, [item, onEdit]);
 
   return (
-    <AnimatedButton
-      onLongPress={() => openEditDialog(item)}
-      entering={FadeInDown.delay(200)}
-      onPress={toggleCheckbox}
-      android_ripple={{ color: icon }}
-      style={[styles.container, { backgroundColor: primarySoft }]}
-    >
-      {/* Left accent bar — matches ChecklistItem */}
+    <Animated.View style={[styles.container, { backgroundColor: primarySoft }, animatedStyle]}>
       <View
         style={[styles.accentBar, { backgroundColor: item.completed ? 'transparent' : primary }]}
       />
-
-      <View style={styles.content}>
-        <Checkbox
-          style={styles.checkbox}
-          color={item.completed ? primary : undefined}
-          value={item.completed}
-          onValueChange={toggleCheckbox}
-        />
+      <Pressable onPress={handleEdit} android_ripple={{ color: icon }} style={styles.content}>
+        <Pressable onPress={toggleCheckbox} hitSlop={6}>
+          <Checkbox
+            style={styles.checkbox}
+            color={item.completed ? primary : undefined}
+            value={item.completed}
+            onValueChange={toggleCheckbox}
+          />
+        </Pressable>
         <ThemedText
           style={{
             flex: 1,
@@ -57,12 +68,12 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, openEditDialog }) => {
         >
           {item.title}
         </ThemedText>
-      </View>
-    </AnimatedButton>
+      </Pressable>
+    </Animated.View>
   );
 };
 
-export default ChecklistItem;
+export default React.memo(ChecklistItem);
 
 const styles = StyleSheet.create({
   container: {

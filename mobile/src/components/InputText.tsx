@@ -1,35 +1,37 @@
-import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import React, { FC } from 'react';
+import { Pressable, StyleSheet, TextInputProps, View } from 'react-native';
+import React, { FC, useState } from 'react';
 import { ThemedText } from './ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-// import { BottomSheetTextInputProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetTextInput';
 
 type InputTextProps = {
-  onSubmit: VoidFunction;
+  onSubmit: (text: string) => void; // ✅ receives the value on submit
   onClose: VoidFunction;
-  inputText: string;
-  setInputText: (text: string) => void;
-} & TextInputProps;
+  initialValue?: string; // ✅ new
+} & Omit<TextInputProps, 'onSubmit'>;
 
 const InputText: FC<InputTextProps> = ({
-  inputText,
   onClose,
   onSubmit,
-  setInputText,
+  initialValue = '',
   ...textInputProps
 }) => {
+  const [inputText, setInputText] = useState(initialValue); // ✅ state lives here now
+
   const { primary, card, textMuted, isDark } = useTheme();
 
-  // Input container sits inside a bottom sheet — always use card surface
   const containerBg = isDark ? 'rgba(255,255,255,0.08)' : card;
   const inputColor = isDark ? '#FAFAFA' : '#18181B';
   const placeholderColor = isDark ? 'rgba(255,255,255,0.35)' : textMuted;
   const iconColor = isDark ? '#FAFAFA' : '#18181B';
-
   const isOverLimit = inputText.trim().length > MAX_INPUT_LENGTH;
+
+  const handleSubmit = () => {
+    onSubmit(inputText); // ✅ pass value up only on submit
+    setInputText(''); // ✅ reset internally
+  };
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: containerBg }]}>
@@ -39,8 +41,8 @@ const InputText: FC<InputTextProps> = ({
         placeholder="Enter your task title..."
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: inputColor }]}
-        {...textInputProps}
         autoFocus
+        {...textInputProps}
       />
 
       <View style={styles.counter}>
@@ -53,12 +55,10 @@ const InputText: FC<InputTextProps> = ({
         <Pressable hitSlop={5} onPress={onClose} style={styles.iconButton}>
           <Ionicons name="close-outline" size={25} color={iconColor} />
         </Pressable>
-
         <Pressable
-          onPress={onSubmit}
+          onPress={handleSubmit}
           style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.4 }]}
         >
-          {/* Send icon uses primary theme color */}
           <Ionicons name="paper-plane-outline" size={25} color={primary} />
         </Pressable>
       </View>

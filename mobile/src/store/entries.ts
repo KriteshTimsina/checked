@@ -12,6 +12,7 @@ interface EntriesState {
   isAllCompleted: boolean;
   resetAllEntriesStatus: (projectId: number) => Promise<boolean>;
   updateEntry: (entry: IEntry, updatedTitle: string) => Promise<boolean>;
+  deleteEntry: (entryId: number) => Promise<boolean>;
 }
 
 const db = getDb();
@@ -125,6 +126,26 @@ const useEntriesStore = create<EntriesState>()(set => ({
     }
     return false;
   },
+  deleteEntry: async entryId => {
+    try {
+      const deleted = await db.delete(entrySchema).where(eq(entrySchema.id, entryId));
+
+      if (deleted.changes) {
+        set(state => {
+          const newEntries = state.entries.filter(e => e.id !== entryId);
+          return {
+            entries: newEntries,
+            isAllCompleted: newEntries.length > 0 && newEntries.every(e => e.completed),
+          };
+        });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      return false;
+    }
+  },
 }));
 
 export const useEntries = () => {
@@ -136,6 +157,7 @@ export const useEntries = () => {
   const updateEntryStatus = useEntriesStore(state => state.updateEntryStatus);
   const resetAllEntriesStatus = useEntriesStore(state => state.resetAllEntriesStatus);
   const updateEntry = useEntriesStore(state => state.updateEntry);
+  const deleteEntry = useEntriesStore(state => state.deleteEntry);
 
   return {
     entries,
@@ -146,5 +168,6 @@ export const useEntries = () => {
     updateEntryStatus,
     resetAllEntriesStatus,
     updateEntry,
+    deleteEntry,
   };
 };

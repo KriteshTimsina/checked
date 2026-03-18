@@ -114,7 +114,7 @@ export default function RootLayout() {
         </SafeAreaProvider>
       </SQLiteProvider>
 
-      <Toast position="bottom" bottomOffset={20} config={toastConfig} />
+      <Toast bottomOffset={20} topOffset={60} config={toastConfig} />
     </Suspense>
   );
 }
