@@ -65,7 +65,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     >
       <BottomSheetView style={[styles.container, containerStyle]}>
         <View style={styles.header}>
-          <View style={styles.side}>{HeaderLeft ? <HeaderLeft /> : null}</View>
+          {HeaderLeft && <View style={styles.side}>{<HeaderLeft />}</View>}
           {typeof title === 'string' ? (
             <ThemedText style={styles.title} type="subtitle" numberOfLines={1}>
               {title}
@@ -73,7 +73,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
           ) : (
             title
           )}
-          <View style={styles.side}>{HeaderRight ? <HeaderRight /> : null}</View>
+          {HeaderRight && <View style={styles.side}>{<HeaderRight />}</View>}
         </View>
         {children}
       </BottomSheetView>

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { Appearance, StyleSheet, View } from 'react-native';
-import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
@@ -17,9 +17,9 @@ import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
 import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
 
 export default function Settings() {
-  const primaryTabRef = useRef<BottomSheet>(null);
-  const themeSheetRef = useRef<BottomSheet>(null);
-  const appIconSheetRef = useRef<BottomSheet>(null);
+  const primaryTabRef = useRef<BottomSheetModal>(null);
+  const themeSheetRef = useRef<BottomSheetModal>(null);
+  const appIconSheetRef = useRef<BottomSheetModal>(null);
 
   const { primary, text, surface } = useTheme();
   const {
@@ -47,14 +47,14 @@ export default function Settings() {
 
   const onSelectTheme = (theme: AppTheme) => {
     setThemeId(theme.id);
-    themeSheetRef.current?.close();
+    themeSheetRef.current?.dismiss();
   };
 
   const onSelectIcon = (theme: AppTheme) => {
     setIconId(theme.id);
     setAppIcon(theme.iconKey);
     haptics.success();
-    appIconSheetRef.current?.close();
+    appIconSheetRef.current?.dismiss();
   };
 
   const onSelectTab = async (label: Tab) => {
@@ -101,14 +101,14 @@ export default function Settings() {
               icon="color-palette-outline"
               label="Theme"
               rightElement={ThemePreview}
-              onPress={() => themeSheetRef.current?.expand()}
+              onPress={() => themeSheetRef.current?.present()}
             />
             <SettingItem
               variant="info"
               icon="apps-outline"
               label="App Icon"
               rightElement={IconPreview}
-              onPress={() => appIconSheetRef.current?.expand()}
+              onPress={() => appIconSheetRef.current?.present()}
             />
             <SettingItem
               variant="toggle"
@@ -132,7 +132,7 @@ export default function Settings() {
               icon="home-outline"
               label="Default tab"
               rightLabel={primaryTab === 'index' ? 'Tasks' : 'Notes'}
-              onPress={() => primaryTabRef.current?.expand()}
+              onPress={() => primaryTabRef.current?.present()}
             />
           </SettingSection>
         </View>
@@ -140,19 +140,9 @@ export default function Settings() {
         <Footer />
       </ThemedView>
 
-      <ThemeSheet
-        sheetRef={themeSheetRef}
-        themeId={themeId}
-        onSelect={onSelectTheme}
-        renderBackdrop={renderBackdrop}
-      />
+      <ThemeSheet sheetRef={themeSheetRef} themeId={themeId} onSelect={onSelectTheme} />
 
-      <AppIconSheet
-        sheetRef={appIconSheetRef}
-        iconId={iconId ?? themeId}
-        onSelect={onSelectIcon}
-        renderBackdrop={renderBackdrop}
-      />
+      <AppIconSheet sheetRef={appIconSheetRef} iconId={iconId ?? themeId} onSelect={onSelectIcon} />
 
       <DefaultTabSheet
         sheetRef={primaryTabRef}

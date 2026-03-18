@@ -1,94 +1,77 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
+import { BottomSheet } from '@/components/reuseables';
 
 type ThemeSheetProps = {
-  sheetRef: React.RefObject<BottomSheet>;
+  sheetRef: React.RefObject<BottomSheetModal>;
   themeId: number;
   onSelect: (theme: AppTheme) => void;
-  renderBackdrop: (props: any) => React.ReactElement;
 };
 
-export const ThemeSheet: React.FC<ThemeSheetProps> = ({
-  sheetRef,
-  themeId,
-  onSelect,
-  renderBackdrop,
-}) => {
+export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSelect }) => {
   const { card, text, border } = useTheme();
 
   return (
     <BottomSheet
-      ref={sheetRef}
-      index={-1}
-      snapPoints={['44%']}
-      enablePanDownToClose
-      backdropComponent={renderBackdrop}
+      bottomSheetRef={sheetRef}
+      snapPoints={['30%']}
       backgroundStyle={{ backgroundColor: card }}
-      handleIndicatorStyle={{ backgroundColor: border }}
-    >
-      <BottomSheetView style={styles.container}>
+      title={
         <View style={styles.header}>
           <Ionicons name="color-palette-outline" color={text} size={20} />
           <ThemedText type="subtitle" style={{ color: text }}>
             Choose Theme
           </ThemedText>
         </View>
+      }
+    >
+      <View style={styles.grid}>
+        {APP_THEMES.map(theme => {
+          const isSelected = theme.id === themeId;
+          return (
+            <TouchableOpacity
+              key={theme.id}
+              onPress={() => onSelect(theme)}
+              activeOpacity={0.85}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: theme.bg,
+                  borderColor: isSelected ? theme.primary : 'transparent',
+                  shadowColor: theme.primary,
+                  shadowOpacity: isSelected ? 0.3 : 0,
+                  elevation: isSelected ? 8 : 1,
+                },
+              ]}
+            >
+              <View style={styles.swatchRow}>
+                <View style={[styles.swatchA, { backgroundColor: theme.primary }]} />
+                <View style={[styles.swatchB, { backgroundColor: theme.accent }]} />
+                <View style={[styles.swatchC, { backgroundColor: theme.cardBg }]} />
+              </View>
 
-        <View style={styles.grid}>
-          {APP_THEMES.map(theme => {
-            const isSelected = theme.id === themeId;
-            return (
-              <TouchableOpacity
-                key={theme.id}
-                onPress={() => onSelect(theme)}
-                activeOpacity={0.85}
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor: theme.bg,
-                    borderColor: isSelected ? theme.primary : 'transparent',
-                    shadowColor: theme.primary,
-                    shadowOpacity: isSelected ? 0.3 : 0,
-                    elevation: isSelected ? 8 : 1,
-                  },
-                ]}
-              >
-                {/* Swatch strip */}
-                <View style={styles.swatchRow}>
-                  <View style={[styles.swatchA, { backgroundColor: theme.primary }]} />
-                  <View style={[styles.swatchB, { backgroundColor: theme.accent }]} />
-                  <View style={[styles.swatchC, { backgroundColor: theme.cardBg }]} />
+              <ThemedText style={styles.emoji}>{theme.emoji}</ThemedText>
+              <ThemedText style={[styles.name, { color: theme.primary }]}>{theme.name}</ThemedText>
+
+              <View style={[styles.miniCard, { backgroundColor: theme.cardBg }]}>
+                <View style={[styles.miniDot, { backgroundColor: theme.primary }]} />
+                <View style={[styles.miniLine, { backgroundColor: theme.primary + '55' }]} />
+              </View>
+
+              {isSelected && (
+                <View style={[styles.badge, { backgroundColor: theme.primary }]}>
+                  <ThemedText style={styles.badgeText}>✓</ThemedText>
                 </View>
-
-                <ThemedText style={styles.emoji}>{theme.emoji}</ThemedText>
-                <ThemedText style={[styles.name, { color: theme.primary }]}>
-                  {theme.name}
-                </ThemedText>
-                <ThemedText style={[styles.sublabel, { color: theme.accent }]}>
-                  {theme.label}
-                </ThemedText>
-
-                {/* Mini card preview */}
-                <View style={[styles.miniCard, { backgroundColor: theme.cardBg }]}>
-                  <View style={[styles.miniDot, { backgroundColor: theme.primary }]} />
-                  <View style={[styles.miniLine, { backgroundColor: theme.primary + '55' }]} />
-                </View>
-
-                {isSelected && (
-                  <View style={[styles.badge, { backgroundColor: theme.primary }]}>
-                    <ThemedText style={styles.badgeText}>✓</ThemedText>
-                  </View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </BottomSheetView>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </BottomSheet>
   );
 };
@@ -132,7 +115,6 @@ const styles = StyleSheet.create({
   swatchC: { flex: 1 },
   emoji: { fontSize: 22 },
   name: { fontSize: 12, fontWeight: '800' },
-  sublabel: { fontSize: 9, fontWeight: '600', textAlign: 'center' },
   miniCard: {
     width: '100%',
     borderRadius: 8,

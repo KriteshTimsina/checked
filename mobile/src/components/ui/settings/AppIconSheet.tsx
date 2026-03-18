@@ -1,73 +1,64 @@
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheet } from '@/components/reuseables';
 
 type AppIconSheetProps = {
-  sheetRef: React.RefObject<BottomSheet>;
+  sheetRef: React.RefObject<BottomSheetModal>;
   iconId: number;
   onSelect: (theme: AppTheme) => void;
-  renderBackdrop: (props: any) => React.ReactElement;
 };
 
-export const AppIconSheet: React.FC<AppIconSheetProps> = ({
-  sheetRef,
-  iconId,
-  onSelect,
-  renderBackdrop,
-}) => {
-  const { primary } = useTheme();
+export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, onSelect }) => {
+  const { primarySoft, border } = useTheme();
 
   return (
     <BottomSheet
-      ref={sheetRef}
-      index={-1}
       snapPoints={['35%']}
-      enablePanDownToClose
-      backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: primary }}
-      handleIndicatorStyle={{ backgroundColor: 'rgba(0,0,0,0.2)' }}
-    >
-      <BottomSheetView style={styles.container}>
+      bottomSheetRef={sheetRef}
+      backgroundStyle={{ backgroundColor: primarySoft }}
+      handleIndicatorStyle={{ backgroundColor: border }}
+      title={
         <View style={styles.header}>
           <Ionicons name="apps-outline" color="#11181B" size={20} />
           <ThemedText type="subtitle" lightColor="#11181B" darkColor="#11181B">
             App Icon
           </ThemedText>
         </View>
+      }
+    >
+      <ThemedText style={styles.description} lightColor="#11181B99" darkColor="#11181B99">
+        Choose an icon that matches your theme.
+      </ThemedText>
 
-        <ThemedText style={styles.description} lightColor="#11181B99" darkColor="#11181B99">
-          Choose an icon that matches your theme.
-        </ThemedText>
+      <View style={styles.iconsRow}>
+        {APP_THEMES.map(theme => {
+          const isActive = iconId === theme.id;
+          return (
+            <TouchableOpacity
+              key={theme.id}
+              activeOpacity={0.75}
+              onPress={() => onSelect(theme)}
+              style={[
+                styles.iconOption,
+                {
+                  backgroundColor: isActive ? '#11181B' : 'rgba(0,0,0,0.15)',
+                  borderColor: isActive ? '#11181B' : 'transparent',
+                },
+              ]}
+            >
+              <Image source={theme.image!} style={styles.iconImage} resizeMode="cover" />
+              <ThemedText style={styles.iconLabel}>{theme.name}</ThemedText>
 
-        <View style={styles.iconsRow}>
-          {APP_THEMES.map(theme => {
-            const isActive = iconId === theme.id;
-            return (
-              <TouchableOpacity
-                key={theme.id}
-                activeOpacity={0.75}
-                onPress={() => onSelect(theme)}
-                style={[
-                  styles.iconOption,
-                  {
-                    backgroundColor: isActive ? '#11181B' : 'rgba(0,0,0,0.15)',
-                    borderColor: isActive ? '#11181B' : 'transparent',
-                  },
-                ]}
-              >
-                <Image source={theme.image!} style={styles.iconImage} resizeMode="cover" />
-                <ThemedText style={styles.iconLabel}>{theme.name}</ThemedText>
-
-                {isActive && <View style={styles.activeDot} />}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </BottomSheetView>
+              {isActive && <View style={styles.activeDot} />}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </BottomSheet>
   );
 };
