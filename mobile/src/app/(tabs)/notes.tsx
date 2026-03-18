@@ -36,10 +36,11 @@ export default function Notes() {
           refreshControl={
             <RefreshControl colors={[Colors.primary]} onRefresh={getNotes} refreshing={isLoading} />
           }
-          // onRefresh={getNotes}
         />
       </View>
-      <Button onPress={onAddProject} />
+      <View style={styles.buttonContainer}>
+        <Button onPress={onAddProject} />
+      </View>
     </ThemedView>
   );
 }
@@ -48,5 +49,10 @@ const styles = StyleSheet.create({
   noteContainer: {
     gap: 10,
     marginVertical: 20,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 28,
+    right: 24,
   },
 });

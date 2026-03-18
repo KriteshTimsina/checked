@@ -82,7 +82,7 @@ export default function Note() {
         <View style={styles.headerRight}>
           {noteId && <NoteMenu noteId={Number(noteId)} />}
           {isFocused && (
-            <Button sticky={false} type="save" onPress={() => onSaveNoteRef.current?.()} />
+            <Button style={styles.button} type="save" onPress={() => onSaveNoteRef.current?.()} />
           )}
         </View>
       ),
@@ -173,5 +173,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 26,
     minHeight: 500,
+  },
+  button: {
+    height: 35,
+    width: 35,
   },
 });

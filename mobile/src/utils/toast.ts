@@ -5,11 +5,7 @@ type ToastPosition = 'top' | 'bottom';
 
 export const toast = (message: string, position: ToastPosition = 'bottom') => {
   if (Platform.OS === 'android') {
-    ToastAndroid.showWithGravity(
-      message,
-      ToastAndroid.LONG,
-      position === 'bottom' ? ToastAndroid.BOTTOM : ToastAndroid.TOP,
-    );
+    ToastAndroid.showWithGravity(message, ToastAndroid.LONG, ToastAndroid.BOTTOM);
   } else {
     Toast.show({
       type: 'info',

@@ -76,7 +76,9 @@ export default function Home() {
             <EmptyProject type="todos" />
           )}
         </View>
-        <Button onPress={openSheet} />
+        <View style={styles.buttonContainer}>
+          <Button onPress={openSheet} />
+        </View>
       </ThemedView>
 
       <BottomSheet onClose={closeSheet} title="Add new task" bottomSheetRef={bottomSheetRef}>
@@ -98,5 +100,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     gap: 10,
     paddingBottom: 20,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 28,
+    right: 24,
   },
 });

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, ButtonProps as B, StyleProp, ViewStyle } from 'react-native';
 import React, { FC } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
@@ -6,22 +6,22 @@ import { useTheme } from '@/hooks/useTheme';
 type ButtonProps = {
   onPress: () => void;
   type?: 'add' | 'save';
-  sticky?: boolean;
+  style?: ViewStyle;
 };
 
-const Button: FC<ButtonProps> = ({ onPress, type = 'add', sticky = true }) => {
+const Button: FC<ButtonProps> = ({ onPress, type = 'add', style }) => {
   const { primary } = useTheme();
 
   return (
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
-        sticky ? styles.sticky : styles.inline,
-        { backgroundColor: primary },
+        styles.button,
+        { backgroundColor: primary, ...style },
         pressed && styles.pressed,
       ]}
     >
-      <Ionicons name={type === 'add' ? 'add' : 'checkmark'} size={sticky ? 28 : 20} color="white" />
+      <Ionicons name={type === 'add' ? 'add' : 'checkmark'} size={24} color="white" />
     </Pressable>
   );
 };
@@ -29,20 +29,10 @@ const Button: FC<ButtonProps> = ({ onPress, type = 'add', sticky = true }) => {
 export default Button;
 
 const styles = StyleSheet.create({
-  inline: {
-    height: 35,
-    width: 35,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sticky: {
+  button: {
     height: 56,
     width: 56,
-    borderRadius: 18,
-    position: 'absolute',
-    bottom: 28,
-    right: 24,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
