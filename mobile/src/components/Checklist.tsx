@@ -26,7 +26,7 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
   const { deleteProject } = useProject();
   const { getCompletedEntriesCount } = useEntries();
   const swipeableRef = useRef<SwipeableMethods>(null);
-  const { primary, primarySoft, icon, textMuted, isDark, accent, surface } = useTheme();
+  const { primary, primarySoft, icon, textMuted } = useTheme();
 
   useEffect(() => {
     const currentRef = swipeableRef.current;

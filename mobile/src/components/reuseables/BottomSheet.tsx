@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 import React, { useCallback } from 'react';
 import {
   BottomSheetBackdrop,
@@ -9,7 +9,6 @@ import {
 } from '@gorhom/bottom-sheet';
 import { ThemedText } from '../ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import { Ionicons } from '@expo/vector-icons';
 
 interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
   title?: string | React.ReactNode;
@@ -19,7 +18,8 @@ interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
   snapPoints?: string[];
   bottomSheetRef: React.RefObject<BottomSheetModal>;
   onClose?: VoidFunction;
-  onDelete?: VoidFunction; // ✅ optional delete action for edit mode
+  headerLeft?: React.FC | null;
+  headerRight?: React.FC | null;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
@@ -30,7 +30,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   containerStyle,
   snapPoints = ['25%'],
   onClose,
-  onDelete,
+  headerLeft: HeaderLeft,
+  headerRight: HeaderRight,
   ...props
 }) => {
   const { border, text } = useTheme();
@@ -63,28 +64,17 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       {...props}
     >
       <BottomSheetView style={[styles.container, containerStyle]}>
-        {title && (
-          <View style={styles.titleRow}>
-            {/* ✅ spacer so title stays centered when delete icon is present */}
-            <View style={styles.titleSide} />
-
-            {typeof title === 'string' ? (
-              <ThemedText type="subtitle" style={[styles.sheetTitle, titleStyle]}>
-                {title}
-              </ThemedText>
-            ) : (
-              title
-            )}
-
-            <View style={styles.titleSide}>
-              {onDelete && (
-                <Pressable onPress={onDelete} hitSlop={10}>
-                  <Ionicons name="trash-outline" size={20} color="#ef4444" />
-                </Pressable>
-              )}
-            </View>
-          </View>
-        )}
+        <View style={styles.header}>
+          <View style={styles.side}>{HeaderLeft ? <HeaderLeft /> : null}</View>
+          {typeof title === 'string' ? (
+            <ThemedText style={styles.title} type="subtitle" numberOfLines={1}>
+              {title}
+            </ThemedText>
+          ) : (
+            title
+          )}
+          <View style={styles.side}>{HeaderRight ? <HeaderRight /> : null}</View>
+        </View>
         {children}
       </BottomSheetView>
     </BottomSheetModal>
@@ -104,17 +94,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingBottom: 10,
   },
-  titleRow: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  titleSide: {
-    width: 32, // ✅ equal width both sides keeps title centered
-    alignItems: 'flex-end',
+  side: {
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  sheetTitle: {
-    textAlign: 'center',
+  title: {
     flex: 1,
+    textAlign: 'center',
   },
 });

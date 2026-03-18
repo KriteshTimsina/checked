@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
+import { FlatList, Keyboard, Pressable, StyleSheet, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useRef } from 'react';
@@ -16,6 +16,7 @@ import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Entry() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -119,7 +120,15 @@ export default function Entry() {
       <BottomSheet
         onClose={closeSheet}
         title={editingEntry ? 'Edit Entry' : 'Add new Entry'}
-        onDelete={editingEntry ? handleDelete : undefined}
+        headerRight={
+          editingEntry
+            ? () => (
+                <Pressable onPress={editingEntry ? handleDelete : null}>
+                  <MaterialCommunityIcons color="red" name="delete-outline" size={24} />
+                </Pressable>
+              )
+            : null
+        }
         bottomSheetRef={bottomSheetRef}
       >
         <InputText

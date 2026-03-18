@@ -1,4 +1,4 @@
-import { FlatList, Keyboard, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
