@@ -67,7 +67,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
         <View style={styles.header}>
           {HeaderLeft && <View style={styles.side}>{<HeaderLeft />}</View>}
           {typeof title === 'string' ? (
-            <ThemedText style={styles.title} type="subtitle" numberOfLines={1}>
+            <ThemedText style={[styles.title, titleStyle]} type="subtitle" numberOfLines={1}>
               {title}
             </ThemedText>
           ) : (

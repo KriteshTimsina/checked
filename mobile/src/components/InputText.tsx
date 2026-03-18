@@ -38,7 +38,6 @@ const InputText: FC<InputTextProps> = ({
       <BottomSheetTextInput
         value={inputText}
         onChangeText={setInputText}
-        placeholder="Enter your task title..."
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: inputColor }]}
         autoFocus
@@ -79,6 +78,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     height: 40,
     textAlignVertical: 'top',
+    fontFamily: 'ClashGroteskMedium',
   },
   buttonContainer: {
     flexDirection: 'row',

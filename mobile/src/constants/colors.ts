@@ -100,4 +100,5 @@ export const Colors = {
     tabIconSelected: '#fff',
     tint: '#fff',
   },
+  blackAccent: 'rgba(255,255,255,0.08)',
 };

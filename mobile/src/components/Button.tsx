@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 
 type ButtonProps = {
-  onPress: () => void;
+  onPress: VoidFunction | null | undefined;
   type?: 'add' | 'save';
   style?: ViewStyle;
 };
