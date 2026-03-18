@@ -1,31 +1,28 @@
 import { FlatList, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import GorhomBottomSheet from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
-import BottomSheet from '@/components/BottomSheet';
-import InputText from '@/components/InputText';
 import Button from '@/components/Button';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { globals } from '@/styles/globals';
+import { BottomSheet } from '@/components/reuseables';
 
-// ✅ useTheme instead of static Colors
 import { useTheme } from '@/hooks/useTheme';
 import Checklist from '@/components/Checklist';
+import InputText from '@/components/InputText';
 
 export default function Home() {
-  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
-  const inputRef = useRef<TextInput>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const { projects, getAllProjects, createProject } = useProject();
 
-  // ✅ All colors from theme — re-renders when theme/dark mode changes
   const { primary } = useTheme();
 
   useEffect(() => {
@@ -52,19 +49,17 @@ export default function Home() {
     });
     if (created) {
       haptics.success();
-      closeSheet();
+      setInputText('');
     }
   };
 
   const openSheet = () => {
-    bottomSheetRef.current?.expand();
-    inputRef.current?.focus();
+    bottomSheetRef.current?.present();
   };
 
   const closeSheet = () => {
-    bottomSheetRef.current?.close();
-    inputRef.current?.blur();
     setInputText('');
+    bottomSheetRef.current?.dismiss();
   };
 
   return (
@@ -89,10 +84,9 @@ export default function Home() {
         <Button onPress={openSheet} />
       </ThemedView>
 
-      <BottomSheet bottomSheetRef={bottomSheetRef} title="Add New Todo">
+      <BottomSheet title="Add new task" bottomSheetRef={bottomSheetRef}>
         <InputText
           placeholder="Enter your project title..."
-          inputRef={inputRef}
           inputText={inputText}
           setInputText={setInputText}
           onClose={closeSheet}

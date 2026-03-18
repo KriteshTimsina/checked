@@ -17,17 +17,14 @@ import { globals } from '@/styles/globals';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
-import { NoteMenu } from '@/components/ui/NotesMenu';
 import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
 import { APP_THEMES } from '@/constants/themes';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 import Splash from '@/components/Splash';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/utils/toastConfig';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-type NoteParams = {
-  index: { noteId?: number };
-};
 type ChecklistParamList = {
   index: { title?: string };
   success: undefined;
@@ -64,14 +61,10 @@ function AppNavigator() {
         />
         <Stack.Screen
           name="(notes)"
-          options={({ route }) => {
-            const noteId = (route.params as NoteParams['index'])?.noteId;
-            return {
-              headerShown: false,
-              headerTitle: '',
-              // headerRight: () => noteId && <NoteMenu noteId={noteId} />,
-              headerStyle: { backgroundColor: appTheme.colors.card },
-            };
+          options={{
+            headerShown: false,
+            headerStyle: { backgroundColor: appTheme.colors.card },
+            headerTitle: '',
           }}
         />
         <Stack.Screen
@@ -114,10 +107,13 @@ export default function RootLayout() {
       <SQLiteProvider databaseName={DATABASE_NAME} useSuspense>
         <SafeAreaProvider style={globals.flex}>
           <GestureHandlerRootView style={globals.flex}>
-            <AppNavigator />
+            <BottomSheetModalProvider>
+              <AppNavigator />
+            </BottomSheetModalProvider>
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </SQLiteProvider>
+
       <Toast position="bottom" bottomOffset={20} config={toastConfig} />
     </Suspense>
   );

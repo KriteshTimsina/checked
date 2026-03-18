@@ -4,17 +4,17 @@ import { ThemedText } from './ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+// import { BottomSheetTextInputProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetTextInput';
 
 type InputTextProps = {
   onSubmit: VoidFunction;
   onClose: VoidFunction;
   inputText: string;
   setInputText: (text: string) => void;
-  inputRef: React.RefObject<TextInput>;
 } & TextInputProps;
 
 const InputText: FC<InputTextProps> = ({
-  inputRef,
   inputText,
   onClose,
   onSubmit,
@@ -33,14 +33,14 @@ const InputText: FC<InputTextProps> = ({
 
   return (
     <View style={[styles.inputContainer, { backgroundColor: containerBg }]}>
-      <TextInput
-        ref={inputRef}
+      <BottomSheetTextInput
         value={inputText}
         onChangeText={setInputText}
         placeholder="Enter your task title..."
         placeholderTextColor={placeholderColor}
         style={[styles.input, { color: inputColor }]}
         {...textInputProps}
+        autoFocus
       />
 
       <View style={styles.counter}>

@@ -9,15 +9,15 @@ import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
 import ChecklistItem from '@/components/ChecklistItem';
-import BottomSheet from '@/components/BottomSheet';
-import GorhomBottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet from '@/components/reuseables/BottomSheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 
 export default function Entry() {
-  const bottomSheetRef = useRef<GorhomBottomSheet>(null);
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [inputText, setInputText] = useState('');
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const inputRef = useRef<TextInput>(null);
@@ -56,10 +56,6 @@ export default function Entry() {
       return toast('Task name is too long.');
     }
 
-    // if(editingEntry){
-
-    // }
-
     try {
       const saveOperation = editingEntry?.id
         ? () => updateEntry(editingEntry, inputText.trim())
@@ -81,20 +77,10 @@ export default function Entry() {
       console.error(error, 'Error saving note');
       toast('Error saving entry');
     }
-
-    // const entry = await createEntry({
-    //   project_id: Number(projectId),
-    //   title: inputText.trim(),
-    // });
-
-    // if (entry) {
-    //   haptics.success();
-    //   closeSheet();
-    // }
   };
 
   const openSheet = () => {
-    bottomSheetRef.current?.expand();
+    bottomSheetRef.current?.present();
     inputRef.current?.focus();
   };
   const closeSheet = () => {
@@ -130,8 +116,7 @@ export default function Entry() {
         bottomSheetRef={bottomSheetRef}
       >
         <InputText
-          placeholder="Enter your task title..."
-          inputRef={inputRef}
+          placeholder="Enter new todo..."
           inputText={inputText}
           setInputText={setInputText}
           onSubmit={handleAddEntry}
