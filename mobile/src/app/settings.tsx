@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { Appearance, StyleSheet, View } from 'react-native';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
@@ -15,6 +15,8 @@ import { SettingItem, SettingSection } from '@/components/ui/settings/SettingsIt
 import { ThemeSheet } from '@/components/ui/settings/ThemeSheet';
 import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
 import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
+import { openStoreListing } from '@/utils/review';
+// import { PRIVACY_POLICY_URL } from '@/constants/constants';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal>(null);
@@ -29,8 +31,8 @@ export default function Settings() {
     toggleHaptics,
     themeId,
     setThemeId,
-    iconId, // add this to your usePreferences store
-    setIconId, // add this to your usePreferences store
+    iconId,
+    setIconId,
     colorScheme,
     setColorScheme,
   } = usePreferences();
@@ -134,6 +136,22 @@ export default function Settings() {
               rightLabel={primaryTab === 'index' ? 'Tasks' : 'Notes'}
               onPress={() => primaryTabRef.current?.present()}
             />
+          </SettingSection>
+
+          <SettingSection title="Experiences">
+            <SettingItem
+              variant="navigate"
+              icon="happy-outline"
+              label="Rate Checked"
+              onPress={openStoreListing}
+            />
+
+            {/* <SettingItem
+              variant="navigate"
+              icon="shield-outline"
+              label="Privacy Policy"
+              onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+            /> */}
           </SettingSection>
         </View>
 

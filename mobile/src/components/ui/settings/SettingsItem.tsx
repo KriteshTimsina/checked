@@ -4,8 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 
-// ── Types ────────────────────────────────────────────────────────────────────
-
 type BaseProps = {
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label: string;
@@ -31,8 +29,6 @@ type InfoProps = BaseProps & {
 };
 
 export type SettingItemProps = ToggleProps | NavigateProps | InfoProps;
-
-// ── Component ────────────────────────────────────────────────────────────────
 
 export const SettingItem: React.FC<SettingItemProps> = props => {
   const { primary, card, text, icon, border } = useTheme();
@@ -97,13 +93,11 @@ export const SettingItem: React.FC<SettingItemProps> = props => {
   );
 };
 
-// ── Section wrapper ──────────────────────────────────────────────────────────
-
 export const SettingSection: React.FC<{
   title?: string;
   children: React.ReactNode;
 }> = ({ title, children }) => {
-  const { text, textMuted } = useTheme();
+  const { textMuted } = useTheme();
   return (
     <View style={styles.section}>
       {title && (
@@ -113,8 +107,6 @@ export const SettingSection: React.FC<{
     </View>
   );
 };
-
-// ── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   item: {
