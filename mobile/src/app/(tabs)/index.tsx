@@ -16,6 +16,7 @@ import { BottomSheet } from '@/components/reuseables';
 import { useTheme } from '@/hooks/useTheme';
 import Checklist from '@/components/Checklist';
 import InputText from '@/components/InputText';
+import { debounce } from 'lodash';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -34,7 +35,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  const onAddProject = async (title: string) => {
+  const onAddProject = debounce(async (title: string) => {
     if (title.trim().length === 0) return toast('Tasks cannot be empty.');
     if (title.trim().length > MAX_INPUT_LENGTH) return toast('Task title is too long.');
 
@@ -46,7 +47,7 @@ export default function Home() {
     if (created) {
       haptics.success();
     }
-  };
+  }, 300);
 
   const openSheet = () => {
     bottomSheetRef.current?.present();

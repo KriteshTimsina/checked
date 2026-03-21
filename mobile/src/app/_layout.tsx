@@ -24,6 +24,7 @@ import Splash from '@/components/Splash';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/utils/toastConfig';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useInAppUpdates } from '@/hooks/useInAppUpdate';
 
 type ChecklistParamList = {
   index: { title?: string };
@@ -85,6 +86,7 @@ export default function RootLayout() {
   const fontsLoaded = useFontLoading();
   const { iconId } = usePreferences();
   const [showSplash, setShowSplash] = useState(true);
+  useInAppUpdates();
 
   useEffect(() => {
     const theme = APP_THEMES.find(t => t.id === iconId);
