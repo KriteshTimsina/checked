@@ -1,13 +1,10 @@
-import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { SQLiteProvider } from 'expo-sqlite';
 
-import { useFontLoading } from '@/hooks/useFontLoading';
-import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DATABASE_NAME } from '@/constants/constants';
 import { Loading } from '@/components/Loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -18,20 +15,16 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
 import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
-import { APP_THEMES } from '@/constants/themes';
-import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
-import Splash from '@/components/Splash';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/utils/toastConfig';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useInAppUpdates } from '@/hooks/useInAppUpdate';
+import AppBootstrap from '@/providers/AppBootstrap';
 
 type ChecklistParamList = {
   index: { title?: string };
   success: undefined;
 };
-
-SplashScreen.preventAutoHideAsync();
 
 function AppNavigator() {
   const colorScheme = useColorScheme();
@@ -82,38 +75,20 @@ function AppNavigator() {
 }
 
 export default function RootLayout() {
-  const { success: dbSuccess } = useDatabaseInit();
-  const fontsLoaded = useFontLoading();
-  const { iconId } = usePreferences();
-  const [showSplash, setShowSplash] = useState(true);
   useInAppUpdates();
-
-  useEffect(() => {
-    const theme = APP_THEMES.find(t => t.id === iconId);
-    if (!theme) return;
-    setAppIcon(theme.iconKey);
-  }, []);
-
-  useEffect(() => {
-    if (fontsLoaded && dbSuccess) {
-      SplashScreen.hideAsync();
-      const timer = setTimeout(() => setShowSplash(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [dbSuccess, fontsLoaded]);
-
-  if (!fontsLoaded || showSplash) return <Splash />;
 
   return (
     <Suspense fallback={<Loading />}>
       <SQLiteProvider databaseName={DATABASE_NAME} useSuspense>
-        <SafeAreaProvider style={globals.flex}>
-          <GestureHandlerRootView style={globals.flex}>
-            <BottomSheetModalProvider>
-              <AppNavigator />
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
+        <AppBootstrap>
+          <SafeAreaProvider style={globals.flex}>
+            <GestureHandlerRootView style={globals.flex}>
+              <BottomSheetModalProvider>
+                <AppNavigator />
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </SafeAreaProvider>
+        </AppBootstrap>
       </SQLiteProvider>
 
       <Toast bottomOffset={20} topOffset={60} config={toastConfig} />
