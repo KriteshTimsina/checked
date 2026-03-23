@@ -1,4 +1,4 @@
-import { notes, INote, recordings } from '@/db/schema';
+import { notes, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
 import { eq } from 'drizzle-orm';
 import { create } from 'zustand';
