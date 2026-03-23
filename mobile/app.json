@@ -2,7 +2,7 @@
   "expo": {
     "name": "Checked",
     "slug": "checklist",
-    "version": "beta-0.1.1",
+    "version": "0.2.1",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "checked",
@@ -58,12 +58,6 @@
           "dark": {
             "backgroundColor": "#0F0F11"
           }
-        }
-      ],
-      [
-        "expo-av",
-        {
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ],
       [

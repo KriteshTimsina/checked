@@ -6,7 +6,8 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "developmentClient": false
       }
     },
     "release": {
@@ -22,7 +23,8 @@
     "production": {
       "android": {
         "buildType": "app-bundle",
-        "autoIncrement": true
+        "autoIncrement": true,
+        "developmentClient": false
       }
     }
   },
