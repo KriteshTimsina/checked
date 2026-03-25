@@ -1,18 +1,16 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import React, { FC, useCallback, useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link, useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { IProject } from '@/db/schema';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
 import { useTheme } from '@/hooks/useTheme';
-
-let currentSwipeable: SwipeableMethods | null = null;
+import SwipeableList from './ui/SwipeableList';
 
 type ChecklistProps = {
   item: IProject;
@@ -25,15 +23,8 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
   const [completedCount, setCompletedCount] = useState(0);
   const { deleteProject } = useProject();
   const { getCompletedEntriesCount } = useEntries();
-  const swipeableRef = useRef<SwipeableMethods>(null);
-  const { primary, primarySoft, icon, textMuted } = useTheme();
-
-  useEffect(() => {
-    const currentRef = swipeableRef.current;
-    return () => {
-      if (currentSwipeable === currentRef) currentSwipeable = null;
-    };
-  }, []);
+  const { icon, textMuted } = useTheme();
+  const router = useRouter();
 
   const getCompletedTask = useCallback(async () => {
     try {
@@ -64,47 +55,23 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
     }
   };
 
-  const onSwipeableWillOpen = () => {
-    if (currentSwipeable && currentSwipeable !== swipeableRef.current) {
-      currentSwipeable.close();
-    }
-    currentSwipeable = swipeableRef.current;
-  };
-
-  const onSwipeableWillClose = () => {
-    if (currentSwipeable === swipeableRef.current) currentSwipeable = null;
-  };
-
   return (
-    <Swipeable
-      ref={swipeableRef}
-      onSwipeableWillOpen={onSwipeableWillOpen}
-      onSwipeableWillClose={onSwipeableWillClose}
-      renderRightActions={() => <RightAction onDelete={onDelete} />}
-    >
-      <Link
-        href={{
+    <SwipeableList
+      onPress={() =>
+        router.push({
           pathname: '/(todos)',
           params: { projectId: item.id, title: item.title },
-        }}
-      >
-        <Animated.View
-          entering={FadeInDown.delay(100 * (index + 1))}
-          style={[styles.projectItem, { backgroundColor: primarySoft }]}
-        >
-          <View style={[styles.accentBar, { backgroundColor: primary }]} />
-
-          <View style={styles.content}>
-            <ThemedText type="defaultSemiBold" darkColor={icon}>
-              {item.title}
-            </ThemedText>
-            <ThemedText style={[styles.completed, { color: textMuted }]}>
-              {completedCount} completed
-            </ThemedText>
-          </View>
-        </Animated.View>
-      </Link>
-    </Swipeable>
+        })
+      }
+      renderRightActions={() => <RightAction onDelete={onDelete} />}
+    >
+      <ThemedText type="defaultSemiBold" darkColor={icon}>
+        {item.title}
+      </ThemedText>
+      <ThemedText style={[styles.completed, { color: textMuted }]}>
+        {completedCount} completed
+      </ThemedText>
+    </SwipeableList>
   );
 };
 
@@ -117,23 +84,6 @@ const RightAction = ({ onDelete }: { onDelete: () => void }) => (
 );
 
 const styles = StyleSheet.create({
-  projectItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: 60,
-    borderRadius: 12,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  accentBar: {
-    width: 4,
-    alignSelf: 'stretch',
-  },
-  content: {
-    flex: 1,
-    padding: 12,
-    gap: 2,
-  },
   completed: {
     fontSize: 13,
   },
