@@ -92,7 +92,6 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
           entering={FadeInDown.delay(100 * (index + 1))}
           style={[styles.projectItem, { backgroundColor: primarySoft }]}
         >
-          {/* Left accent bar */}
           <View style={[styles.accentBar, { backgroundColor: primary }]} />
 
           <View style={styles.content}>

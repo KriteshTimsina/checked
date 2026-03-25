@@ -15,25 +15,22 @@ import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
-import { useTheme } from '@/hooks/useTheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { Colors } from '@/constants/colors';
-import CalendarSheet from '@/components/sheets/CalendarSheet';
-import dayjs from 'dayjs';
 
 export default function Entry() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const calendarSheetRef = useRef<BottomSheetModal>(null);
+  // const calendarSheetRef = useRef<BottomSheetModal>(null);
 
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const { entries, createEntry, getEntries, isAllCompleted, updateEntry, deleteEntry } =
     useEntries();
 
   const [editingEntry, setEditingEntry] = useState<IEntry | null>(null);
-  const [dueDate, setDueDate] = useState<string>('');
+  // const [dueDate, setDueDate] = useState<string>('');
 
-  const { primary, textMuted } = useTheme();
+  // const { primary, textMuted } = useTheme();
 
   useEffect(() => {
     if (isAllCompleted) {
@@ -65,13 +62,13 @@ export default function Entry() {
     bottomSheetRef.current?.dismiss();
   }, []);
 
-  const openCalendar = useCallback(() => {
-    calendarSheetRef.current?.present();
-  }, []);
+  // const openCalendar = useCallback(() => {
+  //   calendarSheetRef.current?.present();
+  // }, []);
 
-  const closeCalendar = useCallback(() => {
-    calendarSheetRef.current?.dismiss();
-  }, []);
+  // const closeCalendar = useCallback(() => {
+  //   calendarSheetRef.current?.dismiss();
+  // }, []);
 
   const onEdit = useCallback((item: IEntry) => {
     setEditingEntry(item);
@@ -80,7 +77,8 @@ export default function Entry() {
 
   const handleSave = useCallback(
     async (title: string) => {
-      if (title.trim().length > MAX_INPUT_LENGTH * 2) return toast('Task name is too long.');
+      const trimmedTitle = title.trim();
+      if (!trimmedTitle.length || trimmedTitle.length > MAX_INPUT_LENGTH) return;
       try {
         const saved = await (editingEntry?.id
           ? updateEntry(editingEntry, title.trim())
@@ -113,13 +111,13 @@ export default function Entry() {
     }
   }, [editingEntry, deleteEntry, closeSheet]);
 
-  const handleSelectDate = useCallback((date: string) => {
-    setDueDate(date);
-  }, []);
+  // const handleSelectDate = useCallback((date: string) => {
+  //   setDueDate(date);
+  // }, []);
 
-  const clearDueDate = useCallback(() => {
-    setDueDate('');
-  }, []);
+  // const clearDueDate = useCallback(() => {
+  //   setDueDate('');
+  // }, []);
 
   const HeaderRight = useCallback(
     () =>
@@ -149,7 +147,7 @@ export default function Entry() {
               showsVerticalScrollIndicator={false}
             />
           ) : (
-            <EmptyProject type="todos" />
+            <EmptyProject type="todoItem" />
           )}
         </View>
         <View style={styles.buttonContainer}>
@@ -158,7 +156,7 @@ export default function Entry() {
       </ThemedView>
 
       <BottomSheet
-        snapPoints={['40%']}
+        // snapPoints={['40%']}
         onClose={closeSheet}
         title={editingEntry ? 'Edit Entry' : 'Add new Entry'}
         headerRight={editingEntry ? HeaderRight : undefined}
@@ -172,7 +170,7 @@ export default function Entry() {
           onClose={closeSheet}
         />
 
-        <Pressable onPress={openCalendar} style={styles.pill}>
+        {/* <Pressable onPress={openCalendar} style={styles.pill}>
           <Ionicons name="calendar-outline" size={18} color={dueDate ? primary : textMuted} />
           <ThemedText style={{ color: dueDate ? primary : textMuted }}>
             {dueDate ? dayjs(dueDate).format('MMM D') : 'Due date'}
@@ -182,15 +180,15 @@ export default function Entry() {
               <Ionicons name="close-circle" size={14} color={primary} />
             </Pressable>
           )}
-        </Pressable>
+        </Pressable> */}
       </BottomSheet>
 
-      <CalendarSheet
+      {/* <CalendarSheet
         sheetRef={calendarSheetRef}
         onClose={closeCalendar}
         onSelectDate={handleSelectDate}
         selectedDate={dueDate}
-      />
+      /> */}
     </>
   );
 }

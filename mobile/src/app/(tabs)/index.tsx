@@ -60,8 +60,10 @@ export default function Home() {
 
   return (
     <>
-      <ThemedView style={globals.container}>
-        <ThemedText type="subtitle">✅ Your Tasks</ThemedText>
+      <ThemedView style={[globals.flex]}>
+        <ThemedText style={styles.title} type="subtitle">
+          ✅ Your Tasks
+        </ThemedText>
         <View style={styles.projectContainer}>
           {projects.length > 0 ? (
             <FlatList
@@ -101,10 +103,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     gap: 10,
     paddingBottom: 20,
+    padding: 10,
   },
   buttonContainer: {
     position: 'absolute',
     bottom: 28,
     right: 24,
+  },
+  title: {
+    paddingHorizontal: 10,
   },
 });

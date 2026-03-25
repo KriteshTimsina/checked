@@ -7,9 +7,9 @@ import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 type InputTextProps = {
-  onSubmit: (text: string) => void; // ✅ receives the value on submit
+  onSubmit: (text: string) => void;
   onClose: VoidFunction;
-  initialValue?: string; // ✅ new
+  initialValue?: string;
 } & Omit<TextInputProps, 'onSubmit'>;
 
 const InputText: FC<InputTextProps> = ({
@@ -29,8 +29,8 @@ const InputText: FC<InputTextProps> = ({
   const isOverLimit = inputText.trim().length > MAX_INPUT_LENGTH;
 
   const handleSubmit = () => {
-    onSubmit(inputText); // ✅ pass value up only on submit
-    setInputText(''); // ✅ reset internally
+    onSubmit(inputText);
+    setInputText('');
   };
 
   return (
@@ -56,7 +56,7 @@ const InputText: FC<InputTextProps> = ({
         </Pressable>
         <Pressable
           onPress={handleSubmit}
-          style={[styles.iconButton, { opacity: inputText.trim() ? 1 : 0.4 }]}
+          style={[styles.iconButton, { opacity: inputText.trim() && !isOverLimit ? 1 : 0.4 }]}
         >
           <Ionicons name="paper-plane-outline" size={25} color={primary} />
         </Pressable>
