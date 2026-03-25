@@ -19,6 +19,7 @@ import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanima
 import { haptics } from '@/utils/haptics';
 import Button from '@/components/Button';
 import { NoteMenu } from '@/components/ui/NotesMenu';
+import { globals } from '@/styles/globals';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
 
@@ -103,7 +104,7 @@ export default function Note() {
   const titleStyles = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={globals.flex}>
       <ScrollView
         onScroll={onScroll}
         scrollEventThrottle={16}
@@ -149,13 +150,10 @@ export default function Note() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
   contentContainer: {
     gap: 8,
     paddingBottom: 120,
+    padding: 20,
   },
   headerRight: {
     flexDirection: 'row',

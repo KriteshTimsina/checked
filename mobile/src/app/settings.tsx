@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { Appearance, StyleSheet, View } from 'react-native';
+import { Appearance, ScrollView, StyleSheet, View } from 'react-native';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
@@ -92,69 +92,63 @@ export default function Settings() {
   return (
     <>
       <ThemedView style={[styles.root, { backgroundColor: surface }]}>
-        <ThemedText type="subtitle" style={{ color: text }}>
+        <ThemedText type="subtitle" style={{ color: text, paddingHorizontal: 20 }}>
           Settings
         </ThemedText>
 
-        <View style={styles.sections}>
-          <SettingSection title="Appearance">
-            <SettingItem
-              variant="info"
-              icon="color-palette-outline"
-              label="Theme"
-              rightElement={ThemePreview}
-              onPress={() => themeSheetRef.current?.present()}
-            />
-            <SettingItem
-              variant="info"
-              icon="apps-outline"
-              label="App Icon"
-              rightElement={IconPreview}
-              onPress={() => appIconSheetRef.current?.present()}
-            />
-            <SettingItem
-              variant="toggle"
-              icon={isDark ? 'moon-outline' : 'sunny-outline'}
-              label="Dark mode"
-              value={isDark}
-              onValueChange={toggleDarkMode}
-            />
-          </SettingSection>
+        <ScrollView style={styles.container}>
+          <View style={styles.sections}>
+            <SettingSection title="Appearance">
+              <SettingItem
+                variant="info"
+                icon="color-palette-outline"
+                label="Theme"
+                rightElement={ThemePreview}
+                onPress={() => themeSheetRef.current?.present()}
+              />
+              <SettingItem
+                variant="info"
+                icon="apps-outline"
+                label="App Icon"
+                rightElement={IconPreview}
+                onPress={() => appIconSheetRef.current?.present()}
+              />
+              <SettingItem
+                variant="toggle"
+                icon={isDark ? 'moon-outline' : 'sunny-outline'}
+                label="Dark mode"
+                value={isDark}
+                onValueChange={toggleDarkMode}
+              />
+            </SettingSection>
 
-          <SettingSection title="Preferences">
-            <SettingItem
-              variant="toggle"
-              icon="phone-portrait-outline"
-              label="Enable haptics"
-              value={hapticsEnabled}
-              onValueChange={toggleHaptics}
-            />
-            <SettingItem
-              variant="navigate"
-              icon="home-outline"
-              label="Default tab"
-              rightLabel={primaryTab === 'index' ? 'Tasks' : 'Notes'}
-              onPress={() => primaryTabRef.current?.present()}
-            />
-          </SettingSection>
+            <SettingSection title="Preferences">
+              <SettingItem
+                variant="toggle"
+                icon="phone-portrait-outline"
+                label="Enable haptics"
+                value={hapticsEnabled}
+                onValueChange={toggleHaptics}
+              />
+              <SettingItem
+                variant="navigate"
+                icon="home-outline"
+                label="Default tab"
+                rightLabel={primaryTab === 'index' ? 'Tasks' : 'Notes'}
+                onPress={() => primaryTabRef.current?.present()}
+              />
+            </SettingSection>
 
-          <SettingSection title="Experiences">
-            <SettingItem
-              variant="navigate"
-              icon="happy-outline"
-              label="Rate Checked"
-              onPress={openStoreListing}
-            />
-
-            {/* <SettingItem
-              variant="navigate"
-              icon="shield-outline"
-              label="Privacy Policy"
-              onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
-            /> */}
-          </SettingSection>
-        </View>
-
+            <SettingSection title="Experiences">
+              <SettingItem
+                variant="navigate"
+                icon="happy-outline"
+                label="Rate Checked"
+                onPress={openStoreListing}
+              />
+            </SettingSection>
+          </View>
+        </ScrollView>
         <Footer />
       </ThemedView>
 
@@ -189,8 +183,11 @@ const Footer = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    padding: 20,
     paddingTop: 12,
+  },
+  container: {
+    paddingHorizontal: 20,
+    flex: 1,
   },
   sections: {
     marginTop: 24,
@@ -217,9 +214,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   footer: {
-    flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 12,
+    paddingVertical: 12,
   },
 });
