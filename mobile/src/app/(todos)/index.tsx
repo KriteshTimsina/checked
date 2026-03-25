@@ -24,19 +24,18 @@ export default function Entry() {
   // const calendarSheetRef = useRef<BottomSheetModal>(null);
 
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
-  const { entries, createEntry, getEntries, isAllCompleted, updateEntry, deleteEntry } =
-    useEntries();
+  const { entries, createEntry, getEntries, updateEntry, deleteEntry } = useEntries();
 
   const [editingEntry, setEditingEntry] = useState<IEntry | null>(null);
   // const [dueDate, setDueDate] = useState<string>('');
 
   // const { primary, textMuted } = useTheme();
 
-  useEffect(() => {
-    if (isAllCompleted) {
-      router.replace({ pathname: '/(todos)/success', params: { projectId } });
-    }
-  }, [isAllCompleted, projectId]);
+  // useEffect(() => {
+  //   if (isAllCompleted) {
+  //     router.replace({ pathname: '/(todos)/success', params: { projectId } });
+  //   }
+  // }, [isAllCompleted, projectId]);
 
   useFocusEffect(
     useCallback(() => {
