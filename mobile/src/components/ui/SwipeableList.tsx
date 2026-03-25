@@ -1,11 +1,13 @@
-import React, { FC, useRef } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { FC, memo, useRef } from 'react';
+import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import Swipeable, {
   SwipeableMethods,
   SwipeableProps,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { useTheme } from '@/hooks/useTheme';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 
 let currentSwipeable: SwipeableMethods | null = null;
 
@@ -22,6 +24,30 @@ type SwipeableListProps = {
   onPress?: VoidFunction | undefined;
   accentBarVisible?: boolean;
 } & (SwipeableListDisabledProps | SwipeableListEnabledProps);
+
+const AnimatedButton = Animated.createAnimatedComponent(Pressable);
+
+type SwipeActionButtonProps = {
+  onPress: VoidFunction;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  style?: ViewStyle;
+};
+
+export const SwipeActionButton = memo(
+  ({ onPress, icon, style, ...props }: SwipeActionButtonProps) => {
+    return (
+      <AnimatedButton
+        {...props}
+        entering={FadeIn.delay(1000)}
+        onPress={onPress}
+        style={[styles.swipeActionContainer, { ...style }]}
+      >
+        <Ionicons color="white" name={icon} size={24} />
+      </AnimatedButton>
+    );
+  },
+);
+SwipeActionButton.displayName = 'SwipeActionButton';
 
 const SwipeableList: FC<SwipeableListProps> = ({
   children,
@@ -49,6 +75,9 @@ const SwipeableList: FC<SwipeableListProps> = ({
       ref={swipeableRef}
       onSwipeableWillOpen={onSwipeableWillOpen}
       onSwipeableWillClose={onSwipeableWillClose}
+      onSwipeableOpen={() => {
+        setTimeout(() => swipeableRef.current?.close(), 3000);
+      }}
       {...swipeableProps}
     >
       <Pressable onPress={onPress} style={[styles.container, { backgroundColor: primarySoft }]}>
@@ -78,5 +107,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     gap: 2,
+  },
+  swipeActionContainer: {
+    width: 52,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
   },
 });

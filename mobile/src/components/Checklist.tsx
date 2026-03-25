@@ -10,7 +10,7 @@ import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
 import { useTheme } from '@/hooks/useTheme';
-import SwipeableList from './ui/SwipeableList';
+import SwipeableList, { SwipeActionButton } from './ui/SwipeableList';
 
 type ChecklistProps = {
   item: IProject;
@@ -63,7 +63,13 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
           params: { projectId: item.id, title: item.title },
         })
       }
-      renderRightActions={() => <RightAction onDelete={onDelete} />}
+      renderRightActions={() => (
+        <SwipeActionButton
+          style={{ backgroundColor: '#ef4444' }}
+          icon="trash-outline"
+          onPress={onDelete}
+        />
+      )}
     >
       <ThemedText type="defaultSemiBold" darkColor={icon}>
         {item.title}
