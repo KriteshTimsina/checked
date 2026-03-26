@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   projectContainer: {
     gap: 10,
     marginVertical: 20,
+    flex: 1,
   },
   contentContainer: {
     gap: 10,
