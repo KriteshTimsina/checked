@@ -41,7 +41,6 @@ const useNotesStore = create<NotesState>()(set => ({
         content: notes.content,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
-        position: notes.position,
       });
 
     if (newEntry) {
@@ -63,7 +62,6 @@ const useNotesStore = create<NotesState>()(set => ({
         content: notes.content,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
-        position: notes.position,
       });
 
     if (updateEntry) {

@@ -66,8 +66,9 @@ export default function Note() {
           toast('Saved');
         }
       }
-    } catch {
+    } catch (e: any) {
       haptics.error();
+      console.log(e);
       toast('Error saving note');
     }
   }, [note, createNote, updateNote]);
