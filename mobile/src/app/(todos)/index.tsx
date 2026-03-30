@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import {
+  FlatList,
+  Keyboard,
+  Platform,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { toast } from '@/utils/toast';
-import Button from '@/components/Button';
 import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
@@ -18,6 +25,8 @@ import { globals } from '@/styles/globals';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { Colors } from '@/constants/colors';
+import FAB from '@/components/reuseables/FAB';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Entry() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -27,6 +36,10 @@ export default function Entry() {
   const { entries, createEntry, getEntries, updateEntry, deleteEntry } = useEntries();
 
   const [editingEntry, setEditingEntry] = useState<IEntry | null>(null);
+
+  const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
+  const top = Platform.OS === 'android' ? height - insets.bottom - 176 : null;
   // const [dueDate, setDueDate] = useState<string>('');
 
   // const { primary, textMuted } = useTheme();
@@ -135,7 +148,8 @@ export default function Entry() {
 
   return (
     <>
-      <ThemedView style={globals.container}>
+      <ThemedView style={globals.flex}>
+        {/* <ThemedView style={globals.container}> */}
         <View style={styles.projectContainer}>
           {entries.length > 0 ? (
             <FlatList
@@ -149,11 +163,11 @@ export default function Entry() {
             <EmptyProject type="todoItem" />
           )}
         </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={openSheet} />
-        </View>
       </ThemedView>
 
+      <FAB onPress={openSheet} icon="add" style={{ top }} />
+
+      {/* </ThemedView> */}
       <BottomSheet
         // snapPoints={['40%']}
         onClose={closeSheet}
@@ -199,13 +213,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     gap: 10,
-    paddingBottom: 20,
+    paddingBottom: 90,
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-  },
+
   pill: {
     flexDirection: 'row',
     alignItems: 'center',

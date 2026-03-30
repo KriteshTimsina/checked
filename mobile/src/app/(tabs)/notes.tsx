@@ -9,6 +9,7 @@ import { useNotes } from '@/store/notes';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/colors';
+import FAB from '@/components/reuseables/FAB';
 
 export default function Notes() {
   const { notes, getNotes, isLoading } = useNotes();
@@ -40,9 +41,8 @@ export default function Notes() {
           contentContainerStyle={styles.contentContainer}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button onPress={onAddProject} />
-      </View>
+
+      <FAB onPress={onAddProject} icon="add" />
     </ThemedView>
   );
 }
@@ -58,11 +58,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     padding: 10,
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 28,
-    right: 24,
-  },
+
   title: {
     paddingHorizontal: 10,
   },

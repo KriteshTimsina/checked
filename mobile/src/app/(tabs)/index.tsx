@@ -17,6 +17,7 @@ import { useTheme } from '@/hooks/useTheme';
 import Checklist from '@/components/Checklist';
 import InputText from '@/components/InputText';
 import { debounce } from 'lodash';
+import FAB from '@/components/reuseables/FAB';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -60,7 +61,7 @@ export default function Home() {
 
   return (
     <>
-      <ThemedView style={[globals.flex]}>
+      <ThemedView style={globals.flex}>
         <ThemedText style={styles.title} type="subtitle">
           ✅ Your Tasks
         </ThemedText>
@@ -79,10 +80,9 @@ export default function Home() {
             <EmptyProject type="todos" />
           )}
         </View>
-        <View style={styles.buttonContainer}>
-          <Button onPress={openSheet} />
-        </View>
       </ThemedView>
+
+      <FAB onPress={openSheet} icon="add" />
 
       <BottomSheet onClose={closeSheet} title="Add new task" bottomSheetRef={bottomSheetRef}>
         <InputText
@@ -105,11 +105,6 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 20,
     padding: 10,
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 28,
-    right: 24,
   },
   title: {
     paddingHorizontal: 10,
