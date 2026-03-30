@@ -18,7 +18,7 @@ interface NoteMenuProps {
 export function NoteMenu({ noteId }: NoteMenuProps) {
   const { visible, open, close } = useContextMenu();
   const { deleteNote, getNotes, getNote } = useNotes();
-  const { icon, textMuted } = useTheme();
+  const { textMuted } = useTheme();
   const router = useRouter();
 
   const handleDelete = async () => {

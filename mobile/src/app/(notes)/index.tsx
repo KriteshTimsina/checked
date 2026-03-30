@@ -77,7 +77,6 @@ export default function Note() {
     onSaveNoteRef.current = onSaveNote;
   }, [onSaveNote]);
 
-  // ✅ isFocused and noteId both as deps so header always reflects latest state
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (

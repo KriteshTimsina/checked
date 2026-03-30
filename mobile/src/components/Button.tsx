@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, ButtonProps as B, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import React, { FC } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
+import { Pressable } from 'react-native-gesture-handler';
 
 type ButtonProps = {
   onPress: VoidFunction | null | undefined;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { router, Stack } from 'expo-router';
-import { Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
+import { Pressable } from 'react-native-gesture-handler';
 
 export default function NotesLayout() {
   const { icon } = useTheme();

@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react';
-import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Modal, StyleSheet, Pressable as RNPressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-
-// ── Types ────────────────────────────────────────────────────────────────────
+import { Pressable } from 'react-native-gesture-handler';
 
 export type MenuAction = {
   id: string;
@@ -23,8 +22,6 @@ type ContextMenuProps = {
   topOffset?: number;
 };
 
-// ── Component ────────────────────────────────────────────────────────────────
-
 export function ContextMenu({
   visible,
   onOpen,
@@ -36,9 +33,9 @@ export function ContextMenu({
 
   return (
     <>
-      <TouchableOpacity onPress={onOpen} hitSlop={8} style={styles.trigger}>
+      <Pressable onPress={onOpen} hitSlop={8} style={styles.trigger}>
         <Ionicons name="ellipsis-vertical" size={22} color={text} />
-      </TouchableOpacity>
+      </Pressable>
 
       <Modal
         visible={visible}
@@ -47,8 +44,9 @@ export function ContextMenu({
         onRequestClose={onClose}
         statusBarTranslucent
       >
-        <Pressable style={styles.overlay} onPress={onClose}>
+        <RNPressable style={styles.overlay} onPress={onClose}>
           <View
+            pointerEvents="box-none"
             style={[
               styles.menu,
               {
@@ -87,7 +85,7 @@ export function ContextMenu({
               </React.Fragment>
             ))}
           </View>
-        </Pressable>
+        </RNPressable>
       </Modal>
     </>
   );
@@ -97,14 +95,13 @@ export function ContextMenu({
 
 export function useContextMenu() {
   const [visible, setVisible] = React.useState(false);
+
   return {
     visible,
     open: () => setVisible(true),
     close: () => setVisible(false),
   };
 }
-
-// ── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   trigger: {
