@@ -2,7 +2,7 @@
   "expo": {
     "name": "Checked",
     "slug": "checklist",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "checked",

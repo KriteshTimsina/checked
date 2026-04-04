@@ -1,164 +1,86 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  TextInput,
-  StyleSheet,
-  ScrollView,
+  Dimensions,
   NativeSyntheticEvent,
-  NativeScrollEvent,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TextInputKeyPressEventData,
+  TextInputSubmitEditingEventData,
   View,
 } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { globals } from '@/styles/globals';
+import { INote } from '@/db/schema';
 import { useTheme } from '@/hooks/useTheme';
 import dayjs from 'dayjs';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { useNotes } from '@/store/notes';
-import { INote } from '@/db/schema';
-import { toast } from '@/utils/toast';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import { haptics } from '@/utils/haptics';
-import Button from '@/components/Button';
-import { NoteMenu } from '@/components/ui/NotesMenu';
-import { globals } from '@/styles/globals';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
 
-const initialState: Partial<INote> = { title: '', content: '' };
-const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
+const HEIGHT = Dimensions.get('window').height;
 
-export default function Note() {
-  const [note, setNote] = useState<Partial<INote>>(initialState);
-  const [showHeaderTitle, setShowHeaderTitle] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const { noteId } = useLocalSearchParams<{ noteId: string }>();
-  const { getNote, createNote, updateNote } = useNotes();
-  const navigation = useNavigation();
-  const titleOpacity = useSharedValue(1);
-  const { text, textMuted, icon } = useTheme();
-
-  const onSaveNoteRef = useRef<() => Promise<void>>();
-
-  useEffect(() => {
-    if (noteId) fetchNote();
-  }, [noteId]);
-
-  const fetchNote = async () => {
-    const fetched = await getNote(Number(noteId));
-    if (fetched) setNote(fetched);
-  };
-
-  const onSaveNote = useCallback(async () => {
-    if (!note?.title?.trim()) return toast('Title cannot be empty.');
-    try {
-      const payload: NoteInput = { title: note.title!, content: note.content ?? '' };
-      if (note?.id) {
-        const updated = await updateNote(note.id, payload);
-        if (updated) {
-          haptics.success();
-          toast('Saved');
-        }
-      } else {
-        const created = await createNote(payload);
-        if (created) {
-          setNote(prev => ({ ...prev, id: created.id }));
-          haptics.success();
-          toast('Saved');
-        }
-      }
-    } catch (e: any) {
-      haptics.error();
-      console.log(e);
-      toast('Error saving note');
-    }
-  }, [note, createNote, updateNote]);
-
-  useEffect(() => {
-    onSaveNoteRef.current = onSaveNote;
-  }, [onSaveNote]);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          {noteId && <NoteMenu noteId={Number(noteId)} />}
-          {isFocused && (
-            <Button style={styles.button} type="save" onPress={() => onSaveNoteRef.current?.()} />
-          )}
-        </View>
-      ),
-    });
-  }, [isFocused, noteId]);
-
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const scrollY = e.nativeEvent.contentOffset.y;
-    titleOpacity.value = 1 - scrollY / 100;
-    setShowHeaderTitle(scrollY > 50);
-    navigation.setOptions({ headerTitle: scrollY > 50 ? note.title : '' });
-  };
+const Note = () => {
+  const [note, setNote] = useState<NoteInput>({ title: '', content: '' });
+  const { text, primary, textMuted } = useTheme();
+  const contentRef = useRef<TextInput>(null);
+  const titleRef = useRef<TextInput>(null);
 
   const onChange = (key: keyof NoteInput, value: string) => {
     setNote(prev => ({ ...prev, [key]: value }));
   };
 
-  const titleStyles = useAnimatedStyle(() => ({ opacity: titleOpacity.value }));
+  const handleFocusTitle = (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+    if (note.content === '' && e.nativeEvent.key === 'Backspace') {
+      titleRef.current?.focus();
+    }
+  };
+  const handleFocusDescription = () => contentRef.current?.focus();
 
   return (
-    <ThemedView style={globals.flex}>
-      <ScrollView
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.contentContainer}
-      >
-        {!showHeaderTitle && (
-          <AnimatedTextInput
-            autoFocus={!noteId}
-            placeholder="Title"
-            placeholderTextColor={icon}
-            style={[styles.title, titleStyles, { color: text }]}
-            value={note.title}
-            onChangeText={v => onChange('title', v)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-        )}
-
-        {noteId && (note?.updatedAt || note?.createdAt) && (
-          <ThemedText style={[styles.date, { color: textMuted }]}>
-            {dayjs(note.updatedAt ?? note.createdAt).format('DD MMMM YYYY h:mm A')}
-          </ThemedText>
-        )}
+    <ScrollView
+      style={globals.flex}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <ThemedView style={styles.container}>
+        <TextInput
+          ref={titleRef}
+          autoFocus
+          cursorColor={primary}
+          selectionColor={primary}
+          value={note.title}
+          onChangeText={t => onChange('title', t)}
+          style={[styles.title, { color: text }]}
+          onSubmitEditing={handleFocusDescription}
+          numberOfLines={1}
+        />
+        {/* {noteId && (note?.updatedAt || note?.createdAt) && (
+                  <ThemedText style={[styles.date, { color: textMuted }]}>
+                    {dayjs(note.updatedAt ?? note.createdAt).format('DD MMMM YYYY h:mm A')}
+                  </ThemedText>
+                )} */}
 
         <TextInput
-          placeholder="Start writing..."
-          placeholderTextColor={icon}
-          style={[styles.content, { color: text }]}
+          ref={contentRef}
+          cursorColor={primary}
+          selectionColor={primary}
           value={note.content ?? ''}
-          onChangeText={v => onChange('content', v)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onChangeText={t => onChange('content', t)}
+          style={[styles.content, { color: text }]}
           multiline
-          scrollEnabled={false}
-          autoCorrect={false}
-          autoCapitalize="none"
-          textAlignVertical="top"
+          onKeyPress={handleFocusTitle}
         />
-      </ScrollView>
-    </ThemedView>
+      </ThemedView>
+    </ScrollView>
   );
-}
+};
+
+export default Note;
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    gap: 8,
-    paddingBottom: 120,
+  container: {
     padding: 20,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
   },
   title: {
     fontSize: 22,
@@ -170,10 +92,7 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 17,
     lineHeight: 26,
-    minHeight: 500,
-  },
-  button: {
-    height: 35,
-    width: 35,
+    minHeight: HEIGHT,
+    // marginTop: 20,
   },
 });
