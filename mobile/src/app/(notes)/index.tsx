@@ -23,7 +23,7 @@ import { debounce } from 'lodash';
 import { NoteMenu } from '@/components/ui/NotesMenu';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
-const HEIGHT = Dimensions.get('window').height;
+const HEIGHT = Dimensions.get('window').height - 200;
 
 const Note = () => {
   const [note, setNote] = useState<Partial<INote>>({ title: '', content: '' });
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 17,
     lineHeight: 26,
+    textAlignVertical: 'top',
     minHeight: HEIGHT,
   },
   headerRight: {
