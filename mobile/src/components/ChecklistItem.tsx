@@ -45,10 +45,6 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
     toast('Deleted');
   };
 
-  const onRightSwipe = () => {
-    toggleCheckbox();
-  };
-
   return (
     <SwipeableList
       onPress={handleEdit}
@@ -68,12 +64,13 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
       )}
     >
       <View style={styles.content}>
-        <Pressable onPress={toggleCheckbox} hitSlop={6}>
+        <Pressable onPress={toggleCheckbox}>
           <Checkbox
             style={styles.checkbox}
             color={item.completed ? primary : undefined}
             value={item.completed}
             onValueChange={toggleCheckbox}
+            hitSlop={25}
           />
         </Pressable>
         <ThemedText

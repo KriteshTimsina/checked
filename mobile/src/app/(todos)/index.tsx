@@ -149,7 +149,6 @@ export default function Entry() {
   return (
     <>
       <ThemedView style={globals.flex}>
-        {/* <ThemedView style={globals.container}> */}
         <View style={styles.projectContainer}>
           {entries.length > 0 ? (
             <FlatList
@@ -166,8 +165,6 @@ export default function Entry() {
       </ThemedView>
 
       <FAB onPress={openSheet} icon="add" style={{ top }} />
-
-      {/* </ThemedView> */}
       <BottomSheet
         // snapPoints={['40%']}
         onClose={closeSheet}
@@ -210,6 +207,8 @@ const styles = StyleSheet.create({
   projectContainer: {
     gap: 10,
     marginVertical: 20,
+    flex: 1,
+    padding: 10,
   },
   contentContainer: {
     gap: 10,
