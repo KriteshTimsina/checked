@@ -55,16 +55,16 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
       icon: <AntDesign name="pdffile1" size={18} color={textMuted} />,
       onPress: handleSharePDF,
     },
-    {
-      id: 'reminder',
-      label: 'Set Reminder',
-      icon: <Ionicons name="time-outline" size={18} color={textMuted} />,
-      onPress: () => {
-        toast('Coming soon...');
-        close();
-      },
-      disabled: true,
-    },
+    // {
+    //   id: 'reminder',
+    //   label: 'Set Reminder',
+    //   icon: <Ionicons name="time-outline" size={18} color={textMuted} />,
+    //   onPress: () => {
+    //     toast('Coming soon...');
+    //     close();
+    //   },
+    //   disabled: true,
+    // },
     {
       id: 'delete',
       label: 'Delete Note',

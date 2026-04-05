@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   NativeSyntheticEvent,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TextInput,
   TextInputKeyPressEventData,
-  TextInputSubmitEditingEventData,
   View,
 } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
@@ -15,19 +14,100 @@ import { globals } from '@/styles/globals';
 import { INote } from '@/db/schema';
 import { useTheme } from '@/hooks/useTheme';
 import dayjs from 'dayjs';
+import useAppState from '@/hooks/useAppState';
+import { haptics } from '@/utils/haptics';
+import { toast } from '@/utils/toast';
+import { useNotes } from '@/store/notes';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { debounce } from 'lodash';
+import { NoteMenu } from '@/components/ui/NotesMenu';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
-
 const HEIGHT = Dimensions.get('window').height;
 
 const Note = () => {
-  const [note, setNote] = useState<NoteInput>({ title: '', content: '' });
+  const [note, setNote] = useState<Partial<INote>>({ title: '', content: '' });
+  const { noteId } = useLocalSearchParams<{ noteId: string }>();
   const { text, primary, textMuted } = useTheme();
   const contentRef = useRef<TextInput>(null);
   const titleRef = useRef<TextInput>(null);
+  const appState = useAppState();
+  const { getNote, updateNote } = useNotes();
+  const navigation = useNavigation();
+
+  const noteRef = useRef(note);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.headerRight}>{noteId && <NoteMenu noteId={Number(noteId)} />}</View>
+      ),
+    });
+  }, [noteId]);
+
+  useEffect(() => {
+    noteRef.current = note;
+  }, [note]);
+
+  useEffect(() => {
+    if (noteId) fetchNote();
+  }, [noteId]);
+
+  const fetchNote = async () => {
+    const fetched = await getNote(Number(noteId));
+    if (fetched) setNote(fetched);
+  };
+
+  const onSaveNoteRef = useCallback(async () => {
+    const currentNote = noteRef.current;
+    if (!currentNote) return;
+
+    try {
+      const payload: NoteInput = {
+        title: currentNote.title?.trim() || 'Untitled note',
+        content: currentNote.content ?? '',
+      };
+
+      if (currentNote.id) {
+        await updateNote(currentNote.id, payload);
+        haptics.success();
+      }
+    } catch (e: any) {
+      haptics.error();
+      console.log(e);
+      toast('Failed saving note');
+    } finally {
+    }
+  }, [updateNote]);
+
+  const debouncedSave = useRef(
+    debounce(() => {
+      onSaveNoteRef();
+    }, 1500),
+  ).current;
+
+  useEffect(() => {
+    if (appState === 'background') {
+      onSaveNoteRef();
+    }
+  }, [appState]);
+
+  useEffect(() => {
+    return () => {
+      onSaveNoteRef();
+    };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      onSaveNoteRef();
+    });
+    return () => unsubscribe();
+  }, [navigation]);
 
   const onChange = (key: keyof NoteInput, value: string) => {
     setNote(prev => ({ ...prev, [key]: value }));
+    debouncedSave();
   };
 
   const handleFocusTitle = (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
@@ -54,13 +134,13 @@ const Note = () => {
           style={[styles.title, { color: text }]}
           onSubmitEditing={handleFocusDescription}
           numberOfLines={1}
+          placeholder="Get Started"
         />
-        {/* {noteId && (note?.updatedAt || note?.createdAt) && (
-                  <ThemedText style={[styles.date, { color: textMuted }]}>
-                    {dayjs(note.updatedAt ?? note.createdAt).format('DD MMMM YYYY h:mm A')}
-                  </ThemedText>
-                )} */}
-
+        {note?.updatedAt && (
+          <ThemedText style={[styles.date, { color: textMuted }]}>
+            {dayjs(note.updatedAt).format('DD MMMM YYYY h:mm A')}
+          </ThemedText>
+        )}
         <TextInput
           ref={contentRef}
           cursorColor={primary}
@@ -93,6 +173,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 26,
     minHeight: HEIGHT,
-    // marginTop: 20,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
 });
