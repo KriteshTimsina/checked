@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 import { Appearance, ScrollView, StyleSheet, View } from 'react-native';
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
@@ -16,7 +16,7 @@ import { ThemeSheet } from '@/components/ui/settings/ThemeSheet';
 import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
 import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
 import { openStoreListing } from '@/utils/review';
-// import { PRIVACY_POLICY_URL } from '@/constants/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal>(null);
@@ -149,8 +149,9 @@ export default function Settings() {
             </SettingSection>
           </View>
         </ScrollView>
-        <Footer />
       </ThemedView>
+
+      <Footer />
 
       <ThemeSheet sheetRef={themeSheetRef} themeId={themeId} onSelect={onSelectTheme} />
 
@@ -166,10 +167,11 @@ export default function Settings() {
   );
 }
 
-const Footer = () => {
+const Footer = memo(() => {
   const { textMuted, primary } = useTheme();
+  const { bottom } = useSafeAreaInsets();
   return (
-    <View style={styles.footer}>
+    <View style={[styles.footer, { bottom: bottom + 40 }]}>
       <ThemedText style={{ color: textMuted, fontSize: 13 }}>
         Created with love by{' '}
         <ThemedText type="link" style={{ color: primary, fontSize: 13 }}>
@@ -178,7 +180,9 @@ const Footer = () => {
       </ThemedText>
     </View>
   );
-};
+});
+
+Footer.displayName = 'Footer';
 
 const styles = StyleSheet.create({
   root: {
@@ -214,8 +218,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   footer: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
     paddingVertical: 12,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
 });
