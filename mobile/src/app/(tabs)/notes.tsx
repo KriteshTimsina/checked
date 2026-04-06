@@ -17,6 +17,8 @@ import { INote } from '@/db/schema';
 import { useTheme } from '@/hooks/useTheme';
 import { SelectionMenu } from '@/components/ui/SelectionMenu';
 import { useContextMenu } from '@/components/reuseables/ContextMenu';
+import TitledScreen from '@/components/reuseables/TitledScreen';
+import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
 
 export default function Notes() {
   const { notes, getNotes, isLoading, createNote, deleteNote, updateNote } = useNotes();
@@ -110,19 +112,15 @@ export default function Notes() {
   );
 
   return (
-    <ThemedView style={globals.flex}>
-      <View style={styles.titleBar}>
-        <ThemedText type="title">
-          {selectedCount ? `${selectedCount} Selected` : ' 📒 Your notes'}
-        </ThemedText>
-
-        {isSelecting && (
-          <Pressable onPress={clearSelection} hitSlop={12}>
-            <ThemedText style={[styles.cancelText, { color: primary }]}>Cancel</ThemedText>
-          </Pressable>
-        )}
-      </View>
-
+    <TitledScreen
+      title={
+        <SelectionTitleBar
+          isSelecting={isSelecting}
+          selectedCount={selectedCount}
+          clearSelection={clearSelection}
+        />
+      }
+    >
       <View style={styles.noteContainer}>
         <FlatList
           ListEmptyComponent={<EmptyProject type="notes" />}
@@ -136,7 +134,6 @@ export default function Notes() {
           }
           contentContainerStyle={[
             styles.contentContainer,
-            // extra bottom padding so last row isn't hidden behind SelectionBar
             isSelecting && styles.contentContainerSelecting,
           ]}
         />
@@ -164,7 +161,7 @@ export default function Notes() {
       ) : (
         <FAB onPress={onAddNote} icon="add" />
       )}
-    </ThemedView>
+    </TitledScreen>
   );
 }
 
@@ -184,14 +181,5 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingHorizontal: 10,
-  },
-  cancelText: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  titleBar: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });

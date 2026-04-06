@@ -18,6 +18,7 @@ import Checklist from '@/components/Checklist';
 import InputText from '@/components/InputText';
 import { debounce } from 'lodash';
 import FAB from '@/components/reuseables/FAB';
+import TitledScreen from '@/components/reuseables/TitledScreen';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -61,10 +62,7 @@ export default function Home() {
 
   return (
     <>
-      <ThemedView style={globals.flex}>
-        <ThemedText style={styles.title} type="title">
-          ✅ Your Tasks
-        </ThemedText>
+      <TitledScreen title="✅ Your Tasks">
         <View style={styles.projectContainer}>
           {projects.length > 0 ? (
             <FlatList
@@ -80,7 +78,7 @@ export default function Home() {
             <EmptyProject type="todos" />
           )}
         </View>
-      </ThemedView>
+      </TitledScreen>
 
       <FAB onPress={openSheet} icon="add" />
 

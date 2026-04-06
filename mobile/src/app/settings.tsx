@@ -17,6 +17,7 @@ import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
 import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
 import { openStoreListing } from '@/utils/review';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import TitledScreen from '@/components/reuseables/TitledScreen';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal>(null);
@@ -91,11 +92,7 @@ export default function Settings() {
 
   return (
     <>
-      <ThemedView style={[styles.root, { backgroundColor: surface }]}>
-        <ThemedText type="subtitle" style={{ color: text, paddingHorizontal: 20 }}>
-          Settings
-        </ThemedText>
-
+      <TitledScreen title="Settings" style={{ paddingTop: 12 }}>
         <ScrollView style={styles.container}>
           <View style={styles.sections}>
             <SettingSection title="Appearance">
@@ -149,7 +146,7 @@ export default function Settings() {
             </SettingSection>
           </View>
         </ScrollView>
-      </ThemedView>
+      </TitledScreen>
 
       <Footer />
 
@@ -190,7 +187,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     flex: 1,
   },
   sections: {
