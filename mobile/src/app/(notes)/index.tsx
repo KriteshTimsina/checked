@@ -21,6 +21,7 @@ import { useNotes } from '@/store/notes';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { debounce } from 'lodash';
 import { NoteMenu } from '@/components/ui/NotesMenu';
+import { getRandomPlaceholder } from '@/utils/note';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
 const HEIGHT = Dimensions.get('window').height - 200;
@@ -126,7 +127,7 @@ const Note = () => {
       <ThemedView style={styles.container}>
         <TextInput
           ref={titleRef}
-          autoFocus
+          autoFocus={!note.title}
           cursorColor={primary}
           selectionColor={primary}
           value={note.title}
@@ -134,7 +135,7 @@ const Note = () => {
           style={[styles.title, { color: text }]}
           onSubmitEditing={handleFocusDescription}
           numberOfLines={1}
-          placeholder="Get Started"
+          placeholder={getRandomPlaceholder()}
         />
         {note?.updatedAt && (
           <ThemedText style={[styles.date, { color: textMuted }]}>
