@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Dimensions,
   NativeSyntheticEvent,
@@ -37,6 +37,8 @@ const Note = () => {
   const navigation = useNavigation();
 
   const noteRef = useRef(note);
+
+  const placeholder = useMemo(() => getRandomPlaceholder(), []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -135,7 +137,7 @@ const Note = () => {
           style={[styles.title, { color: text }]}
           onSubmitEditing={handleFocusDescription}
           numberOfLines={1}
-          placeholder={getRandomPlaceholder()}
+          placeholder={placeholder}
         />
         {note?.updatedAt && (
           <ThemedText style={[styles.date, { color: textMuted }]}>
