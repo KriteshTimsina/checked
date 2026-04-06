@@ -1,63 +1,107 @@
 import { Pressable, StyleSheet, View } from 'react-native';
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import { ThemedText } from './ThemedText';
 import { useRouter } from 'expo-router';
 import { INote } from '@/db/schema';
 import dayjs from 'dayjs';
 import { useTheme } from '@/hooks/useTheme';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 
-const NoteItem = ({ item }: { item: INote }) => {
-  const router = useRouter();
-  const { primarySoft, text, textMuted, icon } = useTheme();
+type NoteItemProps = {
+  item: INote;
+  isSelecting: boolean;
+  isSelected: boolean;
+  onPress: (id: number) => void;
+  onLongPress: (id: number) => void;
+};
 
-  const onViewNote = (id: number) => {
-    router.push({
-      pathname: '/(notes)',
-      params: {
-        noteId: id,
-      },
-    });
-  };
+const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteItemProps) => {
+  const { primarySoft, primary, textMuted, icon } = useTheme();
+  const scale = useSharedValue(1);
+
+  const handlePressIn = useCallback(() => {
+    scale.value = withSpring(0.96, { damping: 20, stiffness: 300 });
+  }, []);
+
+  const handlePressOut = useCallback(() => {
+    scale.value = withSpring(1, { damping: 20, stiffness: 300 });
+  }, []);
+
+  const handlePress = useCallback(() => onPress(item.id), [item.id, onPress]);
+  const handleLongPress = useCallback(() => onLongPress(item.id), [item.id, onLongPress]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.card,
-        {
-          backgroundColor: primarySoft,
-          transform: [{ scale: pressed ? 0.98 : 1 }],
-        },
-      ]}
-      onPress={() => onViewNote(item.id)}
-    >
-      <View style={styles.cardHeader}>
-        <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.title} darkColor={icon}>
-          {item.title}
+    <Animated.View style={[styles.wrapper, animatedStyle]}>
+      <Pressable
+        onPress={handlePress}
+        onLongPress={handleLongPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        delayLongPress={350}
+        style={({ pressed }) => [
+          styles.card,
+          {
+            backgroundColor: primarySoft,
+            transform: [{ scale: pressed ? 0.98 : 1 }],
+          },
+          isSelected && { borderColor: primary, borderWidth: 1.5 },
+        ]}
+      >
+        {isSelecting && (
+          <View
+            style={[
+              styles.checkbox,
+              {
+                backgroundColor: isSelected ? primary : primarySoft,
+                borderColor: isSelected ? primary : textMuted,
+              },
+            ]}
+          >
+            {isSelected && <Ionicons name="checkmark" size={11} color="#fff" />}
+          </View>
+        )}
+        <View style={styles.cardHeader}>
+          <ThemedText
+            numberOfLines={1}
+            type="defaultSemiBold"
+            style={styles.title}
+            darkColor={icon}
+          >
+            {item.title}
+          </ThemedText>
+        </View>
+
+        <ThemedText style={[styles.description, { color: textMuted }]} numberOfLines={6}>
+          {item.content ?? 'No description...'}
         </ThemedText>
-      </View>
 
-      <ThemedText style={[styles.description, { color: textMuted }]} numberOfLines={6}>
-        {item.content ?? 'No description...'}
-      </ThemedText>
-
-      <ThemedText style={[styles.date, { color: textMuted }]}>
-        {item?.updatedAt
-          ? dayjs(item?.updatedAt).format('MMM DD, hh:mm A')
-          : dayjs(item?.createdAt).format('MMM DD')}
-      </ThemedText>
-    </Pressable>
+        <ThemedText style={[styles.date, { color: textMuted }]}>
+          {item?.updatedAt
+            ? dayjs(item?.updatedAt).format('MMM DD, hh:mm A')
+            : dayjs(item?.createdAt).format('MMM DD')}
+        </ThemedText>
+      </Pressable>
+    </Animated.View>
   );
 };
 
 export default memo(NoteItem);
 
 const styles = StyleSheet.create({
-  card: {
+  wrapper: {
     width: '48%',
-    padding: 10,
     margin: 5,
+  },
+  card: {
+    padding: 10,
     borderRadius: 6,
+    height: 120,
   },
   title: {
     width: '80%',
@@ -73,5 +117,17 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
+  },
+  checkbox: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
   },
 });

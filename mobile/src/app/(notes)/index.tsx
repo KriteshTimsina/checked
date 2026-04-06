@@ -68,7 +68,7 @@ const Note = () => {
     try {
       const payload: NoteInput = {
         title: currentNote.title?.trim() || 'Untitled note',
-        content: currentNote.content ?? '',
+        content: currentNote.content?.trim() ?? '',
       };
 
       if (currentNote.id) {
