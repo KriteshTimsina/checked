@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheet } from '@/components/reuseables';
+import Button from '@/components/reuseables/Button';
 
 type ThemeSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -34,10 +35,9 @@ export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSel
         {APP_THEMES.map(theme => {
           const isSelected = theme.id === themeId;
           return (
-            <TouchableOpacity
+            <Button
               key={theme.id}
               onPress={() => onSelect(theme)}
-              activeOpacity={0.85}
               style={[
                 styles.card,
                 {
@@ -68,7 +68,7 @@ export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSel
                   <ThemedText style={styles.badgeText}>✓</ThemedText>
                 </View>
               )}
-            </TouchableOpacity>
+            </Button>
           );
         })}
       </View>

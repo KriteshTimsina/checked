@@ -1,13 +1,13 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { memo, useCallback } from 'react';
 
 import { ThemedText } from './ThemedText';
-import { useRouter } from 'expo-router';
 import { INote } from '@/db/schema';
 import dayjs from 'dayjs';
 import { useTheme } from '@/hooks/useTheme';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
+import Button from '@/components/reuseables/Button';
 
 type NoteItemProps = {
   item: INote;
@@ -38,7 +38,7 @@ const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteI
 
   return (
     <Animated.View style={[styles.wrapper, animatedStyle]}>
-      <Pressable
+      <Button
         onPress={handlePress}
         onLongPress={handleLongPress}
         onPressIn={handlePressIn}
@@ -86,7 +86,7 @@ const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteI
             ? dayjs(item?.updatedAt).format('MMM DD, hh:mm A')
             : dayjs(item?.createdAt).format('MMM DD')}
         </ThemedText>
-      </Pressable>
+      </Button>
     </Animated.View>
   );
 };

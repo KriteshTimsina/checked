@@ -1,11 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { IProject } from '@/db/schema';
 import { toast } from '@/utils/toast';
 import { ThemedText } from './ThemedText';
-import Animated, { FadeIn } from 'react-native-reanimated';
 import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
@@ -16,8 +14,6 @@ type ChecklistProps = {
   item: IProject;
   index: number;
 };
-
-const AnimatedButton = Animated.createAnimatedComponent(Pressable);
 
 const Checklist: FC<ChecklistProps> = ({ item, index }) => {
   const [completedCount, setCompletedCount] = useState(0);
@@ -55,14 +51,17 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
     }
   };
 
+  const openTask = () => {
+    router.push({
+      pathname: '/(todos)',
+      params: { projectId: item.id, title: item.title },
+    });
+    haptics.light();
+  };
+
   return (
     <SwipeableList
-      onPress={() =>
-        router.push({
-          pathname: '/(todos)',
-          params: { projectId: item.id, title: item.title },
-        })
-      }
+      onPress={openTask}
       renderRightActions={() => (
         <SwipeActionButton
           style={{ backgroundColor: '#ef4444' }}
@@ -82,12 +81,6 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
 };
 
 export default Checklist;
-
-const RightAction = ({ onDelete }: { onDelete: () => void }) => (
-  <AnimatedButton entering={FadeIn.delay(1000)} onPress={onDelete} style={styles.deleteContainer}>
-    <MaterialCommunityIcons color="white" name="delete-outline" size={24} />
-  </AnimatedButton>
-);
 
 const styles = StyleSheet.create({
   completed: {

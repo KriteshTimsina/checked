@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { OnboardingStepProps } from '@/constants/onboardingSteps';
+import Button from '@/components/reuseables/Button';
 
 type Props = {
   steps: OnboardingStepProps[];
@@ -14,7 +15,6 @@ type Props = {
 const OnboardingFooter = memo(
   ({ steps, currentStep, onDotPress, onCta, bottomInset, onboardingStepBackground }: Props) => {
     const current = steps[currentStep];
-    const isLast = currentStep === steps.length - 1;
 
     return (
       <View
@@ -25,7 +25,7 @@ const OnboardingFooter = memo(
       >
         <View style={styles.dots}>
           {steps.map((_, i) => (
-            <TouchableOpacity
+            <Button
               key={i}
               onPress={() => onDotPress(i)}
               hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
@@ -43,18 +43,16 @@ const OnboardingFooter = memo(
                   },
                 ]}
               />
-            </TouchableOpacity>
+            </Button>
           ))}
         </View>
 
-        {/* CTA button */}
-        <TouchableOpacity
+        <Button
           style={[styles.cta, { backgroundColor: current.color, shadowColor: current.color }]}
           onPress={onCta}
-          activeOpacity={0.85}
         >
           <Text style={styles.ctaText}>{current.cta}</Text>
-        </TouchableOpacity>
+        </Button>
       </View>
     );
   },

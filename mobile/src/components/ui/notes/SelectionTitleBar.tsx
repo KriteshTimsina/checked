@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
+import Button from '@/components/reuseables/Button';
 
 type SelectionTitleBarProps = {
   isSelecting: boolean;
@@ -22,9 +23,9 @@ const SelectionTitleBar = ({
       </ThemedText>
 
       {isSelecting && (
-        <Pressable onPress={clearSelection} hitSlop={12}>
+        <Button onPress={clearSelection} hitSlop={12}>
           <ThemedText style={[styles.cancelText, { color: primary }]}>Cancel</ThemedText>
-        </Pressable>
+        </Button>
       )}
     </View>
   );

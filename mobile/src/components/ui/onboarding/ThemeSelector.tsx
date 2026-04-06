@@ -1,6 +1,7 @@
+import Button from '@/components/reuseables/Button';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -23,10 +24,9 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
         {APP_THEMES.map(theme => {
           const isSelected = theme.id === selectedThemeId;
           return (
-            <TouchableOpacity
+            <Button
               key={theme.id}
               onPress={() => onSelect(theme)}
-              activeOpacity={0.8}
               style={[
                 styles.themeCard,
                 {
@@ -79,7 +79,7 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
                   <Text style={styles.checkText}>✓</Text>
                 </View>
               )}
-            </TouchableOpacity>
+            </Button>
           );
         })}
       </View>

@@ -6,6 +6,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { BottomSheet } from '@/components/reuseables';
+import Button from '@/components/reuseables/Button';
 
 type AppIconSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -39,9 +40,8 @@ export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, on
         {APP_THEMES.map(theme => {
           const isActive = iconId === theme.id;
           return (
-            <TouchableOpacity
+            <Button
               key={theme.id}
-              activeOpacity={0.75}
               onPress={() => onSelect(theme)}
               style={[
                 styles.iconOption,
@@ -55,7 +55,7 @@ export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, on
               <ThemedText style={styles.iconLabel}>{theme.name}</ThemedText>
 
               {isActive && <View style={styles.activeDot} />}
-            </TouchableOpacity>
+            </Button>
           );
         })}
       </View>

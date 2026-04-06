@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { FC, useCallback } from 'react';
 import Checkbox from 'expo-checkbox';
 import { ThemedText } from './ThemedText';
@@ -9,6 +9,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useEffect } from 'react';
 import { toast } from '@/utils/toast';
 import SwipeableList, { SwipeActionButton } from './ui/SwipeableList';
+import Button from '@/components/reuseables/Button';
 
 type ChecklistItemProps = {
   item: IEntry;
@@ -64,7 +65,7 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
       )}
     >
       <View style={styles.content}>
-        <Pressable onPress={toggleCheckbox}>
+        <Button onPress={toggleCheckbox}>
           <Checkbox
             style={styles.checkbox}
             color={item.completed ? primary : undefined}
@@ -72,7 +73,7 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
             onValueChange={toggleCheckbox}
             hitSlop={25}
           />
-        </Pressable>
+        </Button>
         <ThemedText
           style={{
             flex: 1,
