@@ -12,14 +12,12 @@ type DefaultTabSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
   primaryTab: Tab;
   onSelect: (label: Tab) => void;
-  renderBackdrop: (props: any) => React.ReactElement;
 };
 
 export const DefaultTabSheet: React.FC<DefaultTabSheetProps> = ({
   sheetRef,
   primaryTab,
   onSelect,
-  renderBackdrop,
 }) => {
   const { primary } = useTheme();
 

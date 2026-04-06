@@ -1,15 +1,46 @@
 import { triggerHaptics } from '@/utils/haptics-base';
-import { usePreferences, storage } from '@/hooks/usePreferences';
+import { usePreferences } from '@/hooks/usePreferences';
+
+const isHapticsEnabled = () => usePreferences.getState().hapticsEnabled;
 
 export const haptics = {
   success: () => {
-    if (storage.getString('preferences.hapticsEnabled') === 'true') {
-      return triggerHaptics.success();
-    }
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.notification('success');
   },
+
   error: () => {
-    if (storage.getString('preferences.hapticsEnabled') === 'true') {
-      return triggerHaptics.error();
-    }
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.notification('error');
+  },
+
+  warning: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.notification('warning');
+  },
+
+  light: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.impact('light');
+  },
+
+  medium: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.impact('medium');
+  },
+
+  heavy: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.impact('heavy');
+  },
+
+  rigid: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.impact('rigid');
+  },
+
+  soft: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.impact('soft');
   },
 };

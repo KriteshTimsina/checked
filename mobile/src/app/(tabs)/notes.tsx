@@ -1,11 +1,8 @@
-import { StyleSheet, FlatList, View, RefreshControl, Alert, Pressable } from 'react-native';
-import React, { useCallback, useEffect, useRef } from 'react';
+import { StyleSheet, FlatList, View, RefreshControl, Alert } from 'react-native';
+import React, { useCallback, useEffect } from 'react';
 import EmptyProject from '@/components/EmptyProject';
-import { ThemedView } from '@/components/ThemedView';
-import { globals } from '@/styles/globals';
 import NoteItem from '@/components/NoteItem';
 import { useNotes } from '@/store/notes';
-import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/colors';
 import FAB from '@/components/reuseables/FAB';
@@ -23,7 +20,7 @@ import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
 export default function Notes() {
   const { notes, getNotes, isLoading, createNote, deleteNote, updateNote } = useNotes();
   const router = useRouter();
-  const { primary, textMuted } = useTheme();
+  const { textMuted } = useTheme();
   const { isSelecting, isSelected, selectedIds, selectedCount, toggleSelect, clearSelection } =
     useNoteSelection();
   const { visible, open, close } = useContextMenu();

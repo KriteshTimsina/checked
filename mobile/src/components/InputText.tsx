@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInputProps, View } from 'react-native';
 import React, { FC, useState } from 'react';
 import { ThemedText } from './ThemedText';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import Button from '@/components/reuseables/Button';
 
 type InputTextProps = {
   onSubmit: (text: string) => void;
@@ -27,6 +28,8 @@ const InputText: FC<InputTextProps> = ({
   const placeholderColor = isDark ? 'rgba(255,255,255,0.35)' : textMuted;
   const iconColor = isDark ? '#FAFAFA' : '#18181B';
   const isOverLimit = inputText.trim().length > MAX_INPUT_LENGTH;
+
+  const disabledInput = isOverLimit || !inputText.trim();
 
   const handleSubmit = () => {
     onSubmit(inputText);
@@ -51,15 +54,16 @@ const InputText: FC<InputTextProps> = ({
       </View>
 
       <View style={styles.buttonContainer}>
-        <Pressable hitSlop={5} onPress={onClose} style={styles.iconButton}>
+        <Button hitSlop={5} onPress={onClose} style={styles.iconButton}>
           <Ionicons name="close-outline" size={25} color={iconColor} />
-        </Pressable>
-        <Pressable
+        </Button>
+        <Button
+          disabled={disabledInput}
           onPress={handleSubmit}
-          style={[styles.iconButton, { opacity: inputText.trim() && !isOverLimit ? 1 : 0.4 }]}
+          style={[styles.iconButton, { opacity: disabledInput ? 0.4 : 1 }]}
         >
           <Ionicons name="paper-plane-outline" size={25} color={primary} />
-        </Pressable>
+        </Button>
       </View>
     </View>
   );

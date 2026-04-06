@@ -1,30 +1,32 @@
-import React, { memo, useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Appearance, ScrollView, StyleSheet, View } from 'react-native';
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { type Tab, usePreferences } from '@/hooks/usePreferences';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
 
-import { SettingItem, SettingSection } from '@/components/ui/settings/SettingsItem';
-import { ThemeSheet } from '@/components/ui/settings/ThemeSheet';
-import { DefaultTabSheet } from '@/components/ui/settings/DefaultTabSheet';
-import { AppIconSheet } from '@/components/ui/settings/AppIconSheet';
 import { openStoreListing } from '@/utils/review';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TitledScreen from '@/components/reuseables/TitledScreen';
+import {
+  Footer,
+  SettingItem,
+  SettingSection,
+  AppIconSheet,
+  DefaultTabSheet,
+  ThemeSheet,
+} from '@/components/ui/settings';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal>(null);
   const themeSheetRef = useRef<BottomSheetModal>(null);
   const appIconSheetRef = useRef<BottomSheetModal>(null);
 
-  const { primary, text, surface } = useTheme();
+  const { primary } = useTheme();
   const {
     setPrimaryTab,
     primaryTab,
@@ -70,11 +72,6 @@ export default function Settings() {
       console.error('Failed to update primary tab:', e);
     }
   };
-
-  const renderBackdrop = useCallback(
-    (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />,
-    [],
-  );
 
   const ThemePreview = (
     <View style={[styles.pill, { backgroundColor: primary + '20' }]}>
@@ -154,32 +151,10 @@ export default function Settings() {
 
       <AppIconSheet sheetRef={appIconSheetRef} iconId={iconId ?? themeId} onSelect={onSelectIcon} />
 
-      <DefaultTabSheet
-        sheetRef={primaryTabRef}
-        primaryTab={primaryTab}
-        onSelect={onSelectTab}
-        renderBackdrop={renderBackdrop}
-      />
+      <DefaultTabSheet sheetRef={primaryTabRef} primaryTab={primaryTab} onSelect={onSelectTab} />
     </>
   );
 }
-
-const Footer = memo(() => {
-  const { textMuted, primary } = useTheme();
-  const { bottom } = useSafeAreaInsets();
-  return (
-    <View style={[styles.footer, { bottom: bottom + 40 }]}>
-      <ThemedText style={{ color: textMuted, fontSize: 13 }}>
-        Created with love by{' '}
-        <ThemedText type="link" style={{ color: primary, fontSize: 13 }}>
-          Kritesh Timsina
-        </ThemedText>
-      </ThemedText>
-    </View>
-  );
-});
-
-Footer.displayName = 'Footer';
 
 const styles = StyleSheet.create({
   root: {
@@ -213,12 +188,5 @@ const styles = StyleSheet.create({
   pillLabel: {
     fontSize: 12,
     fontWeight: '700',
-  },
-  footer: {
-    paddingVertical: 12,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
   },
 });

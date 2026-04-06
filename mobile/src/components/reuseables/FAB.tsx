@@ -3,6 +3,8 @@ import React, { FC } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
+import { haptics } from '@/utils/haptics';
+import Button from '@/components/reuseables/Button';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -19,9 +21,14 @@ const FAB: FC<FABProps> = ({ onPress, icon, size = 24, style }) => {
 
   const bottomOffset = Math.max(insets.bottom, Platform.OS === 'android' ? 16 : 0);
 
+  const handlePress = () => {
+    haptics.success();
+    onPress?.();
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
+    <Button
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.button,
         {
@@ -34,7 +41,7 @@ const FAB: FC<FABProps> = ({ onPress, icon, size = 24, style }) => {
       ]}
     >
       <Ionicons name={icon} size={size} color="white" />
-    </Pressable>
+    </Button>
   );
 };
 

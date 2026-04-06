@@ -1,10 +1,11 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 import GearIcon from './GearIcon';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
+import Button from '@/components/reuseables/Button';
 
 function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const { top } = useSafeAreaInsets();
@@ -35,7 +36,7 @@ function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
         };
 
         return (
-          <TouchableOpacity
+          <Button
             key={label as string}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
@@ -56,7 +57,7 @@ function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
                 color={isFocused ? primary : icon}
               />
             )}
-          </TouchableOpacity>
+          </Button>
         );
       })}
       <GearIcon />

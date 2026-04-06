@@ -14,28 +14,22 @@ export type Tab = 'index' | 'notes';
 export type ColorSchemeType = 'light' | 'dark';
 
 type PreferencesState = {
-  // Onboarding
   hasCompletedOnboarding: boolean;
   completeOnboarding: () => void;
 
-  // Theme
   themeId: number;
   setThemeId: (id: number) => void;
 
-  // App Icon
   iconId: number;
   setIconId: (id: number) => void;
 
-  // Color scheme
   colorScheme: ColorSchemeType;
   setColorScheme: (scheme: ColorSchemeType) => void;
   toggleColorScheme: () => void;
 
-  // Primary tab
   primaryTab: Tab;
   setPrimaryTab: (tab: Tab) => void;
 
-  // Haptics
   hapticsEnabled: boolean;
   toggleHaptics: (enabled: boolean) => void;
 };
@@ -43,29 +37,23 @@ type PreferencesState = {
 export const usePreferences = create<PreferencesState>()(
   persist(
     (set, get) => ({
-      // Onboarding
       hasCompletedOnboarding: false,
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
 
-      // Theme
       themeId: 0,
       setThemeId: id => set({ themeId: id }),
 
-      // App Icon — defaults to themeId so they stay in sync initially
       iconId: 0,
       setIconId: id => set({ iconId: id }),
 
-      // Color scheme
       colorScheme: 'light',
       setColorScheme: scheme => set({ colorScheme: scheme }),
       toggleColorScheme: () =>
         set(state => ({ colorScheme: state.colorScheme === 'light' ? 'dark' : 'light' })),
 
-      // Primary tab
       primaryTab: 'index',
       setPrimaryTab: tab => set({ primaryTab: tab }),
 
-      // Haptics
       hapticsEnabled: true,
       toggleHaptics: enabled => set({ hapticsEnabled: enabled }),
     }),

@@ -1,24 +1,20 @@
-import { FlatList, Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import React, { useEffect, useRef, useState } from 'react';
+import { FlatList, Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import EmptyProject from '@/components/EmptyProject';
-import Button from '@/components/Button';
+import { BottomSheet } from '@/components/reuseables';
+import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
-import { MAX_INPUT_LENGTH } from '@/constants/constants';
-import { globals } from '@/styles/globals';
-import { BottomSheet } from '@/components/reuseables';
 
-import { useTheme } from '@/hooks/useTheme';
 import Checklist from '@/components/Checklist';
 import InputText from '@/components/InputText';
-import { debounce } from 'lodash';
 import FAB from '@/components/reuseables/FAB';
 import TitledScreen from '@/components/reuseables/TitledScreen';
+import { useTheme } from '@/hooks/useTheme';
+import { debounce } from 'lodash';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);

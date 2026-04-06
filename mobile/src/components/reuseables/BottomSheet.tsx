@@ -9,6 +9,8 @@ import {
 } from '@gorhom/bottom-sheet';
 import { ThemedText } from '../ThemedText';
 import { useTheme } from '@/hooks/useTheme';
+import Button from '@/components/reuseables/Button';
+import { haptics } from '@/utils/haptics';
 
 interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
   title?: string | React.ReactNode;
@@ -36,16 +38,21 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 }) => {
   const { border, text } = useTheme();
 
+  const handleClose = () => {
+    haptics.medium();
+    onClose?.();
+  };
+
   const renderBackdrop = useCallback(
     (backdropProps: BottomSheetBackdropProps) => (
       <BottomSheetBackdrop
-        onPress={onClose}
+        onPress={handleClose}
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         {...backdropProps}
       />
     ),
-    [onClose],
+    [],
   );
 
   return (
