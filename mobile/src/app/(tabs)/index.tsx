@@ -62,7 +62,7 @@ export default function Home() {
   return (
     <>
       <ThemedView style={globals.flex}>
-        <ThemedText style={styles.title} type="subtitle">
+        <ThemedText style={styles.title} type="title">
           ✅ Your Tasks
         </ThemedText>
         <View style={styles.projectContainer}>

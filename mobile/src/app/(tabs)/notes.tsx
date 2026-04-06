@@ -112,7 +112,7 @@ export default function Notes() {
   return (
     <ThemedView style={globals.flex}>
       <View style={styles.titleBar}>
-        <ThemedText type="subtitle">
+        <ThemedText type="title">
           {selectedCount ? `${selectedCount} Selected` : ' 📒 Your notes'}
         </ThemedText>
 
@@ -153,7 +153,14 @@ export default function Notes() {
         />
       )}
       {isSelecting ? (
-        <FAB onPress={open} icon="ellipsis-horizontal" style={{ backgroundColor: textMuted }} />
+        <FAB
+          onPress={() => {
+            console.log('OPEN');
+            open();
+          }}
+          icon="ellipsis-horizontal"
+          style={{ backgroundColor: textMuted }}
+        />
       ) : (
         <FAB onPress={onAddNote} icon="add" />
       )}
