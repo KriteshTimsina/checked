@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Appearance, ScrollView, StyleSheet, View } from 'react-native';
+import { Appearance, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
@@ -20,6 +20,7 @@ import {
   DefaultTabSheet,
   ThemeSheet,
 } from '@/components/ui/settings';
+import { openWhatsNew } from '@/utils/settings';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal>(null);
@@ -90,7 +91,7 @@ export default function Settings() {
   return (
     <>
       <TitledScreen title="Settings" style={{ paddingTop: 12 }}>
-        <ScrollView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.contentContainer} style={styles.container}>
           <View style={styles.sections}>
             <SettingSection title="Appearance">
               <SettingItem
@@ -133,19 +134,24 @@ export default function Settings() {
               />
             </SettingSection>
 
-            <SettingSection title="Experiences">
+            <SettingSection>
               <SettingItem
                 variant="navigate"
                 icon="happy-outline"
                 label="Rate Checked"
                 onPress={openStoreListing}
               />
+              <SettingItem
+                variant="navigate"
+                icon="gift-sharp"
+                label="What's new"
+                onPress={openWhatsNew}
+              />
             </SettingSection>
           </View>
+          <Footer />
         </ScrollView>
       </TitledScreen>
-
-      <Footer />
 
       <ThemeSheet sheetRef={themeSheetRef} themeId={themeId} onSelect={onSelectTheme} />
 
@@ -160,6 +166,10 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     paddingTop: 12,
+  },
+  contentContainer: {
+    justifyContent: 'space-between',
+    flex: 1,
   },
   container: {
     paddingHorizontal: 10,
