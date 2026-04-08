@@ -1,6 +1,6 @@
 import { notes, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface NotesState {
@@ -23,7 +23,7 @@ const useNotesStore = create<NotesState>()(set => ({
     set({ isLoading: true });
     try {
       const allNotes = await db.query.notes.findMany({
-        orderBy: [asc(notes.pinned)],
+        orderBy: [desc(notes.pinned)],
       });
       set({
         notes: allNotes,
@@ -122,12 +122,16 @@ const useNotesStore = create<NotesState>()(set => ({
           updatedAt: notes.updatedAt,
           pinned: notes.pinned,
         });
-      console.log(updateEntry, 'U{PP');
 
       if (updateEntry) {
-        set(state => ({
-          notes: state.notes.map(note => (note.id === id ? updateEntry : note)),
-        }));
+        set(state => {
+          const updated = state.notes.map(note => (note.id === id ? updateEntry : note));
+
+          updated.sort((a, b) => Number(b.pinned) - Number(a.pinned));
+
+          return { notes: updated };
+        });
+
         return true;
       }
       return false;
