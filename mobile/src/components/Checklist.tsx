@@ -15,7 +15,7 @@ type ChecklistProps = {
   index: number;
 };
 
-const Checklist: FC<ChecklistProps> = ({ item, index }) => {
+const Checklist: FC<ChecklistProps> = ({ item }) => {
   const [completedCount, setCompletedCount] = useState(0);
   const { deleteProject } = useProject();
   const { getCompletedEntriesCount } = useEntries();
@@ -42,11 +42,11 @@ const Checklist: FC<ChecklistProps> = ({ item, index }) => {
       const deleted = await deleteProject(item.id);
       if (deleted) {
         haptics.success();
-        toast('Project deleted successfully.');
+        toast('Task deleted successfully.');
       }
     } catch (error) {
       haptics.error();
-      toast('Failed deleting project');
+      toast('Failed deleting task');
       console.error(error);
     }
   };

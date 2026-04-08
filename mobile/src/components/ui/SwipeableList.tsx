@@ -6,7 +6,14 @@ import Swipeable, {
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { useTheme } from '@/hooks/useTheme';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInLeft,
+  FadeInUp,
+  FadeOut,
+  FadeOutLeft,
+} from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
 let currentSwipeable: SwipeableMethods | null = null;
@@ -70,21 +77,23 @@ const SwipeableList: FC<SwipeableListProps> = ({
     if (currentSwipeable === swipeableRef.current) currentSwipeable = null;
   };
   return (
-    <Swipeable
-      enabled={swipeEnabled}
-      ref={swipeableRef}
-      onSwipeableWillOpen={onSwipeableWillOpen}
-      onSwipeableWillClose={onSwipeableWillClose}
-      onSwipeableOpen={() => {
-        setTimeout(() => swipeableRef.current?.close(), 3000);
-      }}
-      {...swipeableProps}
-    >
-      <Pressable onPress={onPress} style={[styles.container, { backgroundColor: primarySoft }]}>
-        {accentBarVisible && <View style={[styles.accentBar, { backgroundColor: primary }]} />}
-        <View style={styles.content}>{children}</View>
-      </Pressable>
-    </Swipeable>
+    <Animated.View entering={FadeInDown.duration(300).springify()}>
+      <Swipeable
+        enabled={swipeEnabled}
+        ref={swipeableRef}
+        onSwipeableWillOpen={onSwipeableWillOpen}
+        onSwipeableWillClose={onSwipeableWillClose}
+        onSwipeableOpen={() => {
+          setTimeout(() => swipeableRef.current?.close(), 3000);
+        }}
+        {...swipeableProps}
+      >
+        <Pressable onPress={onPress} style={[styles.container, { backgroundColor: primarySoft }]}>
+          {accentBarVisible && <View style={[styles.accentBar, { backgroundColor: primary }]} />}
+          <View style={styles.content}>{children}</View>
+        </Pressable>
+      </Swipeable>
+    </Animated.View>
   );
 };
 
