@@ -18,7 +18,7 @@ import TitledScreen from '@/components/reuseables/TitledScreen';
 import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
 
 export default function Notes() {
-  const { notes, getNotes, isLoading, createNote, deleteNote, updateNote } = useNotes();
+  const { notes, getNotes, isLoading, createNote, deleteNote } = useNotes();
   const router = useRouter();
   const { textMuted } = useTheme();
   const { isSelecting, isSelected, selectedIds, selectedCount, toggleSelect, clearSelection } =
@@ -53,20 +53,6 @@ export default function Notes() {
     },
     [isSelecting, toggleSelect, router],
   );
-
-  const handlePin = useCallback(async () => {
-    if (selectedIds.size === 0) return;
-    try {
-      await Promise.all([...selectedIds].map(id => updateNote(id, { pinned: true })));
-      haptics.success();
-      const count = selectedIds.size;
-      clearSelection();
-      toast(`${count} note${count > 1 ? 's' : ''} pinned`);
-    } catch {
-      haptics.error();
-      toast('Failed to pin notes');
-    }
-  }, [selectedIds, updateNote, clearSelection]);
 
   const handleDelete = useCallback(() => {
     if (selectedIds.size === 0) return;
@@ -142,14 +128,12 @@ export default function Notes() {
           onClose={onCloseSelectionMenu}
           selectedCount={selectedCount}
           totalCount={notes.length}
-          onPin={handlePin}
           onDelete={handleDelete}
         />
       )}
       {isSelecting ? (
         <FAB
           onPress={() => {
-            console.log('OPEN');
             open();
           }}
           icon="ellipsis-horizontal"

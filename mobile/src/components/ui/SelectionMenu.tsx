@@ -11,30 +11,12 @@ type SelectionMenuProps = {
   onClose: () => void;
   selectedCount: number;
   totalCount: number;
-  onPin: () => void;
   onDelete: () => void;
 };
 
-export function SelectionMenu({
-  visible,
-  onClose,
-  selectedCount,
-  onPin,
-  onDelete,
-}: SelectionMenuProps) {
-  const { card, text, textMuted, border, isDark, primary } = useTheme();
-
+export function SelectionMenu({ visible, onClose, selectedCount, onDelete }: SelectionMenuProps) {
+  const { card, text, textMuted, border, isDark } = useTheme();
   const actions: MenuAction[] = [
-    {
-      id: 'pin',
-      label: 'Pin',
-      icon: <Ionicons name="pin-outline" size={18} color={primary} />,
-      onPress: () => {
-        onPin();
-        onClose();
-      },
-      disabled: true,
-    },
     {
       id: 'delete',
       label: `Delete${selectedCount > 0 ? ` (${selectedCount})` : ''}`,

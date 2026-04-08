@@ -1,6 +1,6 @@
 import { notes, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface NotesState {
@@ -11,6 +11,7 @@ interface NotesState {
   getNote: (id: number) => Promise<INote | null>;
   deleteNote: (noteId: number) => Promise<boolean>;
   updateNote: (id: number, data: Pick<INote, 'title' | 'content'>) => Promise<boolean>;
+  togglePin: (id: number) => Promise<boolean>;
 }
 
 const db = getDb();
@@ -21,7 +22,9 @@ const useNotesStore = create<NotesState>()(set => ({
   getNotes: async () => {
     set({ isLoading: true });
     try {
-      const allNotes = await db.query.notes.findMany();
+      const allNotes = await db.query.notes.findMany({
+        orderBy: [asc(notes.pinned)],
+      });
       set({
         notes: allNotes,
         isLoading: false,
@@ -41,6 +44,7 @@ const useNotesStore = create<NotesState>()(set => ({
         content: notes.content,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
+        pinned: notes.pinned,
       });
 
     if (newEntry) {
@@ -54,7 +58,12 @@ const useNotesStore = create<NotesState>()(set => ({
     if (!exists) return false;
     const [updateEntry] = await db
       .update(notes)
-      .set({ title: data.title, content: data.content, updatedAt: new Date() })
+      .set({
+        title: data.title,
+        content: data.content,
+        updatedAt: new Date(),
+        pinned: notes.pinned,
+      })
       .where(eq(notes.id, id))
       .returning({
         id: notes.id,
@@ -62,6 +71,7 @@ const useNotesStore = create<NotesState>()(set => ({
         content: notes.content,
         createdAt: notes.createdAt,
         updatedAt: notes.updatedAt,
+        pinned: notes.pinned,
       });
 
     if (updateEntry) {
@@ -96,6 +106,36 @@ const useNotesStore = create<NotesState>()(set => ({
       set({ isLoading: false });
     }
   },
+  togglePin: async (id: number) => {
+    try {
+      const exists = await db.query.notes.findFirst({ where: eq(notes.id, id) });
+      if (!exists) return false;
+      const [updateEntry] = await db
+        .update(notes)
+        .set({ pinned: !exists.pinned })
+        .where(eq(notes.id, id))
+        .returning({
+          id: notes.id,
+          title: notes.title,
+          content: notes.content,
+          createdAt: notes.createdAt,
+          updatedAt: notes.updatedAt,
+          pinned: notes.pinned,
+        });
+      console.log(updateEntry, 'U{PP');
+
+      if (updateEntry) {
+        set(state => ({
+          notes: state.notes.map(note => (note.id === id ? updateEntry : note)),
+        }));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error updating entry status:', error);
+      return false;
+    }
+  },
 }));
 
 export const useNotes = () => {
@@ -106,6 +146,7 @@ export const useNotes = () => {
   const createNote = useNotesStore(state => state.createNote);
   const deleteNote = useNotesStore(state => state.deleteNote);
   const updateNote = useNotesStore(state => state.updateNote);
+  const togglePin = useNotesStore(state => state.togglePin);
 
   return {
     notes,
@@ -115,5 +156,6 @@ export const useNotes = () => {
     createNote,
     updateNote,
     deleteNote,
+    togglePin,
   };
 };

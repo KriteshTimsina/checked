@@ -13,11 +13,12 @@ import { ContextMenu, MenuAction, useContextMenu } from '@/components/reuseables
 
 interface NoteMenuProps {
   noteId: number;
+  pinned: boolean;
 }
 
-export function NoteMenu({ noteId }: NoteMenuProps) {
+export function NoteMenu({ noteId, pinned }: NoteMenuProps) {
   const { visible, open, close } = useContextMenu();
-  const { deleteNote, getNotes, getNote } = useNotes();
+  const { deleteNote, getNote, togglePin } = useNotes();
   const { textMuted } = useTheme();
   const router = useRouter();
 
@@ -25,7 +26,6 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
     const success = await deleteNote(noteId);
     if (success) {
       haptics.success();
-      await getNotes();
       close();
       router.back();
       toast('Note deleted');
@@ -48,7 +48,22 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
     await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
   };
 
+  const handlePinNote = async () => {
+    const success = await togglePin(noteId);
+    if (success) {
+      haptics.medium();
+      close();
+    } else {
+      haptics.error();
+    }
+  };
   const actions: MenuAction[] = [
+    {
+      id: 'pin',
+      label: pinned ? 'Unpin Note' : 'Pin Note',
+      icon: <AntDesign name="pushpin" size={18} color={textMuted} />,
+      onPress: handlePinNote,
+    },
     {
       id: 'pdf',
       label: 'Share as PDF',

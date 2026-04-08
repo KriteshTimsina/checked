@@ -43,10 +43,12 @@ const Note = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={styles.headerRight}>{noteId && <NoteMenu noteId={Number(noteId)} />}</View>
+        <View style={styles.headerRight}>
+          {noteId && <NoteMenu pinned={note.pinned ?? false} noteId={Number(noteId)} />}
+        </View>
       ),
     });
-  }, [noteId]);
+  }, [noteId, note.pinned]);
 
   useEffect(() => {
     noteRef.current = note;

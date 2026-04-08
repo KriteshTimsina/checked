@@ -6,7 +6,7 @@ import { INote } from '@/db/schema';
 import dayjs from 'dayjs';
 import { useTheme } from '@/hooks/useTheme';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import Button from '@/components/reuseables/Button';
 
 type NoteItemProps = {
@@ -75,6 +75,7 @@ const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteI
           >
             {item.title}
           </ThemedText>
+          {item.pinned && <AntDesign name="pushpin" color={primary} size={16} />}
         </View>
 
         <ThemedText style={[styles.description, { color: textMuted }]} numberOfLines={6}>

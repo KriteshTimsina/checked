@@ -29,6 +29,7 @@ export const notes = sqliteTable('notes', {
     .notNull()
     .$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp' }),
+  pinned: integer({ mode: 'boolean' }).default(false).notNull(),
 });
 
 export type IProject = typeof projects.$inferSelect;
