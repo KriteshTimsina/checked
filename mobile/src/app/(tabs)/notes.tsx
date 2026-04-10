@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View, RefreshControl, Alert } from 'react-native';
+import { StyleSheet, FlatList, View, RefreshControl, Alert, Platform } from 'react-native';
 import React, { useCallback, useEffect } from 'react';
 import EmptyProject from '@/components/EmptyProject';
 import NoteItem from '@/components/NoteItem';
@@ -57,10 +57,10 @@ export default function Notes() {
   const handleDelete = useCallback(() => {
     if (selectedIds.size === 0) return;
     const count = selectedIds.size;
-    Alert.alert('Delete Notes', `This cannot be undone.`, [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert('Confirmation', `This action is irreversible. Do you want to proceed?`, [
+      { text: 'Cancel', style: 'cancel', onPress: clearSelection },
       {
-        text: 'Delete',
+        text: 'Proceed',
         style: 'destructive',
         onPress: async () => {
           try {
@@ -81,6 +81,7 @@ export default function Notes() {
     clearSelection();
     close();
   };
+
   const renderItem = useCallback(
     ({ item }: { item: INote }) => (
       <NoteItem
@@ -132,13 +133,11 @@ export default function Notes() {
         />
       )}
       {isSelecting ? (
-        <FAB
-          onPress={() => {
-            open();
-          }}
-          icon="ellipsis-horizontal"
-          style={{ backgroundColor: textMuted }}
-        />
+        Platform.OS === 'android' ? (
+          <FAB onPress={handleDelete} icon="trash-outline" style={{ backgroundColor: 'red' }} />
+        ) : (
+          <FAB onPress={open} icon="ellipsis-horizontal" />
+        )
       ) : (
         <FAB onPress={onAddNote} icon="add" />
       )}

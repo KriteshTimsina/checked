@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: 'absolute',
-    bottom: 90, // ← sits just above the FAB
+    bottom: 90,
     right: 16,
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
