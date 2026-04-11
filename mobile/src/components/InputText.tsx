@@ -19,7 +19,7 @@ const InputText: FC<InputTextProps> = ({
   initialValue = '',
   ...textInputProps
 }) => {
-  const [inputText, setInputText] = useState(initialValue); // ✅ state lives here now
+  const [inputText, setInputText] = useState(initialValue);
 
   const { primary, card, textMuted, isDark } = useTheme();
 

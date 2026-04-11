@@ -97,7 +97,7 @@ export default memo(NoteItem);
 const styles = StyleSheet.create({
   wrapper: {
     width: '48%',
-    margin: 5,
+    marginHorizontal: 5,
   },
   card: {
     padding: 10,

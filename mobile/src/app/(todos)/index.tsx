@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   FlatList,
   Keyboard,
@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { toast } from '@/utils/toast';
@@ -22,7 +22,7 @@ import EmptyProject from '@/components/EmptyProject';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Colors } from '@/constants/colors';
 import FAB from '@/components/reuseables/FAB';
@@ -70,7 +70,6 @@ export default function Entry() {
 
   const closeSheet = useCallback(() => {
     Keyboard.dismiss();
-    setEditingEntry(null);
     bottomSheetRef.current?.dismiss();
   }, []);
 
@@ -97,7 +96,6 @@ export default function Entry() {
           : createEntry({ project_id: Number(projectId), title: title.trim() }));
         if (saved) {
           haptics.success();
-          closeSheet();
           toast('Saved', 'top');
         }
       } catch {
@@ -105,7 +103,7 @@ export default function Entry() {
         toast('Error saving entry');
       }
     },
-    [editingEntry, projectId, createEntry, updateEntry, closeSheet],
+    [editingEntry, projectId, createEntry, updateEntry],
   );
 
   const handleDelete = useCallback(async () => {
@@ -135,7 +133,7 @@ export default function Entry() {
     () =>
       editingEntry ? (
         <Pressable onPress={handleDelete} hitSlop={10}>
-          <MaterialCommunityIcons color="red" name="delete-outline" size={24} />
+          <Ionicons color="red" name="trash-outline" size={18} />
         </Pressable>
       ) : null,
     [editingEntry, handleDelete],
@@ -166,8 +164,8 @@ export default function Entry() {
 
       <FAB onPress={openSheet} icon="add" style={{ top }} />
       <BottomSheet
-        // snapPoints={['40%']}
         onClose={closeSheet}
+        onDismiss={() => setEditingEntry(null)}
         title={editingEntry ? 'Edit Entry' : 'Add new Entry'}
         headerRight={editingEntry ? HeaderRight : undefined}
         bottomSheetRef={bottomSheetRef}
@@ -175,7 +173,7 @@ export default function Entry() {
         <InputText
           key={editingEntry?.id ?? 'new'}
           initialValue={editingEntry?.title ?? ''}
-          placeholder={editingEntry ? 'Edit task...' : 'Enter new todo...'}
+          placeholder={editingEntry ? 'Edit todo...' : 'Enter new todo...'}
           onSubmit={handleSave}
           onClose={closeSheet}
         />

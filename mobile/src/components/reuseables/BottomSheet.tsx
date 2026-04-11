@@ -1,4 +1,4 @@
-import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 import React, { useCallback } from 'react';
 import {
   BottomSheetBackdrop,
@@ -6,13 +6,14 @@ import {
   BottomSheetModal,
   BottomSheetProps as GorhomBottomSheetProps,
   BottomSheetBackdropProps,
+  BottomSheetModalProps,
 } from '@gorhom/bottom-sheet';
 import { ThemedText } from '../ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import Button from '@/components/reuseables/Button';
 import { haptics } from '@/utils/haptics';
 
-interface BottomSheetProps extends Partial<GorhomBottomSheetProps> {
+interface BottomSheetProps extends Partial<BottomSheetModalProps> {
   title?: string | React.ReactNode;
   children: React.ReactNode;
   containerStyle?: ViewStyle;
@@ -30,7 +31,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   children,
   titleStyle,
   containerStyle,
-  snapPoints = ['25%'],
+  snapPoints = Platform.OS === 'android' ? ['40%'] : ['25%'],
   onClose,
   headerLeft: HeaderLeft,
   headerRight: HeaderRight,
