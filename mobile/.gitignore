@@ -48,4 +48,6 @@ todos.md
 .vscode
 .idea
 
+#Local Builds
 build-*.aab
+build-*.apk
