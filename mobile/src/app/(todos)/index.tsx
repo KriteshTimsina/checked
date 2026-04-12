@@ -27,6 +27,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import FAB from '@/components/reuseables/FAB';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 export default function Entry() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -149,12 +150,13 @@ export default function Entry() {
       <ThemedView style={globals.flex}>
         <View style={styles.projectContainer}>
           {entries.length > 0 ? (
-            <FlatList
+            <Animated.FlatList
               contentContainerStyle={styles.contentContainer}
               data={entries}
               keyExtractor={item => String(item.id)}
               renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
+              itemLayoutAnimation={LinearTransition}
+              showsVerticalScrollIndicator
             />
           ) : (
             <EmptyProject type="todoItem" />

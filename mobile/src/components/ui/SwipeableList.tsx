@@ -6,14 +6,7 @@ import Swipeable, {
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { useTheme } from '@/hooks/useTheme';
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInLeft,
-  FadeInUp,
-  FadeOut,
-  FadeOutLeft,
-} from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeOutLeft } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
 let currentSwipeable: SwipeableMethods | null = null;
@@ -77,7 +70,10 @@ const SwipeableList: FC<SwipeableListProps> = ({
     if (currentSwipeable === swipeableRef.current) currentSwipeable = null;
   };
   return (
-    <Animated.View entering={FadeInDown.duration(300).springify()}>
+    <Animated.View
+      entering={FadeInDown.duration(300).springify()}
+      exiting={FadeOutLeft.duration(300)}
+    >
       <Swipeable
         enabled={swipeEnabled}
         ref={swipeableRef}
