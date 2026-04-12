@@ -2,13 +2,17 @@ import React from 'react';
 import { Text, type TextProps, StyleSheet } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { useTheme } from '@/hooks/useTheme';
+import Animated from 'react-native-reanimated';
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
-  children: React.ReactNode;
-};
+type AnimatedTextProps = React.ComponentProps<typeof Animated.Text>;
+
+export type ThemedTextProps = TextProps &
+  AnimatedTextProps & {
+    lightColor?: string;
+    darkColor?: string;
+    type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
+    children: React.ReactNode;
+  };
 
 export function ThemedText({
   children,

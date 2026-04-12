@@ -65,7 +65,7 @@ function AppNavigator() {
           name="settings"
           options={{
             headerShown: true,
-            headerTitle: 'Settings',
+            headerTitle: '',
           }}
         />
         <Stack.Screen name="onboarding" />
