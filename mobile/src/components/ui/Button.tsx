@@ -46,6 +46,7 @@ const Button: React.FC<ButtonProps> = ({
     const primaryButton = {
       backgroundColor: primary,
     };
+
     switch (variant) {
       case 'primary':
         return primaryButton;

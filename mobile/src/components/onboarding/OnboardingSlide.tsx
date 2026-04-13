@@ -5,6 +5,7 @@ import { OnboardingStepProps } from '@/constants/onboardingSteps';
 import WelcomeIllustration from './WelcomeIllustration';
 import NotesIllustration from './NotesIllustration';
 import ThemeSelector from './ThemeSelector';
+import { Pill } from '@/components/ui';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -25,7 +26,7 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
 
   return (
     <View style={[styles.slide, { backgroundColor: step.bg }]}>
-      <View
+      {/* <View
         style={[
           styles.pill,
           { backgroundColor: step.color + '18', borderColor: step.color + '30' },
@@ -33,7 +34,13 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
       >
         <Text style={styles.pillEmoji}>{step.emoji}</Text>
         <Text style={[styles.pillText, { color: step.color }]}>{step.tag.toUpperCase()}</Text>
-      </View>
+      </View> */}
+
+      <Pill
+        variant="outline"
+        label={`${step.emoji} ${step.tag.toUpperCase()}`}
+        color={step.color}
+      />
 
       <Text style={styles.title}>
         {step.title}
@@ -68,25 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 28,
     paddingTop: 16,
-  },
-  pill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    borderRadius: 100,
-    borderWidth: 1.5,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
-    gap: 6,
-    marginBottom: 16,
-  },
-  pillEmoji: {
-    fontSize: 13,
-  },
-  pillText: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.8,
   },
   title: {
     fontSize: 36,

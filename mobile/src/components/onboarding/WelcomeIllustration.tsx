@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, View, StyleSheet, Text, Dimensions } from 'react-native';
+import { Pill } from '../ui';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -64,9 +65,12 @@ export default function WelcomeIllustration({ color }: { color: string }) {
       </View>
 
       {done > 0 && (
-        <View style={[ilStyles.sticker, { transform: [{ rotate: '4deg' }] }]}>
-          <Text style={ilStyles.stickerText}>{done} done 🎉</Text>
-        </View>
+        <Pill
+          label={`${done} done  🎉`}
+          color="#FFE66D"
+          containerStyle={ilStyles.sticker}
+          labelStyle={ilStyles.stickerText}
+        />
       )}
     </View>
   );
@@ -147,15 +151,7 @@ const ilStyles = StyleSheet.create({
     position: 'absolute',
     bottom: 2,
     right: 8,
-    backgroundColor: '#FFE66D',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    shadowColor: '#FFE66D',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 4,
+    transform: [{ rotate: '4deg' }],
   },
   stickerText: {
     fontSize: 12,
