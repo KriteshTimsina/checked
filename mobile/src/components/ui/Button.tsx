@@ -8,8 +8,8 @@ import {
   ActivityIndicator,
   PressableProps,
 } from 'react-native';
-import { HapticButton } from '@/components/layout';
 import { useTheme } from '@/hooks/useTheme';
+import HapticButton from '../layout/HapticButton';
 
 interface ButtonProps extends PressableProps {
   title: string;

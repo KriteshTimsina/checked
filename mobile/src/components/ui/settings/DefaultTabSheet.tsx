@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { type Tab } from '@/hooks/usePreferences';
 import { tabs } from '@/constants/data';
-import { BottomSheet } from '@/components/ui';
+import { BottomSheet, BottomSheetModal } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
 
 type DefaultTabSheetProps = {

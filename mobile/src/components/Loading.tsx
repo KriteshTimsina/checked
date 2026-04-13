@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import { ThemedView } from './ThemedView';
+import { ThemedView } from '@/components/layout';
 
 import { Colors } from '@/constants/colors';
 

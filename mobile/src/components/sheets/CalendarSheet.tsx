@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheet } from '@/components/ui';
+import { BottomSheet, BottomSheetModal } from '@/components/ui';
 import { CalendarList, DateData } from 'react-native-calendars';
 import { useTheme } from '@/hooks/useTheme';
 import dayjs from 'dayjs';

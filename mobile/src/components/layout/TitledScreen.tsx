@@ -1,8 +1,8 @@
 import { StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import React from 'react';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ui';
+import ThemedView from './ThemedView';
 import { globals } from '@/styles/globals';
+import ThemedText from '../ui/ThemedText';
 
 const TitledScreen = ({
   title,

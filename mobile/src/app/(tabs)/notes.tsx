@@ -13,7 +13,7 @@ import { haptics } from '@/utils/haptics';
 import { INote } from '@/db/schema';
 import { SelectionMenu } from '@/components/ui/SelectionMenu';
 import { useContextMenu } from '@/components/reuseables/ContextMenu';
-import TitledScreen from '@/components/reuseables/TitledScreen';
+import { TitledScreen } from '@/components/layout';
 import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
 
 export default function Notes() {

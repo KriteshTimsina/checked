@@ -5,12 +5,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import ConfettiCannon from 'react-native-confetti-cannon';
 
 import { ThemedText } from '@/components/ui';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedView, HapticButton } from '@/components/layout';
 import Trophy from '@/components/Trophy';
 import { useEntries } from '@/store/entries';
 
 import { useTheme } from '@/hooks/useTheme';
-import { HapticButton } from '@/components/layout';
 
 const ORIGIN = { x: -10, y: 0 };
 

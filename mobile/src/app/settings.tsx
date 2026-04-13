@@ -1,17 +1,16 @@
 import React, { useRef } from 'react';
 import { Alert, Appearance, ScrollView, StyleSheet, View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
-import { ThemedText } from '@/components/ui';
+import { ThemedText, type BottomSheetModal } from '@/components/ui';
 import { storage, type Tab, usePreferences } from '@/hooks/usePreferences';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
 
 import { openStoreListing } from '@/utils/review';
-import TitledScreen from '@/components/reuseables/TitledScreen';
+import { TitledScreen } from '@/components/layout';
 import {
   Footer,
   SettingItem,

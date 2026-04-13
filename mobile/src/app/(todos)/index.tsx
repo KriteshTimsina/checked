@@ -1,15 +1,14 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Keyboard, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import { toast } from '@/utils/toast';
 import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
 import ChecklistItem from '@/components/ChecklistItem';
-import { ThemedView } from '@/components/ThemedView';
-import { EmptyState, BottomSheet } from '@/components/ui';
+import { ThemedView } from '@/components/layout';
+import { EmptyState, BottomSheet, BottomSheetModal } from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';

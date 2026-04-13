@@ -1,8 +1,7 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import React, { useEffect, useRef, useState } from 'react';
 import { Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { EmptyState, BottomSheet } from '@/components/ui';
+import { EmptyState, BottomSheet, type BottomSheetModal } from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
@@ -11,7 +10,7 @@ import { toast } from '@/utils/toast';
 import Checklist from '@/components/Checklist';
 import InputText from '@/components/InputText';
 import FAB from '@/components/reuseables/FAB';
-import TitledScreen from '@/components/reuseables/TitledScreen';
+import { TitledScreen } from '@/components/layout';
 import { useTheme } from '@/hooks/useTheme';
 import { debounce } from 'lodash';
 import Animated, { LinearTransition } from 'react-native-reanimated';

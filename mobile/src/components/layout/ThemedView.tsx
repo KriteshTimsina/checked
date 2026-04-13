@@ -6,11 +6,10 @@ export type ThemedViewProps = ViewProps & {
   lightColor?: string;
   darkColor?: string;
   isWrapper?: boolean;
-  // card uses the elevated card surface instead of base surface
   variant?: 'surface' | 'card';
 };
 
-export function ThemedView({
+export default function ThemedView({
   style,
   lightColor,
   darkColor,

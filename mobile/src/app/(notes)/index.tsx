@@ -8,7 +8,7 @@ import {
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedView } from '@/components/layout';
 import { ThemedText } from '@/components/ui';
 import { globals } from '@/styles/globals';
 import { INote } from '@/db/schema';

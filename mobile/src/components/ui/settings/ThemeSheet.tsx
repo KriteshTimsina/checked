@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { HapticButton } from '@/components/layout';
-import { ThemedText, BottomSheet } from '@/components/ui';
+import { ThemedText, BottomSheet, BottomSheetModal } from '@/components/ui';
 
 type ThemeSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;

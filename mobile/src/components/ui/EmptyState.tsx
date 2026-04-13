@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 import React, { FC, useEffect, useMemo, useRef } from 'react';
-import ThemedText from './ThemedText';
 import LottieView from 'lottie-react-native';
 import emptyProject from '@/assets/lottie/empty-state.json';
-import { ThemedView } from '../ThemedView';
 import { useTheme } from '@/hooks/useTheme';
+import ThemedText from './ThemedText';
+import { ThemedView } from '../layout';
 
 const TITLE = {
   tasks: 'No Tasks. Add one to view.',

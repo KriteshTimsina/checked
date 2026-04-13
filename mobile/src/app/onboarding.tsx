@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Dimensions, ViewToken } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { ThemedView } from '@/components/ThemedView';
+import { ThemedView } from '@/components/layout/ThemedView';
 import { onboardingSteps } from '@/constants/onboardingSteps';
 import { usePreferences } from '@/hooks/usePreferences';
 import OnboardingSlide from '@/components/onboarding/OnboardingSlide';

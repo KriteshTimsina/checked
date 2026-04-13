@@ -3,8 +3,7 @@ import { Image, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheet, ThemedText } from '@/components/ui';
+import { BottomSheet, ThemedText, BottomSheetModal } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
 
 type AppIconSheetProps = {
