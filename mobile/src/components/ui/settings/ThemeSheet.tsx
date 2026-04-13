@@ -1,12 +1,11 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { StyleSheet, View } from 'react-native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
-import { BottomSheet } from '@/components/reuseables';
 import { HapticButton } from '@/components/layout';
+import { ThemedText, BottomSheet } from '@/components/ui';
 
 type ThemeSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -15,7 +14,7 @@ type ThemeSheetProps = {
 };
 
 export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSelect }) => {
-  const { card, text, border } = useTheme();
+  const { card, text } = useTheme();
 
   return (
     <BottomSheet

@@ -1,13 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import {
-  FlatList,
-  Keyboard,
-  Platform,
-  Pressable,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Keyboard, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
@@ -16,9 +8,8 @@ import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import InputText from '@/components/InputText';
 import ChecklistItem from '@/components/ChecklistItem';
-import BottomSheet from '@/components/reuseables/BottomSheet';
 import { ThemedView } from '@/components/ThemedView';
-import EmptyProject from '@/components/EmptyProject';
+import { EmptyState, BottomSheet } from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';
@@ -149,18 +140,15 @@ export default function Entry() {
     <>
       <ThemedView style={globals.flex}>
         <View style={styles.projectContainer}>
-          {entries.length > 0 ? (
-            <Animated.FlatList
-              contentContainerStyle={styles.contentContainer}
-              data={entries}
-              keyExtractor={item => String(item.id)}
-              renderItem={renderItem}
-              itemLayoutAnimation={LinearTransition}
-              showsVerticalScrollIndicator
-            />
-          ) : (
-            <EmptyProject type="todoItem" />
-          )}
+          <Animated.FlatList
+            contentContainerStyle={styles.contentContainer}
+            data={entries}
+            keyExtractor={item => String(item.id)}
+            renderItem={renderItem}
+            itemLayoutAnimation={LinearTransition}
+            showsVerticalScrollIndicator
+            ListEmptyComponent={<EmptyState type="todoItem" />}
+          />
         </View>
       </ThemedView>
 

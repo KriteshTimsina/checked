@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
-import { Alert, Appearance, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Appearance, ScrollView, StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ui';
 import { storage, type Tab, usePreferences } from '@/hooks/usePreferences';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { useTheme } from '@/hooks/useTheme';

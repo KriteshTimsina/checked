@@ -14,7 +14,7 @@ export type ThemedTextProps = TextProps &
     children: React.ReactNode;
   };
 
-export function ThemedText({
+export default function ThemedText({
   children,
   style,
   lightColor,
@@ -71,6 +71,5 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
     fontFamily: 'ClashGroteskMedium',
-    // color applied dynamically via primary above
   },
 });

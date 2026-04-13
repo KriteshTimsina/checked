@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ConfettiCannon from 'react-native-confetti-cannon';
 
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ui';
 import { ThemedView } from '@/components/ThemedView';
 import Trophy from '@/components/Trophy';
 import { useEntries } from '@/store/entries';

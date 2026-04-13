@@ -1,6 +1,6 @@
 import { StyleSheet, FlatList, View, RefreshControl, Alert, Platform } from 'react-native';
 import React, { useCallback, useEffect } from 'react';
-import EmptyProject from '@/components/EmptyProject';
+import { EmptyState } from '@/components/ui';
 import NoteItem from '@/components/NoteItem';
 import { useNotes } from '@/store/notes';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,6 @@ import { debounce } from 'lodash';
 import { toast } from '@/utils/toast';
 import { haptics } from '@/utils/haptics';
 import { INote } from '@/db/schema';
-import { useTheme } from '@/hooks/useTheme';
 import { SelectionMenu } from '@/components/ui/SelectionMenu';
 import { useContextMenu } from '@/components/reuseables/ContextMenu';
 import TitledScreen from '@/components/reuseables/TitledScreen';
@@ -20,7 +19,6 @@ import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
 export default function Notes() {
   const { notes, getNotes, isLoading, createNote, deleteNote } = useNotes();
   const router = useRouter();
-  const { textMuted } = useTheme();
   const { isSelecting, isSelected, selectedIds, selectedCount, toggleSelect, clearSelection } =
     useNoteSelection();
   const { visible, open, close } = useContextMenu();
@@ -107,7 +105,7 @@ export default function Notes() {
     >
       <View style={styles.noteContainer}>
         <FlatList
-          ListEmptyComponent={<EmptyProject type="notes" />}
+          ListEmptyComponent={<EmptyState type="notes" />}
           showsVerticalScrollIndicator={false}
           data={notes}
           keyExtractor={item => item.id.toString()}

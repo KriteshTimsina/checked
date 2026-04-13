@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React, { FC, useCallback, useEffect } from 'react';
 import Checkbox from 'expo-checkbox';
-import { ThemedText } from './ThemedText';
+import { ThemedText } from '@/components/ui';
 import { IEntry } from '@/db/schema';
 import Animated, {
   useAnimatedStyle,

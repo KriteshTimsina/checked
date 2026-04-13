@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ui';
 import { globals } from '@/styles/globals';
 import { INote } from '@/db/schema';
 import { useTheme } from '@/hooks/useTheme';

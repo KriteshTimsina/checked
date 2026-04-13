@@ -4,13 +4,11 @@ import {
   BottomSheetBackdrop,
   BottomSheetView,
   BottomSheetModal,
-  BottomSheetProps as GorhomBottomSheetProps,
   BottomSheetBackdropProps,
   BottomSheetModalProps,
 } from '@gorhom/bottom-sheet';
-import { ThemedText } from '../ThemedText';
+import ThemedText from './ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/layout/HapticButton';
 import { haptics } from '@/utils/haptics';
 
 interface BottomSheetProps extends Partial<BottomSheetModalProps> {

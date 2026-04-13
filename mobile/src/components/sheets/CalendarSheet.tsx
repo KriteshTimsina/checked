@@ -1,8 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheet } from '@/components/reuseables';
-import Button from '../Button';
+import { BottomSheet } from '@/components/ui';
 import { CalendarList, DateData } from 'react-native-calendars';
 import { useTheme } from '@/hooks/useTheme';
 import dayjs from 'dayjs';
@@ -80,10 +79,10 @@ const CalendarSheet: React.FC<CalendarSheetProps> = ({
     [border, primary],
   );
 
-  const HeaderRight = useCallback(
-    () => <Button style={styles.button} onPress={handleSave} type="save" />,
-    [handleSave],
-  );
+  // const HeaderRight = useCallback(
+  //   () => <HapticButton style={styles.button} onPress={handleSave} type="save" />,
+  //   [handleSave],
+  // );
 
   return (
     <BottomSheet
@@ -92,7 +91,7 @@ const CalendarSheet: React.FC<CalendarSheetProps> = ({
       snapPoints={['50%', '90%']}
       title="Due Date"
       titleStyle={styles.titleStyle}
-      headerRight={HeaderRight}
+      // headerRight={HeaderRight}
     >
       <View style={styles.calendarWrapper}>
         <CalendarList

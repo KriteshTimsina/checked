@@ -1,11 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheet } from '@/components/reuseables';
+import { BottomSheet, ThemedText } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
 
 type AppIconSheetProps = {

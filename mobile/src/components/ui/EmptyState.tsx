@@ -1,22 +1,22 @@
 import { StyleSheet } from 'react-native';
 import React, { FC, useEffect, useMemo, useRef } from 'react';
-import { ThemedText } from './ThemedText';
+import ThemedText from './ThemedText';
 import LottieView from 'lottie-react-native';
 import emptyProject from '@/assets/lottie/empty-state.json';
-import { ThemedView } from './ThemedView';
+import { ThemedView } from '../ThemedView';
 import { useTheme } from '@/hooks/useTheme';
 
 const TITLE = {
-  todos: 'No Tasks. Add one to view.',
+  tasks: 'No Tasks. Add one to view.',
   todoItem: 'Todo has no items. Add one to view.',
   notes: 'Notes is empty. Add one to view.',
 };
 
-type EmptyProjectProps = {
-  type?: 'todos' | 'todoItem' | 'notes';
+type EmptyStateProps = {
+  type: 'tasks' | 'todoItem' | 'notes';
 };
 
-const EmptyProject: FC<EmptyProjectProps> = ({ type = 'todos' }) => {
+const EmptyState: FC<EmptyStateProps> = ({ type }) => {
   const animation = useRef<LottieView>(null);
   const { primary } = useTheme();
 
@@ -45,7 +45,7 @@ const EmptyProject: FC<EmptyProjectProps> = ({ type = 'todos' }) => {
       <LottieView
         autoPlay
         ref={animation}
-        style={styles.empty}
+        style={styles.icon}
         source={emptyProject}
         colorFilters={colorFilters}
       />
@@ -54,11 +54,11 @@ const EmptyProject: FC<EmptyProjectProps> = ({ type = 'todos' }) => {
   );
 };
 
-export default EmptyProject;
+export default EmptyState;
 
 const styles = StyleSheet.create({
   container: { width: '100%', alignItems: 'center', justifyContent: 'center' },
-  empty: {
+  icon: {
     width: 200,
     height: 200,
   },

@@ -2,8 +2,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import React, { useEffect, useRef, useState } from 'react';
 import { Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
 
-import EmptyProject from '@/components/EmptyProject';
-import { BottomSheet } from '@/components/reuseables';
+import { EmptyState, BottomSheet } from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
@@ -61,20 +60,17 @@ export default function Home() {
     <>
       <TitledScreen title="✅ Your Tasks">
         <View style={styles.projectContainer}>
-          {projects.length > 0 ? (
-            <Animated.FlatList
-              refreshControl={
-                <RefreshControl colors={[primary]} refreshing={loading} onRefresh={fetchProjects} />
-              }
-              data={projects}
-              keyExtractor={item => String(item.id)}
-              renderItem={({ item, index }) => <Checklist item={item} index={index} />}
-              contentContainerStyle={styles.contentContainer}
-              itemLayoutAnimation={LinearTransition}
-            />
-          ) : (
-            <EmptyProject type="todos" />
-          )}
+          <Animated.FlatList
+            refreshControl={
+              <RefreshControl colors={[primary]} refreshing={loading} onRefresh={fetchProjects} />
+            }
+            data={projects}
+            keyExtractor={item => String(item.id)}
+            renderItem={({ item, index }) => <Checklist item={item} index={index} />}
+            contentContainerStyle={styles.contentContainer}
+            itemLayoutAnimation={LinearTransition}
+            ListEmptyComponent={<EmptyState type="tasks" />}
+          />
         </View>
       </TitledScreen>
 

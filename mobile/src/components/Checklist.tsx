@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { IProject } from '@/db/schema';
 import { toast } from '@/utils/toast';
-import { ThemedText } from './ThemedText';
+import { ThemedText } from '@/components/ui';
 import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';

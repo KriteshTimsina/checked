@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { Pressable } from 'react-native-gesture-handler';
 import { MenuAction } from '@/components/reuseables/ContextMenu';

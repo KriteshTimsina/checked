@@ -1,6 +1,6 @@
 import { StyleSheet, TextInputProps, View } from 'react-native';
 import React, { FC, useState } from 'react';
-import { ThemedText } from './ThemedText';
+import { ThemedText } from '@/components/ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';

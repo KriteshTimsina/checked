@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Switch, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { HapticButton } from '@/components/layout';
 
