@@ -6,9 +6,9 @@ import { router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { onboardingSteps } from '@/constants/onboardingSteps';
 import { usePreferences } from '@/hooks/usePreferences';
-import OnboardingSlide from '@/components/ui/onboarding/OnboardingSlide';
-import OnboardingFooter from '@/components/ui/onboarding/OnboardingFooter';
-import { AppTheme, DEFAULT_THEME_ID } from '@/constants/themes';
+import OnboardingSlide from '@/components/onboarding/OnboardingSlide';
+import OnboardingFooter from '@/components/onboarding/OnboardingFooter';
+import { AppTheme } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -17,7 +17,7 @@ export default function Onboarding() {
   const { completeOnboarding, setThemeId } = usePreferences();
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedThemeId, setSelectedThemeId] = useState(DEFAULT_THEME_ID);
+  const [selectedThemeId, setSelectedThemeId] = useState(0);
 
   const flatListRef = useRef<FlatList>(null);
 

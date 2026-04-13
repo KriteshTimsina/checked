@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 type SelectionTitleBarProps = {
   isSelecting: boolean;
@@ -23,9 +23,9 @@ const SelectionTitleBar = ({
       </ThemedText>
 
       {isSelecting && (
-        <Button onPress={clearSelection} hitSlop={12}>
+        <HapticButton onPress={clearSelection} hitSlop={12}>
           <ThemedText style={[styles.cancelText, { color: primary }]}>Cancel</ThemedText>
-        </Button>
+        </HapticButton>
       )}
     </View>
   );

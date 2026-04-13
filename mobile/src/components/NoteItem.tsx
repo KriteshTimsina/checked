@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { useTheme } from '@/hooks/useTheme';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import Button from '@/components/reuseables/Button';
+import Button from '@/components/layout/HapticButton';
 
 type NoteItemProps = {
   item: INote;

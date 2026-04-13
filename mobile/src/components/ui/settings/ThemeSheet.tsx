@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheet } from '@/components/reuseables';
-import Button from '@/components/reuseables/Button';
+import Button from '@/components/layout/HapticButton';
 
 type ThemeSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;

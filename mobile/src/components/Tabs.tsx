@@ -5,7 +5,7 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import GearIcon from './GearIcon';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/reuseables/Button';
+import Button from '@/components/layout/HapticButton';
 
 function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const { top } = useSafeAreaInsets();

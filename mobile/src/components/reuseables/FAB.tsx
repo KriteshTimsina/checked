@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
-import Button from '@/components/reuseables/Button';
+import Button from '@/components/layout/HapticButton';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 

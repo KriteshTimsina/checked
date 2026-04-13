@@ -3,7 +3,7 @@ import { StyleSheet, Switch, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 type BaseProps = {
   icon: React.ComponentProps<typeof Ionicons>['name'];
@@ -62,7 +62,7 @@ export const SettingItem: React.FC<SettingItemProps> = props => {
 
   if (props.variant === 'navigate') {
     return (
-      <Button
+      <HapticButton
         onPress={props.onPress}
         style={({ pressed }) => [containerStyle, pressed && styles.pressed]}
         android_ripple={{ color: primary + '20' }}
@@ -77,19 +77,19 @@ export const SettingItem: React.FC<SettingItemProps> = props => {
           {props.rightElement}
           <Ionicons name="chevron-forward" size={16} color={icon} />
         </View>
-      </Button>
+      </HapticButton>
     );
   }
 
   return (
-    <Button
+    <HapticButton
       onPress={props.onPress}
       style={({ pressed }) => [containerStyle, pressed && props.onPress && styles.pressed]}
       android_ripple={props.onPress ? { color: primary + '20' } : undefined}
     >
       {left}
       <View style={styles.right}>{props.rightElement}</View>
-    </Button>
+    </HapticButton>
   );
 };
 

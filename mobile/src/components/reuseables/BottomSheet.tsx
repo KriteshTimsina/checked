@@ -10,7 +10,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { ThemedText } from '../ThemedText';
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/reuseables/Button';
+import Button from '@/components/layout/HapticButton';
 import { haptics } from '@/utils/haptics';
 
 interface BottomSheetProps extends Partial<BottomSheetModalProps> {

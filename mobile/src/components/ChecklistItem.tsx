@@ -13,7 +13,7 @@ import { useEntries } from '@/store/entries';
 import { useTheme } from '@/hooks/useTheme';
 import { toast } from '@/utils/toast';
 import SwipeableList, { SwipeActionButton } from './ui/SwipeableList';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 type ChecklistItemProps = {
   item: IEntry;
@@ -81,7 +81,7 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
       )}
     >
       <View style={styles.content}>
-        <Button onPress={toggleCheckbox}>
+        <HapticButton onPress={toggleCheckbox}>
           <Animated.View style={checkboxStyle}>
             <Checkbox
               style={styles.checkbox}
@@ -91,7 +91,7 @@ const ChecklistItem: FC<ChecklistItemProps> = ({ item, onEdit }) => {
               hitSlop={25}
             />
           </Animated.View>
-        </Button>
+        </HapticButton>
 
         <View style={styles.textWrapper}>
           <ThemedText style={{ opacity: item.completed ? 0.45 : 1 }} darkColor={icon}>

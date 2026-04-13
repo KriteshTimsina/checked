@@ -1,14 +1,14 @@
-import Button from '@/components/reuseables/Button';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import Button from '@/components/layout/HapticButton';
 
 const { width: WIDTH } = Dimensions.get('window');
 
 type Props = {
   selectedThemeId: number;
   onSelect: (theme: AppTheme) => void;
-  accentColor: string; // passed from current step color
+  accentColor: string;
 };
 
 const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) => {

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 type InputTextProps = {
   onSubmit: (text: string) => void;
@@ -54,16 +54,16 @@ const InputText: FC<InputTextProps> = ({
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button hitSlop={5} onPress={onClose} style={styles.iconButton}>
+        <HapticButton hitSlop={5} onPress={onClose} style={styles.iconButton}>
           <Ionicons name="close-outline" size={25} color={iconColor} />
-        </Button>
-        <Button
+        </HapticButton>
+        <HapticButton
           disabled={disabledInput}
           onPress={handleSubmit}
           style={[styles.iconButton, { opacity: disabledInput ? 0.4 : 1 }]}
         >
           <Ionicons name="paper-plane-outline" size={25} color={primary} />
-        </Button>
+        </HapticButton>
       </View>
     </View>
   );

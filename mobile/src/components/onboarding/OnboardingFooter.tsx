@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { OnboardingStepProps } from '@/constants/onboardingSteps';
-import Button from '@/components/reuseables/Button';
+import { View, Text, StyleSheet } from 'react-native';
+import { type OnboardingStepProps } from '@/components/onboarding';
+import Button from '@/components/layout/HapticButton';
 
 type Props = {
   steps: OnboardingStepProps[];

@@ -7,7 +7,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { type Tab } from '@/hooks/usePreferences';
 import { tabs } from '@/constants/data';
 import { BottomSheet } from '@/components/reuseables';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 type DefaultTabSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -43,7 +43,7 @@ export const DefaultTabSheet: React.FC<DefaultTabSheetProps> = ({
         {tabs.map(tab => {
           const isActive = primaryTab === tab.label;
           return (
-            <Button
+            <HapticButton
               key={tab.id}
               onPress={() => onSelect(tab.label as Tab)}
               style={[
@@ -61,7 +61,7 @@ export const DefaultTabSheet: React.FC<DefaultTabSheetProps> = ({
               )}
               <ThemedText style={styles.tabLabel}>{tab.title}</ThemedText>
               {isActive && <View style={styles.activeDot} />}
-            </Button>
+            </HapticButton>
           );
         })}
       </View>

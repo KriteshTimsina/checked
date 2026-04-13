@@ -1,45 +1,73 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, View, StyleSheet, Text, Dimensions } from 'react-native';
 
-const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
+const { width: WIDTH } = Dimensions.get('window');
 
-export default function NotesIllustration({ color }: { color: string }) {
-  const notes = [
-    { text: 'Ideas for weekend 💡', color: '#FFE66D', rotate: '-3deg', top: 0 },
-    { text: 'Recipe: avocado toast 🥑', color: '#C77DFF', rotate: '2deg', top: 55 },
-    { text: 'Call dentist 📞', color: '#4D96FF', rotate: '-1.5deg', top: 110 },
-  ];
+const items = ['Buy groceries 🛒', 'Read 20 pages 📖', 'Morning yoga 🧘'];
+
+export default function WelcomeIllustration({ color }: { color: string }) {
+  const [tick, setTick] = useState(0);
+  const fadeAnims = useRef([
+    new Animated.Value(0),
+    new Animated.Value(0),
+    new Animated.Value(0),
+  ]).current;
+
+  useEffect(() => {
+    const t = setInterval(() => setTick(p => p + 1), 1200);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    items.forEach((_, i) => {
+      Animated.timing(fadeAnims[i], {
+        toValue: 1,
+        duration: 400,
+        delay: i * 100,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, []);
+
+  const done = tick % 4;
 
   return (
-    <View style={[ilStyles.wrapper, { height: 200 }]}>
-      <View style={[ilStyles.blob1, { backgroundColor: color + '25' }]} />
-      {notes.map((note, i) => (
-        <View
-          key={i}
-          style={[
-            ilStyles.noteCard,
-            {
-              backgroundColor: note.color,
-              top: note.top,
-              left: i * 12,
-              transform: [{ rotate: note.rotate }],
-              shadowColor: note.color,
-            },
-          ]}
-        >
-          <Text style={ilStyles.noteText}>{note.text}</Text>
-          <View style={[ilStyles.noteLine, { backgroundColor: 'rgba(0,0,0,0.12)' }]} />
-          <View
-            style={[
-              ilStyles.noteLine,
-              { backgroundColor: 'rgba(0,0,0,0.08)', width: '65%', marginTop: 4 },
-            ]}
-          />
-        </View>
-      ))}
-      <View style={[ilStyles.newNoteBtn, { borderColor: color }]}>
-        <Text style={[ilStyles.newNoteText, { color }]}>+ New note ✏️</Text>
+    <View style={ilStyles.wrapper}>
+      <View style={[ilStyles.blob1, { backgroundColor: color + '30' }]} />
+      <View style={[ilStyles.blob2, { backgroundColor: '#6BCB7730' }]} />
+
+      <View style={[ilStyles.card, { borderColor: color + '40' }]}>
+        <Text style={[ilStyles.cardTitle, { color }]}>MY DAY ☀️</Text>
+        {items.map((item, i) => (
+          <Animated.View key={i} style={[ilStyles.checkRow, { opacity: fadeAnims[i] }]}>
+            <View
+              style={[
+                ilStyles.checkbox,
+                { borderColor: color, backgroundColor: i < done ? color : 'transparent' },
+              ]}
+            >
+              {i < done && <Text style={ilStyles.checkmark}>✓</Text>}
+            </View>
+            <Text
+              style={[
+                ilStyles.checkText,
+                {
+                  color: i < done ? '#CCC' : '#333',
+                  textDecorationLine: i < done ? 'line-through' : 'none',
+                },
+              ]}
+            >
+              {item}
+            </Text>
+          </Animated.View>
+        ))}
       </View>
+
+      {done > 0 && (
+        <View style={[ilStyles.sticker, { transform: [{ rotate: '4deg' }] }]}>
+          <Text style={ilStyles.stickerText}>{done} done 🎉</Text>
+        </View>
+      )}
     </View>
   );
 }

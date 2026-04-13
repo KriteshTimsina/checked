@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { OnboardingStepProps } from '@/constants/onboardingSteps';
-import ThemeSelector from './ThemeSelector';
 import { AppTheme } from '@/constants/themes';
-import WelcomeIllustration from '@/components/ui/onboarding/WelcomeIllustration';
-import NotesIllustration from '@/components/ui/onboarding/NotesIllustration';
+import { OnboardingStepProps } from '@/constants/onboardingSteps';
+import WelcomeIllustration from './WelcomeIllustration';
+import NotesIllustration from './NotesIllustration';
+import ThemeSelector from './ThemeSelector';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -25,7 +25,6 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
 
   return (
     <View style={[styles.slide, { backgroundColor: step.bg }]}>
-      {/* Tag pill */}
       <View
         style={[
           styles.pill,
@@ -36,17 +35,14 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
         <Text style={[styles.pillText, { color: step.color }]}>{step.tag.toUpperCase()}</Text>
       </View>
 
-      {/* Title */}
       <Text style={styles.title}>
         {step.title}
         {'\n'}
         <Text style={{ color: step.color }}>{step.titleAccent}</Text>
       </Text>
 
-      {/* Subtitle */}
       <Text style={styles.subtitle}>{step.subtitle}</Text>
 
-      {/* Illustration OR Theme Selector */}
       <View style={[styles.illustrationArea, isThemeStep && styles.illustrationAreaTheme]}>
         {isThemeStep ? (
           <ThemeSelector
@@ -62,7 +58,7 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
   );
 });
 
-OnboardingSlide.displayName = 'OnboardingSlide'; // ← add this
+OnboardingSlide.displayName = 'OnboardingSlide';
 
 export default OnboardingSlide;
 

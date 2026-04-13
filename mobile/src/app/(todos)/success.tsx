@@ -10,6 +10,7 @@ import Trophy from '@/components/Trophy';
 import { useEntries } from '@/store/entries';
 
 import { useTheme } from '@/hooks/useTheme';
+import { HapticButton } from '@/components/layout';
 
 const ORIGIN = { x: -10, y: 0 };
 
@@ -37,9 +38,12 @@ export default function Success() {
       >
         All tasks completed
       </Animated.Text>
-      <Pressable onPress={onResetEntries} style={[styles.button, { backgroundColor: primarySoft }]}>
+      <HapticButton
+        onPress={onResetEntries}
+        style={[styles.button, { backgroundColor: primarySoft }]}
+      >
         <ThemedText>Reset checklist</ThemedText>
-      </Pressable>
+      </HapticButton>
     </ThemedView>
   );
 }

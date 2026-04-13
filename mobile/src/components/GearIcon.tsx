@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '@/hooks/useTheme';
-import Button from '@/components/reuseables/Button';
+import { HapticButton } from '@/components/layout';
 
 const GearIcon = () => {
   const router = useRouter();
@@ -14,12 +14,12 @@ const GearIcon = () => {
     router.push('/settings');
   };
   return (
-    <Button
+    <HapticButton
       onPress={handlePress}
       style={({ pressed }) => [styles.icon, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
     >
       <Ionicons name="settings" size={26} color={primary} />
-    </Button>
+    </HapticButton>
   );
 };
 

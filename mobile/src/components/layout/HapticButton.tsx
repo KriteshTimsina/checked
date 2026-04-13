@@ -6,7 +6,7 @@ type ButtonProps = {
   onPress?: VoidFunction;
 } & PressableProps;
 
-const Button: FC<ButtonProps> = ({ onPress, children, ...props }) => {
+const HapticButton: FC<ButtonProps> = ({ onPress, children, ...props }) => {
   const handlePress = () => {
     onPress?.();
     haptics.light();
@@ -18,4 +18,4 @@ const Button: FC<ButtonProps> = ({ onPress, children, ...props }) => {
   );
 };
 
-export default Button;
+export default HapticButton;
