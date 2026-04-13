@@ -1,44 +1,24 @@
-import { View, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { Pill } from '@/components/ui';
+import { FloatingNote } from './FloatingNote';
 
 const { width: WIDTH } = Dimensions.get('window');
 
 const notes = [
   { text: 'Ideas for weekend 💡', color: '#FFE66D', rotate: '-3deg', top: 0 },
-  { text: 'Recipe: avocado toast 🥑', color: '#C77DFF', rotate: '2deg', top: 55 },
-  { text: 'Call dentist 📞', color: '#4D96FF', rotate: '-1.5deg', top: 110 },
+  { text: 'Chord Progression in C major 🎸', color: '#C77DFF', rotate: '2deg', top: 55 },
+  { text: 'Grocery expenses 🛒', color: '#4D96FF', rotate: '-1.5deg', top: 110 },
 ];
 
 export default function NotesIllustration({ color }: { color: string }) {
   return (
-    <View style={[ilStyles.wrapper, { height: 200 }]}>
-      <View style={[ilStyles.blob1, { backgroundColor: color + '25' }]} />
+    <View style={[styles.wrapper, { height: 300 }]}>
+      <View style={[styles.blob1, { backgroundColor: color + '25' }]} />
       {notes.map((note, i) => (
-        <View
-          key={i}
-          style={[
-            ilStyles.noteCard,
-            {
-              backgroundColor: note.color,
-              top: note.top,
-              left: i * 12,
-              transform: [{ rotate: note.rotate }],
-              shadowColor: note.color,
-            },
-          ]}
-        >
-          <Text style={ilStyles.noteText}>{note.text}</Text>
-          <View style={[ilStyles.noteLine, { backgroundColor: 'rgba(0,0,0,0.12)' }]} />
-          <View
-            style={[
-              ilStyles.noteLine,
-              { backgroundColor: 'rgba(0,0,0,0.08)', width: '65%', marginTop: 4 },
-            ]}
-          />
-        </View>
+        <FloatingNote key={i} note={note} index={i} />
       ))}
       <Pill
-        containerStyle={ilStyles.newNoteBtn}
+        containerStyle={styles.newNoteBtn}
         label="+ New note ✏️"
         variant="outline"
         color={color}
@@ -47,161 +27,20 @@ export default function NotesIllustration({ color }: { color: string }) {
   );
 }
 
-const ilStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   wrapper: {
     width: WIDTH - 80,
-    height: 220,
     position: 'relative',
   },
   blob1: {
     position: 'absolute',
-    top: 0,
+    top: -30,
     left: 10,
     width: 80,
     height: 80,
     borderRadius: 40,
   },
-  blob2: {
-    position: 'absolute',
-    bottom: 10,
-    right: 0,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  card: {
-    position: 'absolute',
-    top: 20,
-    left: 10,
-    right: 10,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 18,
-    borderWidth: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-  cardTitle: {
-    fontWeight: '800',
-    fontSize: 12,
-    marginBottom: 12,
-    letterSpacing: 0.5,
-  },
-  cardSubtitle: {
-    fontSize: 11,
-    color: '#999',
-    marginBottom: 12,
-  },
-  checkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 10,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
-    borderWidth: 2.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkmark: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '900',
-  },
-  checkText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  sticker: {
-    position: 'absolute',
-    bottom: 2,
-    right: 8,
-    backgroundColor: '#FFE66D',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    shadowColor: '#FFE66D',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  stickerText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#333',
-  },
-  daysRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  dayCol: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  dayBox: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dayCheck: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '900',
-  },
-  dayLabel: {
-    fontSize: 9,
-    color: '#999',
-    fontWeight: '700',
-  },
-  streakBar: {
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  streakLabel: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 12,
-  },
-  streakCount: {
-    color: '#fff',
-    fontWeight: '900',
-    fontSize: 20,
-  },
-  noteCard: {
-    position: 'absolute',
-    left: 10,
-    width: 180,
-    borderRadius: 12,
-    padding: 12,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  noteText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#333',
-  },
-  noteLine: {
-    height: 2,
-    borderRadius: 2,
-    marginTop: 6,
-  },
+
   newNoteBtn: {
     position: 'absolute',
     bottom: 0,

@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { Animated, View, StyleSheet, Text, Dimensions } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { Pill } from '../ui';
+import { useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import { AnimatedRow } from './AnimatedChecklist';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -8,11 +10,7 @@ const items = ['Buy groceries 🛒', 'Read 20 pages 📖', 'Morning yoga 🧘'];
 
 export default function WelcomeIllustration({ color }: { color: string }) {
   const [tick, setTick] = useState(0);
-  const fadeAnims = useRef([
-    new Animated.Value(0),
-    new Animated.Value(0),
-    new Animated.Value(0),
-  ]).current;
+  const fadeAnims = [useSharedValue(0), useSharedValue(0), useSharedValue(0)];
 
   useEffect(() => {
     const t = setInterval(() => setTick(p => p + 1), 1200);
@@ -20,13 +18,8 @@ export default function WelcomeIllustration({ color }: { color: string }) {
   }, []);
 
   useEffect(() => {
-    items.forEach((_, i) => {
-      Animated.timing(fadeAnims[i], {
-        toValue: 1,
-        duration: 400,
-        delay: i * 100,
-        useNativeDriver: true,
-      }).start();
+    fadeAnims.forEach((anim, i) => {
+      anim.value = withDelay(i * 100, withTiming(1, { duration: 400 }));
     });
   }, []);
 
@@ -40,27 +33,14 @@ export default function WelcomeIllustration({ color }: { color: string }) {
       <View style={[ilStyles.card, { borderColor: color + '40' }]}>
         <Text style={[ilStyles.cardTitle, { color }]}>MY DAY ☀️</Text>
         {items.map((item, i) => (
-          <Animated.View key={i} style={[ilStyles.checkRow, { opacity: fadeAnims[i] }]}>
-            <View
-              style={[
-                ilStyles.checkbox,
-                { borderColor: color, backgroundColor: i < done ? color : 'transparent' },
-              ]}
-            >
-              {i < done && <Text style={ilStyles.checkmark}>✓</Text>}
-            </View>
-            <Text
-              style={[
-                ilStyles.checkText,
-                {
-                  color: i < done ? '#CCC' : '#333',
-                  textDecorationLine: i < done ? 'line-through' : 'none',
-                },
-              ]}
-            >
-              {item}
-            </Text>
-          </Animated.View>
+          <AnimatedRow
+            key={i}
+            item={item}
+            index={i}
+            anim={fadeAnims[i]}
+            done={done}
+            color={color}
+          />
         ))}
       </View>
 
@@ -124,29 +104,7 @@ const ilStyles = StyleSheet.create({
     color: '#999',
     marginBottom: 12,
   },
-  checkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 10,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
-    borderWidth: 2.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkmark: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '900',
-  },
-  checkText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
+
   sticker: {
     position: 'absolute',
     bottom: 2,
