@@ -1,4 +1,5 @@
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
+import { Pill } from '@/components/ui';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -36,9 +37,12 @@ export default function NotesIllustration({ color }: { color: string }) {
           />
         </View>
       ))}
-      <View style={[ilStyles.newNoteBtn, { borderColor: color }]}>
-        <Text style={[ilStyles.newNoteText, { color }]}>+ New note ✏️</Text>
-      </View>
+      <Pill
+        containerStyle={ilStyles.newNoteBtn}
+        label="+ New note ✏️"
+        variant="outline"
+        color={color}
+      />
     </View>
   );
 }
@@ -202,14 +206,5 @@ const ilStyles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    borderWidth: 2,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: '#fff',
-  },
-  newNoteText: {
-    fontSize: 11,
-    fontWeight: '800',
   },
 });

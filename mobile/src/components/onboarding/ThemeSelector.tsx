@@ -1,7 +1,8 @@
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import React, { memo } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import Button from '@/components/layout/HapticButton';
+import { HapticButton } from '@/components/layout';
+import { Pill } from '@/components/ui';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -12,9 +13,9 @@ type Props = {
 };
 
 const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) => {
+  const selectedTheme = APP_THEMES.find(t => t.id === selectedThemeId)?.name;
   return (
     <View style={styles.container}>
-      {/* Decorative blobs */}
       <View style={[styles.blob1, { backgroundColor: accentColor + '20' }]} />
       <View style={[styles.blob2, { backgroundColor: accentColor + '15' }]} />
 
@@ -24,7 +25,7 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
         {APP_THEMES.map(theme => {
           const isSelected = theme.id === selectedThemeId;
           return (
-            <Button
+            <HapticButton
               key={theme.id}
               onPress={() => onSelect(theme)}
               style={[
@@ -39,19 +40,16 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
                 },
               ]}
             >
-              {/* Color swatch strip */}
               <View style={styles.swatchRow}>
                 <View style={[styles.swatchMain, { backgroundColor: theme.primary }]} />
                 <View style={[styles.swatchAccent, { backgroundColor: theme.accent }]} />
                 <View style={[styles.swatchBg, { backgroundColor: theme.cardBg }]} />
               </View>
 
-              {/* Emoji + Name */}
               <Text style={styles.themeEmoji}>{theme.emoji}</Text>
               <Text style={[styles.themeName, { color: theme.primary }]}>{theme.name}</Text>
               <Text style={styles.themeLabel}>{theme.label}</Text>
 
-              {/* Mini app preview */}
               <View
                 style={[
                   styles.preview,
@@ -79,22 +77,21 @@ const ThemeSelector = memo(({ selectedThemeId, onSelect, accentColor }: Props) =
                   <Text style={styles.checkText}>✓</Text>
                 </View>
               )}
-            </Button>
+            </HapticButton>
           );
         })}
       </View>
 
-      {/* Selected theme name pill */}
-      <View
-        style={[
-          styles.selectedPill,
-          { backgroundColor: accentColor + '18', borderColor: accentColor + '40' },
-        ]}
-      >
-        <Text style={[styles.selectedPillText, { color: accentColor }]}>
-          {APP_THEMES.find(t => t.id === selectedThemeId)?.name} theme selected
-        </Text>
-      </View>
+      <Pill
+        variant="outline"
+        color={accentColor}
+        label={selectedTheme + ' theme selected'}
+        containerStyle={{
+          backgroundColor: accentColor + '18',
+          borderColor: accentColor + '40',
+          alignSelf: 'center',
+        }}
+      />
     </View>
   );
 });
@@ -103,7 +100,7 @@ ThemeSelector.displayName = 'ThemeSelector';
 
 export default ThemeSelector;
 
-const CARD_WIDTH = (WIDTH - 80 - 16) / 3; // 3 cards with gaps, within slide padding
+const CARD_WIDTH = (WIDTH - 80 - 16) / 3;
 
 const styles = StyleSheet.create({
   container: {
@@ -215,15 +212,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 11,
     fontWeight: '900',
-  },
-  selectedPill: {
-    borderRadius: 100,
-    borderWidth: 1.5,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-  },
-  selectedPillText: {
-    fontSize: 11,
-    fontWeight: '700',
   },
 });

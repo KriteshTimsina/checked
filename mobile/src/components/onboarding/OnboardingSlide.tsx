@@ -26,16 +26,6 @@ const OnboardingSlide = memo(({ step, index, selectedThemeId = 0, onThemeSelect 
 
   return (
     <View style={[styles.slide, { backgroundColor: step.bg }]}>
-      {/* <View
-        style={[
-          styles.pill,
-          { backgroundColor: step.color + '18', borderColor: step.color + '30' },
-        ]}
-      >
-        <Text style={styles.pillEmoji}>{step.emoji}</Text>
-        <Text style={[styles.pillText, { color: step.color }]}>{step.tag.toUpperCase()}</Text>
-      </View> */}
-
       <Pill
         variant="outline"
         label={`${step.emoji} ${step.tag.toUpperCase()}`}
