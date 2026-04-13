@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
-import { Appearance, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Appearance, Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { reloadAppAsync } from 'expo';
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
 import { ThemedText } from '@/components/ThemedText';
-import { type Tab, usePreferences } from '@/hooks/usePreferences';
+import { storage, type Tab, usePreferences } from '@/hooks/usePreferences';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
@@ -72,6 +72,19 @@ export default function Settings() {
     } catch (e) {
       console.error('Failed to update primary tab:', e);
     }
+  };
+
+  const onResetApp = () => {
+    Alert.alert('Confirmation', 'Are you sure you want to reset the app?', [
+      { text: 'Cancel', isPreferred: true, style: 'destructive' },
+      {
+        text: 'Proceed',
+        onPress: () => {
+          storage.clearAll();
+          reloadAppAsync();
+        },
+      },
+    ]);
   };
 
   const ThemePreview = (
@@ -146,6 +159,14 @@ export default function Settings() {
                 icon="gift-sharp"
                 label="What's new"
                 onPress={openWhatsNew}
+              />
+
+              <SettingItem
+                variant="info"
+                icon="refresh-outline"
+                label="Reset App"
+                onPress={onResetApp}
+                rightElement={null}
               />
             </SettingSection>
           </View>
