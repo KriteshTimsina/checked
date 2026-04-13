@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheet } from '@/components/reuseables';
-import Button from '@/components/layout/HapticButton';
+import { HapticButton } from '@/components/layout';
 
 type ThemeSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -35,7 +35,7 @@ export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSel
         {APP_THEMES.map(theme => {
           const isSelected = theme.id === themeId;
           return (
-            <Button
+            <HapticButton
               key={theme.id}
               onPress={() => onSelect(theme)}
               style={[
@@ -68,7 +68,7 @@ export const ThemeSheet: React.FC<ThemeSheetProps> = ({ sheetRef, themeId, onSel
                   <ThemedText style={styles.badgeText}>✓</ThemedText>
                 </View>
               )}
-            </Button>
+            </HapticButton>
           );
         })}
       </View>
