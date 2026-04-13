@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { type OnboardingStepProps } from '@/components/onboarding';
-import Button from '@/components/layout/HapticButton';
+import { Button } from '@/components/ui';
+import { HapticButton } from '@/components/layout';
 
 type Props = {
   steps: OnboardingStepProps[];
@@ -25,7 +26,7 @@ const OnboardingFooter = memo(
       >
         <View style={styles.dots}>
           {steps.map((_, i) => (
-            <Button
+            <HapticButton
               key={i}
               onPress={() => onDotPress(i)}
               hitSlop={{ top: 10, bottom: 10, left: 6, right: 6 }}
@@ -43,16 +44,11 @@ const OnboardingFooter = memo(
                   },
                 ]}
               />
-            </Button>
+            </HapticButton>
           ))}
         </View>
 
-        <Button
-          style={[styles.cta, { backgroundColor: current.color, shadowColor: current.color }]}
-          onPress={onCta}
-        >
-          <Text style={styles.ctaText}>{current.cta}</Text>
-        </Button>
+        <Button backgroundColor={current.color} title={current.cta} onPress={onCta} />
       </View>
     );
   },

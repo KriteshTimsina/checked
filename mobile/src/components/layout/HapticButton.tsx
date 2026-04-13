@@ -1,14 +1,10 @@
-import { Pressable, PressableProps } from 'react-native';
+import { GestureResponderEvent, Pressable, PressableProps } from 'react-native';
 import React, { FC } from 'react';
 import { haptics } from '@/utils/haptics';
 
-type ButtonProps = {
-  onPress?: VoidFunction;
-} & PressableProps;
-
-const HapticButton: FC<ButtonProps> = ({ onPress, children, ...props }) => {
-  const handlePress = () => {
-    onPress?.();
+const HapticButton: FC<PressableProps> = ({ onPress, children, ...props }) => {
+  const handlePress = (event: GestureResponderEvent) => {
+    onPress?.(event);
     haptics.light();
   };
   return (
