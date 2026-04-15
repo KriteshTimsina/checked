@@ -4,9 +4,19 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { type Tab } from '@/hooks/usePreferences';
-import { tabs } from '@/constants/data';
 import { BottomSheet, BottomSheetModal } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
+
+export const TABS = [
+  {
+    title: 'Tasks',
+    label: 'index',
+  },
+  {
+    title: 'Notes',
+    label: 'notes',
+  },
+];
 
 type DefaultTabSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal>;
@@ -39,11 +49,11 @@ export const DefaultTabSheet: React.FC<DefaultTabSheetProps> = ({
         This is where your app opens to.
       </ThemedText>
       <View style={styles.tabsRow}>
-        {tabs.map(tab => {
+        {TABS.map(tab => {
           const isActive = primaryTab === tab.label;
           return (
             <HapticButton
-              key={tab.id}
+              key={tab.label}
               onPress={() => onSelect(tab.label as Tab)}
               style={[
                 styles.tabOption,

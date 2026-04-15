@@ -1,4 +1,4 @@
-import { notesPlaceholders } from '@/constants/notes';
+import { NOTES_PLACEHOLDERS } from '@/components/notes';
 
 export const getRandomPlaceholder = () =>
-  notesPlaceholders[Math.floor(Math.random() * notesPlaceholders.length)];
+  NOTES_PLACEHOLDERS[Math.floor(Math.random() * NOTES_PLACEHOLDERS.length)];

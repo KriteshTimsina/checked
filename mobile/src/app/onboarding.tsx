@@ -4,9 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
 import { ThemedView } from '@/components/layout';
-import { onboardingSteps } from '@/constants/onboardingSteps';
 import { usePreferences } from '@/hooks/usePreferences';
-import { OnboardingSlide, OnboardingFooter } from '@/components/onboarding';
+import { OnboardingSlide, OnboardingFooter, onboardingSteps } from '@/components/onboarding';
 import { AppTheme } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');
