@@ -1,24 +1,24 @@
+import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
+import { reloadAppAsync } from 'expo';
 import React, { useRef } from 'react';
 import { Alert, Appearance, ScrollView, StyleSheet, View } from 'react-native';
-import { reloadAppAsync } from 'expo';
-import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 
 import { ThemedText, type BottomSheetModal } from '@/components/ui';
-import { storage, type Tab, usePreferences } from '@/hooks/usePreferences';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
+import { storage, usePreferences, type Tab } from '@/hooks/usePreferences';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
 
-import { openStoreListing } from '@/utils/review';
 import { TitledScreen } from '@/components/layout';
 import {
+  AppIconSheet,
+  DefaultTabSheet,
   Footer,
   SettingItem,
   SettingSection,
-  AppIconSheet,
-  DefaultTabSheet,
   ThemeSheet,
 } from '@/components/settings';
+import { openStoreListing } from '@/utils/review';
 import { openWhatsNew } from '@/utils/settings';
 
 export default function Settings() {
