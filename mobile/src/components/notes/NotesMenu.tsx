@@ -9,14 +9,14 @@ import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
 import { generateNoteHTML } from '@/utils/htmlTempelates';
-import { ContextMenu, MenuAction, useContextMenu } from '@/components/reuseables/ContextMenu';
+import { ContextMenu, MenuAction, useContextMenu } from '@/components/ui';
 
 interface NoteMenuProps {
   noteId: number;
   pinned: boolean;
 }
 
-export function NoteMenu({ noteId, pinned }: NoteMenuProps) {
+export default function NoteMenu({ noteId, pinned }: NoteMenuProps) {
   const { visible, open, close } = useContextMenu();
   const { deleteNote, getNote, togglePin } = useNotes();
   const { textMuted } = useTheme();

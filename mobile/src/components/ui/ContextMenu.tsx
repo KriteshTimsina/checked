@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal, StyleSheet, Pressable as RNPressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { Pressable } from 'react-native-gesture-handler';
+import ThemedText from './ThemedText';
 
 export type MenuAction = {
   id: string;
@@ -22,7 +22,7 @@ type ContextMenuProps = {
   topOffset?: number;
 };
 
-export function ContextMenu({
+export default function ContextMenu({
   visible,
   onOpen,
   onClose,
@@ -90,8 +90,6 @@ export function ContextMenu({
     </>
   );
 }
-
-// ── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useContextMenu() {
   const [visible, setVisible] = React.useState(false);

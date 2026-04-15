@@ -1,20 +1,16 @@
-import { StyleSheet, FlatList, View, RefreshControl, Alert, Platform } from 'react-native';
-import React, { useCallback, useEffect } from 'react';
-import { EmptyState } from '@/components/ui';
-import NoteItem from '@/components/NoteItem';
-import { useNotes } from '@/store/notes';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/colors';
-import FAB from '@/components/reuseables/FAB';
-import { useNoteSelection } from '@/hooks/useNotesSelection';
-import { debounce } from 'lodash';
-import { toast } from '@/utils/toast';
-import { haptics } from '@/utils/haptics';
-import { INote } from '@/db/schema';
-import { SelectionMenu } from '@/components/ui/SelectionMenu';
-import { useContextMenu } from '@/components/reuseables/ContextMenu';
 import { TitledScreen } from '@/components/layout';
-import SelectionTitleBar from '@/components/ui/notes/SelectionTitleBar';
+import { NoteItem, SelectionMenu, SelectionTitleBar } from '@/components/notes';
+import { EmptyState, FAB, useContextMenu } from '@/components/ui';
+import { Colors } from '@/constants/colors';
+import { INote } from '@/db/schema';
+import { useNoteSelection } from '@/hooks/useNotesSelection';
+import { useNotes } from '@/store/notes';
+import { haptics } from '@/utils/haptics';
+import { toast } from '@/utils/toast';
+import { useRouter } from 'expo-router';
+import { debounce } from 'lodash';
+import React, { useCallback, useEffect } from 'react';
+import { Alert, FlatList, Platform, RefreshControl, StyleSheet, View } from 'react-native';
 
 export default function Notes() {
   const { notes, getNotes, isLoading, createNote, deleteNote } = useNotes();

@@ -1,4 +1,4 @@
-import Splash from '@/components/Splash';
+import Splash from '@/components/layout/Splash';
 import { APP_THEMES } from '@/constants/themes';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { useFontLoading } from '@/hooks/useFontLoading';

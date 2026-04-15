@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
+import Animated, { LinearTransition } from 'react-native-reanimated';
+import { debounce } from 'lodash';
 
-import { EmptyState, BottomSheet, type BottomSheetModal } from '@/components/ui';
+import { BottomSheet, EmptyState, FAB, InputText, type BottomSheetModal } from '@/components/ui';
+import { TitledScreen } from '@/components/layout';
+import { Checklist } from '@/components/todos';
+
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
+import { useTheme } from '@/hooks/useTheme';
 import { useProject } from '@/store/projects';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
-
-import Checklist from '@/components/Checklist';
-import InputText from '@/components/InputText';
-import FAB from '@/components/reuseables/FAB';
-import { TitledScreen } from '@/components/layout';
-import { useTheme } from '@/hooks/useTheme';
-import { debounce } from 'lodash';
-import Animated, { LinearTransition } from 'react-native-reanimated';
 
 export default function Home() {
   const bottomSheetRef = useRef<BottomSheetModal>(null);

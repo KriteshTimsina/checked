@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 import { SQLiteProvider } from 'expo-sqlite';
 
 import { DATABASE_NAME } from '@/constants/constants';
-import { Loading } from '@/components/Loading';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { globals } from '@/styles/globals';
@@ -14,12 +13,13 @@ import { globals } from '@/styles/globals';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { getColors } from '@/constants/colors';
 import { usePreferences } from '@/hooks/usePreferences';
-import { ChecklistMenu } from '@/components/ui/ChecklistMenu';
+import { ChecklistMenu } from '@/components/todos';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/utils/toastConfig';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useInAppUpdates } from '@/hooks/useInAppUpdate';
 import AppBootstrap from '@/providers/AppBootstrap';
+import { Loading } from '@/components/ui';
 
 type ChecklistParamList = {
   index: { title?: string };

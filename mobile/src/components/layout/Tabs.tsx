@@ -2,14 +2,19 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { StyleSheet, View } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
-import GearIcon from './GearIcon';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/hooks/useTheme';
 import Button from '@/components/layout/HapticButton';
+import HapticButton from '@/components/layout/HapticButton';
+import { router } from 'expo-router';
 
 function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const { top } = useSafeAreaInsets();
   const { primary, icon } = useTheme();
+
+  const openSettings = () => {
+    router.push('/settings');
+  };
   return (
     <View style={[styles.container, { marginTop: top }]}>
       {state.routes.map((route, index) => {
@@ -60,7 +65,12 @@ function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
           </Button>
         );
       })}
-      <GearIcon />
+      <HapticButton
+        onPress={openSettings}
+        style={({ pressed }) => [styles.settings, { transform: [{ scale: pressed ? 0.9 : 1 }] }]}
+      >
+        <Ionicons name="settings" size={26} color={primary} />
+      </HapticButton>
     </View>
   );
 }
@@ -77,5 +87,10 @@ export const styles = StyleSheet.create({
   icon: {
     padding: 5,
     margin: 10,
+  },
+  settings: {
+    padding: 4,
+    position: 'absolute',
+    right: 20,
   },
 });

@@ -6,7 +6,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 
 import { ThemedText } from '@/components/ui';
 import { ThemedView, HapticButton } from '@/components/layout';
-import Trophy from '@/components/Trophy';
+import Trophy from '@/components/animations/Trophy';
 import { useEntries } from '@/store/entries';
 
 import { useTheme } from '@/hooks/useTheme';

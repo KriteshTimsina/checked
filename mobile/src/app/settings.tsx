@@ -18,7 +18,7 @@ import {
   AppIconSheet,
   DefaultTabSheet,
   ThemeSheet,
-} from '@/components/ui/settings';
+} from '@/components/settings';
 import { openWhatsNew } from '@/utils/settings';
 
 export default function Settings() {

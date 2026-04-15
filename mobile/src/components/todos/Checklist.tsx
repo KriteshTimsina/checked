@@ -8,7 +8,7 @@ import { useProject } from '@/store/projects';
 import { useEntries } from '@/store/entries';
 import { haptics } from '@/utils/haptics';
 import { useTheme } from '@/hooks/useTheme';
-import SwipeableList, { SwipeActionButton } from './ui/SwipeableList';
+import SwipeableList, { SwipeActionButton } from '../ui/SwipeableList';
 
 type ChecklistProps = {
   item: IProject;

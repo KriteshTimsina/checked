@@ -20,7 +20,7 @@ import { toast } from '@/utils/toast';
 import { useNotes } from '@/store/notes';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { debounce } from 'lodash';
-import { NoteMenu } from '@/components/ui/NotesMenu';
+import { NotesMenu } from '@/components/notes';
 import { getRandomPlaceholder } from '@/utils/note';
 
 export type NoteInput = Pick<INote, 'title' | 'content'>;
@@ -44,7 +44,7 @@ const Note = () => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerRight}>
-          {noteId && <NoteMenu pinned={note.pinned ?? false} noteId={Number(noteId)} />}
+          {noteId && <NotesMenu pinned={note.pinned ?? false} noteId={Number(noteId)} />}
         </View>
       ),
     });

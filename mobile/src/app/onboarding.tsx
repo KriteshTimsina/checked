@@ -3,11 +3,10 @@ import { FlatList, StyleSheet, Dimensions, ViewToken } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-import { ThemedView } from '@/components/layout/ThemedView';
+import { ThemedView } from '@/components/layout';
 import { onboardingSteps } from '@/constants/onboardingSteps';
 import { usePreferences } from '@/hooks/usePreferences';
-import OnboardingSlide from '@/components/onboarding/OnboardingSlide';
-import OnboardingFooter from '@/components/onboarding/OnboardingFooter';
+import { OnboardingSlide, OnboardingFooter } from '@/components/onboarding';
 import { AppTheme } from '@/constants/themes';
 
 const { width: WIDTH } = Dimensions.get('window');

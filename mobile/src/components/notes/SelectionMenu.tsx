@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { Pressable } from 'react-native-gesture-handler';
-import { MenuAction } from '@/components/reuseables/ContextMenu';
+import { MenuAction } from '@/components/ui/ContextMenu';
 
 type SelectionMenuProps = {
   visible: boolean;
@@ -14,7 +14,12 @@ type SelectionMenuProps = {
   onDelete: () => void;
 };
 
-export function SelectionMenu({ visible, onClose, selectedCount, onDelete }: SelectionMenuProps) {
+export default function SelectionMenu({
+  visible,
+  onClose,
+  selectedCount,
+  onDelete,
+}: SelectionMenuProps) {
   const { card, text, textMuted, border, isDark } = useTheme();
   const actions: MenuAction[] = [
     {

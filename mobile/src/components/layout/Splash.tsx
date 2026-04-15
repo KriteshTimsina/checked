@@ -12,7 +12,7 @@ import Animated, {
   withRepeat,
   Easing,
 } from 'react-native-reanimated';
-import { version } from '../../package.json';
+import { version } from '../../../package.json';
 import { useTheme } from '@/hooks/useTheme';
 
 function GlowCircle() {

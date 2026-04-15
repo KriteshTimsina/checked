@@ -5,17 +5,15 @@ import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { toast } from '@/utils/toast';
 import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
-import InputText from '@/components/InputText';
-import ChecklistItem from '@/components/ChecklistItem';
+import { ChecklistItem } from '@/components/todos';
 import { ThemedView } from '@/components/layout';
-import { EmptyState, BottomSheet, BottomSheetModal } from '@/components/ui';
+import { EmptyState, BottomSheet, BottomSheetModal, InputText, FAB } from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
 import { globals } from '@/styles/globals';
 import { Ionicons } from '@expo/vector-icons';
 
 import { Colors } from '@/constants/colors';
-import FAB from '@/components/reuseables/FAB';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 

@@ -6,13 +6,13 @@ import { AntDesign } from '@expo/vector-icons';
 import { useEntries } from '@/store/entries';
 import { useTheme } from '@/hooks/useTheme';
 import { generateChecklistHTML } from '@/utils/htmlTempelates';
-import { ContextMenu, MenuAction, useContextMenu } from '@/components/reuseables/ContextMenu';
+import { ContextMenu, MenuAction, useContextMenu } from '@/components/ui';
 
 interface ChecklistMenuProps {
   title: string;
 }
 
-export function ChecklistMenu({ title }: ChecklistMenuProps) {
+export default function ChecklistMenu({ title }: ChecklistMenuProps) {
   const { visible, open, close } = useContextMenu();
   const { entries } = useEntries();
   const { textMuted } = useTheme();

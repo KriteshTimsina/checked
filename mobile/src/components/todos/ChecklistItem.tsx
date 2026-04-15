@@ -12,7 +12,7 @@ import Animated, {
 import { useEntries } from '@/store/entries';
 import { useTheme } from '@/hooks/useTheme';
 import { toast } from '@/utils/toast';
-import SwipeableList, { SwipeActionButton } from './ui/SwipeableList';
+import SwipeableList, { SwipeActionButton } from '../ui/SwipeableList';
 import { HapticButton } from '@/components/layout';
 
 type ChecklistItemProps = {
