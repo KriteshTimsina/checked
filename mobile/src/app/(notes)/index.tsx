@@ -35,6 +35,7 @@ const Note = () => {
   const appState = useAppState();
   const { getNote, updateNote } = useNotes();
   const navigation = useNavigation();
+  const [pinned, setPinned] = useState<boolean | null>(null);
 
   const noteRef = useRef(note);
 
@@ -44,7 +45,7 @@ const Note = () => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerRight}>
-          {noteId && <NotesMenu pinned={note.pinned ?? false} noteId={Number(noteId)} />}
+          {noteId && <NotesMenu setPinned={setPinned} pinned={pinned} noteId={Number(noteId)} />}
         </View>
       ),
     });
@@ -56,11 +57,14 @@ const Note = () => {
 
   useEffect(() => {
     if (noteId) fetchNote();
-  }, [noteId]);
+  }, [noteId, pinned]);
 
   const fetchNote = async () => {
     const fetched = await getNote(Number(noteId));
-    if (fetched) setNote(fetched);
+    if (fetched) {
+      setNote(fetched);
+      setPinned(fetched.pinned);
+    }
   };
 
   const onSaveNoteRef = useCallback(async () => {
@@ -79,7 +83,6 @@ const Note = () => {
       }
     } catch (e: any) {
       haptics.error();
-      console.log(e);
       toast('Failed saving note');
     } finally {
     }

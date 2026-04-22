@@ -13,10 +13,11 @@ import { ContextMenu, MenuAction, useContextMenu } from '@/components/ui';
 
 interface NoteMenuProps {
   noteId: number;
-  pinned: boolean;
+  pinned: boolean | null;
+  setPinned: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
-export default function NoteMenu({ noteId, pinned }: NoteMenuProps) {
+export default function NoteMenu({ noteId, pinned, setPinned }: NoteMenuProps) {
   const { visible, open, close } = useContextMenu();
   const { deleteNote, getNote, togglePin } = useNotes();
   const { textMuted } = useTheme();
@@ -53,6 +54,10 @@ export default function NoteMenu({ noteId, pinned }: NoteMenuProps) {
     if (success) {
       haptics.medium();
       close();
+      setTimeout(() => {
+        setPinned(prev => !prev);
+        toast(pinned ? 'Note unpinned' : 'Note pinned');
+      }, 200);
     } else {
       haptics.error();
     }
@@ -63,6 +68,7 @@ export default function NoteMenu({ noteId, pinned }: NoteMenuProps) {
       label: pinned ? 'Unpin Note' : 'Pin Note',
       icon: <AntDesign name="pushpin" size={18} color={textMuted} />,
       onPress: handlePinNote,
+      disabled: pinned === null,
     },
     {
       id: 'pdf',
