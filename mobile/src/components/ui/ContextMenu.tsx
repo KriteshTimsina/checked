@@ -1,10 +1,9 @@
 import React from 'react';
-import { Modal, StyleSheet, Pressable as RNPressable, View } from 'react-native';
+import { Modal, StyleSheet, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
-import { Pressable } from 'react-native-gesture-handler';
 import ThemedText from './ThemedText';
-
+import { Pressable as GHPressable } from 'react-native-gesture-handler';
 export type MenuAction = {
   id: string;
   label: string;
@@ -33,9 +32,9 @@ export default function ContextMenu({
 
   return (
     <>
-      <Pressable onPress={onOpen} hitSlop={8} style={styles.trigger}>
+      <GHPressable onPress={onOpen} hitSlop={8} style={styles.trigger}>
         <Ionicons name="ellipsis-vertical" size={22} color={text} />
-      </Pressable>
+      </GHPressable>
 
       <Modal
         visible={visible}
@@ -44,7 +43,7 @@ export default function ContextMenu({
         onRequestClose={onClose}
         statusBarTranslucent
       >
-        <RNPressable style={styles.overlay} onPress={onClose}>
+        <Pressable style={styles.overlay} onPress={onClose}>
           <View
             pointerEvents="box-none"
             style={[
@@ -67,7 +66,10 @@ export default function ContextMenu({
                     action.disabled && styles.itemDisabled,
                   ]}
                   onPress={() => {
-                    if (!action.disabled) action.onPress();
+                    if (!action.disabled) {
+                      onClose();
+                      action.onPress();
+                    }
                   }}
                   android_ripple={{ color: border }}
                 >
@@ -85,7 +87,7 @@ export default function ContextMenu({
               </React.Fragment>
             ))}
           </View>
-        </RNPressable>
+        </Pressable>
       </Modal>
     </>
   );

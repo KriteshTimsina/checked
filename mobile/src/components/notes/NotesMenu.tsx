@@ -27,7 +27,6 @@ export default function NoteMenu({ noteId, pinned, setPinned }: NoteMenuProps) {
     const success = await deleteNote(noteId);
     if (success) {
       haptics.success();
-      close();
       router.back();
       toast('Note deleted');
     } else {
@@ -45,7 +44,6 @@ export default function NoteMenu({ noteId, pinned, setPinned }: NoteMenuProps) {
 
     const html = generateNoteHTML(note);
     const { uri } = await Print.printToFileAsync({ html });
-    close();
     await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
   };
 
@@ -53,11 +51,8 @@ export default function NoteMenu({ noteId, pinned, setPinned }: NoteMenuProps) {
     const success = await togglePin(noteId);
     if (success) {
       haptics.medium();
-      close();
-      setTimeout(() => {
-        setPinned(prev => !prev);
-        toast(pinned ? 'Note unpinned' : 'Note pinned');
-      }, 200);
+      setPinned(prev => !prev);
+      toast(pinned ? 'Note unpinned' : 'Note pinned');
     } else {
       haptics.error();
     }
