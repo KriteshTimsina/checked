@@ -1,18 +1,14 @@
 import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import { version } from '../../../package.json';
 
 export const Footer = memo(() => {
-  const { textMuted, primary } = useTheme();
+  const { textMuted } = useTheme();
   return (
     <View style={[styles.footer]}>
-      <ThemedText style={{ color: textMuted, fontSize: 13 }}>
-        Created with love by{' '}
-        <ThemedText type="link" style={{ color: primary, fontSize: 13 }}>
-          Kritesh Timsina
-        </ThemedText>
-      </ThemedText>
+      <ThemedText style={{ color: textMuted, fontSize: 12 }}>Version {version}</ThemedText>
     </View>
   );
 });
@@ -21,7 +17,7 @@ Footer.displayName = 'Footer';
 
 const styles = StyleSheet.create({
   footer: {
-    paddingVertical: 20,
+    paddingVertical: Platform.OS === 'ios' ? 10 : 25,
     alignItems: 'center',
   },
 });

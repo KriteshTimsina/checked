@@ -1,7 +1,7 @@
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 import { reloadAppAsync } from 'expo';
 import React, { useRef } from 'react';
-import { Alert, Appearance, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText, type BottomSheetModal } from '@/components/ui';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
@@ -46,10 +46,9 @@ export default function Settings() {
 
   const toggleDarkMode = (value: boolean) => {
     const scheme = value ? 'dark' : 'light';
+    console.log(scheme, 'f');
     setColorScheme(scheme);
-    Appearance.setColorScheme(scheme);
   };
-
   const onSelectTheme = (theme: AppTheme) => {
     setThemeId(theme.id);
     themeSheetRef.current?.dismiss();
@@ -103,7 +102,11 @@ export default function Settings() {
   return (
     <>
       <TitledScreen title="Settings" style={{ paddingTop: 12 }}>
-        <ScrollView contentContainerStyle={styles.contentContainer} style={styles.container}>
+        <ScrollView
+          showsVerticalScrollIndicator
+          contentContainerStyle={styles.contentContainer}
+          style={styles.container}
+        >
           <View style={styles.sections}>
             <SettingSection title="Appearance">
               <SettingItem
@@ -159,7 +162,6 @@ export default function Settings() {
                 label="What's new"
                 onPress={openWhatsNew}
               />
-
               <SettingItem
                 variant="info"
                 icon="refresh-outline"
@@ -169,8 +171,8 @@ export default function Settings() {
               />
             </SettingSection>
           </View>
-          <Footer />
         </ScrollView>
+        <Footer />
       </TitledScreen>
 
       <ThemeSheet sheetRef={themeSheetRef} themeId={themeId} onSelect={onSelectTheme} />
@@ -185,11 +187,10 @@ export default function Settings() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    paddingTop: 12,
   },
   contentContainer: {
     justifyContent: 'space-between',
-    flex: 1,
+    paddingBottom: 10,
   },
   container: {
     paddingHorizontal: 10,
