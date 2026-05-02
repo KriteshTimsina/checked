@@ -37,15 +37,10 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 }) => {
   const { border, text } = useTheme();
 
-  const handleClose = () => {
-    haptics.medium();
-    onClose?.();
-  };
-
   const renderBackdrop = useCallback(
     (backdropProps: BottomSheetBackdropProps) => (
       <BottomSheetBackdrop
-        onPress={handleClose}
+        onPress={onClose}
         appearsOnIndex={0}
         disappearsOnIndex={-1}
         {...backdropProps}

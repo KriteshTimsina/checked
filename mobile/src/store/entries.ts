@@ -1,37 +1,43 @@
 import { entries as entrySchema, IEntry } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, desc, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface EntriesState {
   entries: IEntry[];
-  createEntry: (data: Pick<IEntry, 'title' | 'project_id'>) => Promise<boolean>;
-  getEntries: (projectId: string) => void;
-  getCompletedEntriesCount: (projectId: number) => Promise<number>;
-  updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
   isAllCompleted: boolean;
-  resetAllEntriesStatus: (projectId: number) => Promise<boolean>;
+  getEntries: (projectId: string) => Promise<void>;
+  createEntry: (data: Pick<IEntry, 'title' | 'project_id'>) => Promise<boolean>;
   updateEntry: (entry: IEntry, updatedTitle: string) => Promise<boolean>;
+  updateEntryStatus: (entryId: number, completed: boolean) => Promise<boolean>;
+  resetAllEntriesStatus: (projectId: number) => Promise<boolean>;
   deleteEntry: (entryId: number) => Promise<boolean>;
+  getCompletedEntriesCount: (projectId: number) => Promise<number>;
 }
+
+const sortEntries = (entries: IEntry[]) =>
+  [...entries].sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 
 const db = getDb();
 
 const useEntriesStore = create<EntriesState>()(set => ({
   entries: [],
   isAllCompleted: false,
+
   getEntries: async projectId => {
     const allEntries = await db.query.entries.findMany({
       where: eq(entrySchema.project_id, Number(projectId)),
+      orderBy: [asc(entrySchema.completed), desc(entrySchema.createdAt)],
     });
-    set(state => {
-      const newState = {
-        entries: allEntries,
-        isAllCompleted: allEntries.length > 0 && allEntries.every(entry => entry.completed),
-      };
-      return newState;
+    set({
+      entries: allEntries,
+      isAllCompleted: allEntries.length > 0 && allEntries.every(e => e.completed),
     });
   },
+
   createEntry: async data => {
     const [newEntry] = await db
       .insert(entrySchema)
@@ -46,16 +52,17 @@ const useEntriesStore = create<EntriesState>()(set => ({
 
     if (newEntry) {
       set(state => {
-        const newEntries = [...state.entries, newEntry];
+        const newEntries = sortEntries([newEntry, ...state.entries]);
         return {
           entries: newEntries,
-          isAllCompleted: newEntries.every(entry => entry.completed),
+          isAllCompleted: newEntries.every(e => e.completed),
         };
       });
       return true;
     }
     return false;
   },
+
   updateEntry: async (entry, title) => {
     const [updatedEntry] = await db
       .update(entrySchema)
@@ -68,23 +75,23 @@ const useEntriesStore = create<EntriesState>()(set => ({
         completed: entrySchema.completed,
         project_id: entrySchema.project_id,
       });
+
     if (updatedEntry) {
-      set(state => ({
-        entries: state.entries.map(entry => (entry.id === updatedEntry.id ? updatedEntry : entry)),
-      }));
+      set(state => {
+        const newEntries = sortEntries(
+          state.entries.map(e => (e.id === updatedEntry.id ? updatedEntry : e)),
+        );
+        return {
+          entries: newEntries,
+          isAllCompleted: newEntries.length > 0 && newEntries.every(e => e.completed),
+        };
+      });
       return true;
     }
     return false;
   },
-  getCompletedEntriesCount: async projectId => {
-    const completedCount = await db.$count(
-      entrySchema,
-      and(eq(entrySchema.completed, true), eq(entrySchema.project_id, projectId)),
-    );
 
-    return completedCount;
-  },
-  updateEntryStatus: async (entryId: number, completed: boolean) => {
+  updateEntryStatus: async (entryId, completed) => {
     try {
       const updated = await db
         .update(entrySchema)
@@ -93,12 +100,12 @@ const useEntriesStore = create<EntriesState>()(set => ({
 
       if (updated.changes) {
         set(state => {
-          const newEntries = state.entries.map(entry =>
-            entry.id === entryId ? { ...entry, completed } : entry,
+          const newEntries = sortEntries(
+            state.entries.map(e => (e.id === entryId ? { ...e, completed } : e)),
           );
           return {
             entries: newEntries,
-            isAllCompleted: newEntries.length > 0 && newEntries.every(entry => entry.completed),
+            isAllCompleted: newEntries.length > 0 && newEntries.every(e => e.completed),
           };
         });
         return true;
@@ -109,23 +116,23 @@ const useEntriesStore = create<EntriesState>()(set => ({
       return false;
     }
   },
-  resetAllEntriesStatus: async (projectId: number) => {
+
+  resetAllEntriesStatus: async projectId => {
     const updated = await db
       .update(entrySchema)
       .set({ completed: false })
       .where(eq(entrySchema.project_id, projectId));
+
     if (updated.changes) {
       set(state => ({
-        entries: state.entries.map(entry => ({
-          ...entry,
-          completed: false,
-        })),
+        entries: sortEntries(state.entries.map(e => ({ ...e, completed: false }))),
         isAllCompleted: false,
       }));
       return true;
     }
     return false;
   },
+
   deleteEntry: async entryId => {
     try {
       const deleted = await db.delete(entrySchema).where(eq(entrySchema.id, entryId));
@@ -145,6 +152,13 @@ const useEntriesStore = create<EntriesState>()(set => ({
       console.error('Error deleting entry:', error);
       return false;
     }
+  },
+
+  getCompletedEntriesCount: async projectId => {
+    return await db.$count(
+      entrySchema,
+      and(eq(entrySchema.completed, true), eq(entrySchema.project_id, projectId)),
+    );
   },
 }));
 

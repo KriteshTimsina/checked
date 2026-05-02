@@ -79,7 +79,6 @@ const Note = () => {
 
       if (currentNote.id) {
         await updateNote(currentNote.id, payload);
-        haptics.success();
       }
     } catch (e: any) {
       haptics.error();
@@ -144,11 +143,13 @@ const Note = () => {
           numberOfLines={1}
           placeholder={placeholder}
         />
+
         {note?.updatedAt && (
           <ThemedText style={[styles.date, { color: textMuted }]}>
             {dayjs(note.updatedAt).format('DD MMMM YYYY h:mm A')}
           </ThemedText>
         )}
+
         <TextInput
           ref={contentRef}
           cursorColor={primary}
@@ -158,6 +159,7 @@ const Note = () => {
           style={[styles.content, { color: text }]}
           multiline
           onKeyPress={handleFocusTitle}
+          inputAccessoryViewID="note-toolbar"
         />
       </ThemedView>
     </ScrollView>
