@@ -7,6 +7,7 @@ import { ThemedView } from '@/components/layout';
 import { usePreferences } from '@/hooks/usePreferences';
 import { OnboardingSlide, OnboardingFooter, onboardingSteps } from '@/components/onboarding';
 import { AppTheme } from '@/constants/themes';
+import { StatusBar } from 'expo-status-bar';
 
 const { width: WIDTH } = Dimensions.get('window');
 
@@ -19,7 +20,6 @@ export default function Onboarding() {
 
   const flatListRef = useRef<FlatList>(null);
 
-  // Keep dots in sync when user swipes manually
   const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
     if (viewableItems.length > 0 && viewableItems[0].index !== null) {
       setCurrentStep(viewableItems[0].index);
@@ -41,7 +41,7 @@ export default function Onboarding() {
     if (currentStep < onboardingSteps.length - 1) {
       goTo(currentStep + 1);
     } else {
-      setThemeId(selectedThemeId); // ✅ persists to MMKV, useTheme() picks it up everywhere
+      setThemeId(selectedThemeId);
       completeOnboarding();
       router.replace('/(tabs)');
     }
@@ -49,6 +49,7 @@ export default function Onboarding() {
 
   return (
     <ThemedView style={[styles.root, { paddingTop: top }]}>
+      <StatusBar backgroundColor={onboardingSteps[currentStep].bg} style="auto" />
       <FlatList
         ref={flatListRef}
         data={onboardingSteps}
