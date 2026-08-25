@@ -1,6 +1,6 @@
 import { notes, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
-import { asc, desc, eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
 interface NotesState {

@@ -3,6 +3,7 @@ import React from 'react';
 import { ThemedText } from '@/components/ui';
 import { useTheme } from '@/hooks/useTheme';
 import { HapticButton } from '@/components/layout';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SelectionTitleBarProps = {
   isSelecting: boolean;

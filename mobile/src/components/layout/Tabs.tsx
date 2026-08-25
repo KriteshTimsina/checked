@@ -7,6 +7,7 @@ import { useTheme } from '@/hooks/useTheme';
 import Button from '@/components/layout/HapticButton';
 import HapticButton from '@/components/layout/HapticButton';
 import { router } from 'expo-router';
+import { useNoteSelection } from '@/hooks/useNotesSelection';
 
 function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const { top } = useSafeAreaInsets();
@@ -15,8 +16,9 @@ function Tabs({ state, descriptors, navigation }: MaterialTopTabBarProps) {
   const openSettings = () => {
     router.push('/settings');
   };
+
   return (
-    <View style={[styles.container, { marginTop: top }]}>
+    <View style={[styles.container, { marginTop: top, display: 'flex' }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =

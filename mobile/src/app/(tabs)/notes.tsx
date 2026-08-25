@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router';
 import { debounce } from 'lodash';
 import React, { useCallback, useEffect } from 'react';
 import { Alert, FlatList, Platform, RefreshControl, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Notes() {
   const { notes, getNotes, isLoading, createNote, deleteNote } = useNotes();
@@ -18,6 +19,7 @@ export default function Notes() {
   const { isSelecting, isSelected, selectedIds, selectedCount, toggleSelect, clearSelection } =
     useNoteSelection();
   const { visible, open, close } = useContextMenu();
+  const { top } = useSafeAreaInsets();
 
   useEffect(() => {
     getNotes();
@@ -91,6 +93,7 @@ export default function Notes() {
 
   return (
     <TitledScreen
+      style={{ top: isSelecting ? top : 0 }}
       title={
         <SelectionTitleBar
           isSelecting={isSelecting}
