@@ -59,7 +59,6 @@ function formatDate(iso: string) {
 export default async function Home() {
   const releases = await getReleases();
 
-  console.log(JSON.stringify(releases, null, ""), "FU");
   return (
     <main>
       {/* ── SECTION 1: FOREST — Hero ──────────────────────────────────────── */}
@@ -148,8 +147,7 @@ export default async function Home() {
 
           <div className='flex flex-col sm:flex-row gap-4 animate-fadeUp delay-300'>
             <a
-              href='https://github.com/KriteshTimsina/checked/releases/download/v0.0.2-alpha/Checked-v0.1.1-alpha.apk'
-              download
+              href='https://play.google.com/store/apps/details?id=com.kriteshtimsina.checklist'
               className='group flex items-center gap-2 px-8 py-4 rounded-2xl font-semibold text-white transition-all hover:scale-105 hover:shadow-xl'
               style={{ backgroundColor: "#3DC42A" }}
             >
@@ -178,9 +176,9 @@ export default async function Home() {
           {/* Feature pills */}
           <div className='flex flex-wrap justify-center gap-3 mt-12 animate-fadeUp delay-500'>
             {[
-              { icon: CheckCircle2, label: "Smart Checklists" },
-              { icon: StickyNote, label: "Rich Notes" },
-              { icon: Palette, label: "4 Themes" },
+              { icon: CheckCircle2, label: "Easy Checklists" },
+              { icon: StickyNote, label: "Notes" },
+              { icon: Palette, label: "Custom Themes" },
               { icon: Zap, label: "Offline First" },
             ].map(({ icon: Icon, label }) => (
               <div
