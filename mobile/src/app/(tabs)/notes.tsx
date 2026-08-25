@@ -1,9 +1,9 @@
 import { TitledScreen } from '@/components/layout';
 import { NoteItem, SelectionMenu, SelectionTitleBar } from '@/components/notes';
 import { EmptyState, FAB, useContextMenu } from '@/components/ui';
-import { Colors } from '@/constants/colors';
 import { INote } from '@/db/schema';
 import { useNoteSelection } from '@/hooks/useNotesSelection';
+import { useTheme } from '@/hooks/useTheme';
 import { useNotes } from '@/store/notes';
 import { haptics } from '@/utils/haptics';
 import { toast } from '@/utils/toast';
@@ -20,6 +20,7 @@ export default function Notes() {
     useNoteSelection();
   const { visible, open, close } = useContextMenu();
   const { top } = useSafeAreaInsets();
+  const { primary } = useTheme();
 
   useEffect(() => {
     getNotes();
@@ -111,7 +112,7 @@ export default function Notes() {
           renderItem={renderItem}
           numColumns={2}
           refreshControl={
-            <RefreshControl colors={[Colors.primary]} onRefresh={getNotes} refreshing={isLoading} />
+            <RefreshControl colors={[primary]} onRefresh={getNotes} refreshing={isLoading} />
           }
           contentContainerStyle={[
             styles.contentContainer,
