@@ -19,7 +19,7 @@ export const TABS = [
 ];
 
 type DefaultTabSheetProps = {
-  sheetRef: React.RefObject<BottomSheetModal>;
+  sheetRef: React.RefObject<BottomSheetModal | null>;
   primaryTab: Tab;
   onSelect: (label: Tab) => void;
 };

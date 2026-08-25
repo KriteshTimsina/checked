@@ -22,9 +22,9 @@ import { openStoreListing } from '@/utils/review';
 import { openWhatsNew } from '@/utils/settings';
 
 export default function Settings() {
-  const primaryTabRef = useRef<BottomSheetModal>(null);
-  const themeSheetRef = useRef<BottomSheetModal>(null);
-  const appIconSheetRef = useRef<BottomSheetModal>(null);
+  const primaryTabRef = useRef<BottomSheetModal | null>(null);
+  const themeSheetRef = useRef<BottomSheetModal | null>(null);
+  const appIconSheetRef = useRef<BottomSheetModal | null>(null);
 
   const { primary } = useTheme();
   const {
@@ -46,7 +46,6 @@ export default function Settings() {
 
   const toggleDarkMode = (value: boolean) => {
     const scheme = value ? 'dark' : 'light';
-    console.log(scheme, 'f');
     setColorScheme(scheme);
   };
   const onSelectTheme = (theme: AppTheme) => {

@@ -7,7 +7,7 @@ import { BottomSheet, ThemedText, BottomSheetModal } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
 
 type AppIconSheetProps = {
-  sheetRef: React.RefObject<BottomSheetModal>;
+  sheetRef: React.RefObject<BottomSheetModal | null>;
   iconId: number;
   onSelect: (theme: AppTheme) => void;
 };

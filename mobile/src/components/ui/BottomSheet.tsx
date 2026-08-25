@@ -17,7 +17,7 @@ interface BottomSheetProps extends Partial<BottomSheetModalProps> {
   containerStyle?: ViewStyle;
   titleStyle?: TextStyle;
   snapPoints?: string[];
-  bottomSheetRef: React.RefObject<BottomSheetModal>;
+  bottomSheetRef: React.RefObject<BottomSheetModal | null>;
   onClose?: VoidFunction;
   headerLeft?: React.FC | null;
   headerRight?: React.FC | null;

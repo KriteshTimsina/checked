@@ -7,7 +7,7 @@ import { HapticButton } from '@/components/layout';
 import { ThemedText, BottomSheet, BottomSheetModal } from '@/components/ui';
 
 type ThemeSheetProps = {
-  sheetRef: React.RefObject<BottomSheetModal>;
+  sheetRef: React.RefObject<BottomSheetModal | null>;
   themeId: number;
   onSelect: (theme: AppTheme) => void;
 };
