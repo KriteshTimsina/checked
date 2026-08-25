@@ -20,6 +20,7 @@ import {
 } from '@/components/settings';
 import { openStoreListing } from '@/utils/review';
 import { openWhatsNew } from '@/utils/settings';
+import { toast } from '@/utils/toast';
 
 export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal | null>(null);
@@ -53,22 +54,41 @@ export default function Settings() {
     themeSheetRef.current?.dismiss();
   };
 
-  const onSelectIcon = (theme: AppTheme) => {
-    setIconId(theme.id);
-    setAppIcon(theme.iconKey);
-    haptics.success();
-    appIconSheetRef.current?.dismiss();
+  const onSelectIcon = async (theme: AppTheme) => {
+    if (theme.id === iconId) {
+      appIconSheetRef.current?.dismiss();
+      return;
+    }
+
+    try {
+      await setAppIcon(theme.iconKey);
+      setIconId(theme.id);
+      haptics.success();
+    } catch (error) {
+      console.error('Failed to change app icon:', error);
+      Alert.alert('Unable to change icon', 'Please try again.');
+    } finally {
+      appIconSheetRef.current?.dismiss();
+    }
   };
 
-  const onSelectTab = async (label: Tab) => {
+  // const onSelectTab = async (label: Tab) => {
+  //   if (label === primaryTab) return;
+  //   try {
+  //     setPrimaryTab(label);
+  //     haptics.success();
+  //     await reloadAppAsync();
+  //   } catch (e) {
+  //     console.error('Failed to update primary tab:', e);
+  //   }
+  // };
+
+  const onSelectTab = (label: Tab) => {
     if (label === primaryTab) return;
-    try {
-      setPrimaryTab(label);
-      haptics.success();
-      await reloadAppAsync();
-    } catch (e) {
-      console.error('Failed to update primary tab:', e);
-    }
+
+    setPrimaryTab(label);
+    haptics.success();
+    toast('Default tab changed successfully');
   };
 
   const onResetApp = () => {
