@@ -1,7 +1,7 @@
 {
   "name": "checked",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -12,9 +12,8 @@
     "build": "expo lint && tsc",
     "db:generate": "npx drizzle-kit generate",
     "build:development": "eas build --platform android --profile development",
-    "build:preview": "eas build --platform android --profile preview",
-    "build:release": "eas build --platform android --profile release",
-    "build:production": "eas build --platform android --profile production",
+    "build:preview": "eas build --platform android --profile preview --local",
+    "build:production": "eas build --platform android --profile production --local",
     "cache:clean": "npm cache clean --force",
     "prebuild": "npx expo prebuild",
     "prebuild:android": "npx expo prebuild --clean --platform android",
