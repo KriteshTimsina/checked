@@ -28,7 +28,7 @@
         <data android:scheme="exp+checklist"/>
       </intent-filter>
     </activity>
-    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivityforest" android:enabled="false" android:exported="true" android:icon="@mipmap/forest" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/forest_round">
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivityforest" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher_adaptive_forest" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/ic_launcher_adaptive_forest">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -41,7 +41,7 @@
         <data android:scheme="exp+checklist"/>
       </intent-filter>
     </activity-alias>
-    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitysandy" android:enabled="false" android:exported="true" android:icon="@mipmap/sandy" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/sandy_round">
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitysandy" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher_adaptive_sandy" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/ic_launcher_adaptive_sandy">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -54,7 +54,7 @@
         <data android:scheme="exp+checklist"/>
       </intent-filter>
     </activity-alias>
-    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitytomato" android:enabled="false" android:exported="true" android:icon="@mipmap/tomato" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/tomato_round">
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitytomato" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher_adaptive_tomato" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/ic_launcher_adaptive_tomato">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -67,7 +67,20 @@
         <data android:scheme="exp+checklist"/>
       </intent-filter>
     </activity-alias>
-    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitylavender" android:enabled="false" android:exported="true" android:icon="@mipmap/lavender" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/lavender_round">
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivitylavender" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher_adaptive_lavender" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/ic_launcher_adaptive_lavender">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="checked"/>
+        <data android:scheme="exp+checklist"/>
+      </intent-filter>
+    </activity-alias>
+    <activity-alias android:name="com.kriteshtimsina.checklist.MainActivityorigami" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher_adaptive_origami" android:label="@string/app_name" android:targetActivity=".MainActivity" android:roundIcon="@mipmap/ic_launcher_adaptive_origami">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Checked",
     "slug": "checklist",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "checked",
@@ -32,8 +32,8 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/images/icon-forest-foreground.png",
+        "backgroundColor": "#E5F4D9"
       },
       "package": "com.kriteshtimsina.checklist",
       "versionCode": 2,
@@ -64,19 +64,38 @@
         {
           "forest": {
             "ios": "./src/assets/images/icon.png",
-            "android": "./src/assets/images/icon.png"
+            "android": {
+              "foregroundImage": "./src/assets/images/icon-forest-foreground.png",
+              "backgroundColor": "#E5F4D9"
+            }
           },
           "sandy": {
             "ios": "./src/assets/images/icon-1.png",
-            "android": "./src/assets/images/icon-1.png"
+            "android": {
+              "foregroundImage": "./src/assets/images/icon-sandy-foreground.png",
+              "backgroundColor": "#F0E4D0"
+            }
           },
           "tomato": {
             "ios": "./src/assets/images/icon-2.png",
-            "android": "./src/assets/images/icon-2.png"
+            "android": {
+              "foregroundImage": "./src/assets/images/icon-tomato-foreground.png",
+              "backgroundColor": "#FFE0E0"
+            }
           },
           "lavender": {
             "ios": "./src/assets/images/icon-3.png",
-            "android": "./src/assets/images/icon-3.png"
+            "android": {
+              "foregroundImage": "./src/assets/images/icon-lavender-foreground.png",
+              "backgroundColor": "#EDD9FF"
+            }
+          },
+          "origami": {
+            "ios": "./src/assets/images/ios-4.png",
+            "android": {
+              "foregroundImage": "./src/assets/images/icon-origami-foreground.png",
+              "backgroundColor": "#FAF3E6"
+            }
           }
         }
       ],
@@ -86,7 +105,9 @@
           "android": {
             "compileSdkVersion": 36,
             "targetSdkVersion": 36,
-            "buildToolsVersion": "36.0.0"
+            "buildToolsVersion": "36.0.0",
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ]

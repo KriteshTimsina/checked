@@ -1,10 +1,11 @@
-import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/useTheme';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
 import { BottomSheet, ThemedText, BottomSheetModal } from '@/components/ui';
 import { HapticButton } from '@/components/layout';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 type AppIconSheetProps = {
   sheetRef: React.RefObject<BottomSheetModal | null>;
@@ -13,7 +14,16 @@ type AppIconSheetProps = {
 };
 
 export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, onSelect }) => {
-  const { primarySoft, border } = useTheme();
+  const { primarySoft, border, primary } = useTheme();
+
+  const sortedThemes = useMemo(
+    () =>
+      [...APP_THEMES].sort((a, b) => {
+        if (!!a.isNew === !!b.isNew) return 0;
+        return a.isNew ? -1 : 1;
+      }),
+    [],
+  );
 
   return (
     <BottomSheet
@@ -34,8 +44,12 @@ export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, on
         Choose an icon that matches your theme.
       </ThemedText>
 
-      <View style={styles.iconsRow}>
-        {APP_THEMES.map(theme => {
+      <BottomSheetScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.iconsRow}
+      >
+        {sortedThemes.map(theme => {
           const isActive = iconId === theme.id;
           return (
             <HapticButton
@@ -49,6 +63,11 @@ export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, on
                 },
               ]}
             >
+              {theme.isNew && (
+                <View style={[styles.badge, { backgroundColor: primary }]}>
+                  <ThemedText style={styles.badgeLabel}>New</ThemedText>
+                </View>
+              )}
               <Image source={theme.image!} style={styles.iconImage} resizeMode="cover" />
               <ThemedText style={styles.iconLabel}>{theme.name}</ThemedText>
 
@@ -56,7 +75,7 @@ export const AppIconSheet: React.FC<AppIconSheetProps> = ({ sheetRef, iconId, on
             </HapticButton>
           );
         })}
-      </View>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 };
@@ -79,9 +98,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginTop: 4,
+    paddingHorizontal: 2,
   },
   iconOption: {
-    flex: 1,
+    width: 84,
     padding: 10,
     borderRadius: 14,
     alignItems: 'center',
@@ -106,5 +126,19 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     backgroundColor: 'white',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    borderRadius: 100,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    zIndex: 1,
+  },
+  badgeLabel: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
   },
 });

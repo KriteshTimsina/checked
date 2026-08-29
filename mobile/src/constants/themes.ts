@@ -11,6 +11,7 @@ export type AppTheme = {
   cardBg: string;
   label: string;
   image: ReturnType<typeof require>;
+  isNew?: boolean;
 };
 
 export const APP_THEMES: AppTheme[] = [
@@ -61,5 +62,18 @@ export const APP_THEMES: AppTheme[] = [
     cardBg: '#EDD9FF',
     label: 'Calm & Creative',
     image: require('@/assets/images/icon-3.png'),
+  },
+  {
+    id: 4,
+    name: 'Origami',
+    iconKey: 'origami',
+    emoji: '🕊️',
+    primary: '#3B9FD9',
+    accent: '#F4A0A0',
+    bg: '#FAF3E6',
+    cardBg: '#E8F3FB',
+    label: 'Folded & Focused',
+    image: require('@/assets/images/icon-4.png'),
+    isNew: true,
   },
 ];
