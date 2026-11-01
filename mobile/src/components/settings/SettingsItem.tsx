@@ -8,6 +8,8 @@ import { HapticButton } from '@/components/layout';
 type BaseProps = {
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label: string;
+  subtitle?: string;
+  disabled?: boolean;
 };
 
 type ToggleProps = BaseProps & {
@@ -32,24 +34,37 @@ type InfoProps = BaseProps & {
 export type SettingItemProps = ToggleProps | NavigateProps | InfoProps;
 
 export const SettingItem: React.FC<SettingItemProps> = props => {
-  const { primary, card, text, icon, border } = useTheme();
+  const { primary, card, text, textMuted, icon, border } = useTheme();
 
   const left = (
     <View style={styles.left}>
       <View style={[styles.iconWrap, { backgroundColor: primary + '18' }]}>
         <Ionicons name={props.icon} color={primary} size={20} />
       </View>
-      <ThemedText style={[styles.label, { color: text }]}>{props.label}</ThemedText>
+      <View style={styles.labelContainer}>
+        <ThemedText style={[styles.label, { color: text }]}>{props.label}</ThemedText>
+        {props.subtitle ? (
+          <ThemedText style={[styles.subtitle, { color: textMuted }]}>
+            {props.subtitle}
+          </ThemedText>
+        ) : null}
+      </View>
     </View>
   );
 
-  const containerStyle = [styles.item, { backgroundColor: card }];
+  const containerStyle = [
+    styles.item,
+    props.subtitle ? styles.itemWithSubtitle : null,
+    { backgroundColor: card },
+    props.disabled ? styles.disabled : null,
+  ];
 
   if (props.variant === 'toggle') {
     return (
       <View style={containerStyle}>
         {left}
         <Switch
+          disabled={props.disabled}
           value={props.value}
           onValueChange={props.onValueChange}
           thumbColor={props.value ? primary : icon}
@@ -63,8 +78,9 @@ export const SettingItem: React.FC<SettingItemProps> = props => {
   if (props.variant === 'navigate') {
     return (
       <HapticButton
+        disabled={props.disabled}
         onPress={props.onPress}
-        style={({ pressed }) => [containerStyle, pressed && styles.pressed]}
+        style={({ pressed }) => [containerStyle, pressed && !props.disabled && styles.pressed]}
         android_ripple={{ color: primary + '20' }}
       >
         {left}
@@ -83,8 +99,12 @@ export const SettingItem: React.FC<SettingItemProps> = props => {
 
   return (
     <HapticButton
+      disabled={props.disabled}
       onPress={props.onPress}
-      style={({ pressed }) => [containerStyle, pressed && props.onPress && styles.pressed]}
+      style={({ pressed }) => [
+        containerStyle,
+        pressed && props.onPress && !props.disabled && styles.pressed,
+      ]}
       android_ripple={props.onPress ? { color: primary + '20' } : undefined}
     >
       {left}
@@ -113,9 +133,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 58,
+    minHeight: 58,
+    paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 14,
+  },
+  itemWithSubtitle: {
+    minHeight: 68,
+  },
+  disabled: {
+    opacity: 0.55,
   },
   pressed: {
     opacity: 0.75,
@@ -124,6 +151,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flex: 1,
+    paddingRight: 12,
+  },
+  labelContainer: {
+    flex: 1,
+    gap: 2,
   },
   iconWrap: {
     width: 34,
@@ -135,6 +168,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontWeight: '500',
+  },
+  subtitle: {
+    fontSize: 12,
+    lineHeight: 16,
   },
   right: {
     flexDirection: 'row',

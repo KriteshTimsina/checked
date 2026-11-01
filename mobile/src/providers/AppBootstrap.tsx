@@ -1,6 +1,7 @@
 import { Splash } from '@/components/layout';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { useFontLoading } from '@/hooks/useFontLoading';
+import { useReminderReconciliation } from '@/hooks/useReminderReconciliation';
 import { SplashScreen } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,8 @@ export default function AppBootstrap({ children }: { children: React.ReactNode }
   const { success: dbSuccess } = useDatabaseInit();
   const fontsLoaded = useFontLoading();
   const [showSplash, setShowSplash] = useState(true);
+
+  useReminderReconciliation();
 
   useEffect(() => {
     if (fontsLoaded && dbSuccess) {

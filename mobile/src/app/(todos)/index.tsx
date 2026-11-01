@@ -7,11 +7,21 @@ import { haptics } from '@/utils/haptics';
 import { useEntries } from '@/store/entries';
 import { ChecklistItem } from '@/components/todos';
 import { ThemedView } from '@/components/layout';
-import { EmptyState, BottomSheet, BottomSheetModal, InputText, FAB } from '@/components/ui';
+import {
+  EmptyState,
+  BottomSheet,
+  BottomSheetModal,
+  InputText,
+  FAB,
+  ThemedText,
+} from '@/components/ui';
 import { MAX_INPUT_LENGTH } from '@/constants/constants';
 import { IEntry } from '@/db/schema';
+import { usePreferences } from '@/hooks/usePreferences';
+import { useTheme } from '@/hooks/useTheme';
 import { globals } from '@/styles/globals';
 import { Ionicons } from '@expo/vector-icons';
+import dayjs from 'dayjs';
 
 import { Colors } from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +33,10 @@ export default function Entry() {
 
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const { entries, createEntry, getEntries, updateEntry, deleteEntry } = useEntries();
+  const { primary } = useTheme();
+  const checklistReminder = usePreferences(s =>
+    projectId ? s.checklistReminders?.[Number(projectId)] : undefined,
+  );
 
   const [editingEntry, setEditingEntry] = useState<IEntry | null>(null);
 
@@ -137,6 +151,14 @@ export default function Entry() {
     <>
       <ThemedView style={globals.flex}>
         <View style={styles.projectContainer}>
+          {checklistReminder && (
+            <View style={[styles.reminderBanner, { backgroundColor: primary + '18' }]}>
+              <Ionicons name="notifications-outline" size={14} color={primary} />
+              <ThemedText style={[styles.reminderText, { color: primary }]}>
+                Reminder: {dayjs(checklistReminder.dateTime).format('MMM D, h:mm A')}
+              </ThemedText>
+            </View>
+          )}
           <Animated.FlatList
             contentContainerStyle={styles.contentContainer}
             data={entries}
@@ -198,6 +220,19 @@ const styles = StyleSheet.create({
   contentContainer: {
     gap: 10,
     paddingBottom: 90,
+  },
+  reminderBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  reminderText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 
   pill: {

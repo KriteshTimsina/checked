@@ -22,7 +22,7 @@ import AppBootstrap from '@/providers/AppBootstrap';
 import { Loading } from '@/components/ui';
 
 type ChecklistParamList = {
-  index: { title?: string };
+  index: { title?: string; projectId?: string };
   success: undefined;
 };
 
@@ -44,12 +44,15 @@ function AppNavigator() {
         <Stack.Screen
           name="(todos)"
           options={({ route }) => {
-            const title = (route.params as ChecklistParamList['index'])?.title;
+            const params = route.params as ChecklistParamList['index'];
+            const title = params?.title;
+            const projectId = params?.projectId ? Number(params.projectId) : undefined;
 
             return {
               headerShown: true,
-              headerTitle: (route.params as ChecklistParamList['index'])?.title ?? 'Checklist',
-              headerRight: () => title && <ChecklistMenu title={title} />,
+              headerTitle: title ?? 'Checklist',
+              headerRight: () =>
+                title && <ChecklistMenu title={title} projectId={projectId} />,
             };
           }}
         />

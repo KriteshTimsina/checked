@@ -1,5 +1,6 @@
 import { IProject, projects, projects as projectSchema } from '@/db/schema';
 import { getDb } from '@/utils/db';
+import { cancelChecklistReminder } from '@/utils/notifications';
 import { toast } from '@/utils/toast';
 import { eq } from 'drizzle-orm';
 import { create } from 'zustand';
@@ -52,6 +53,7 @@ export const useProjectStore = create<ProjectState>()(set => ({
     const deleted = await db.delete(projectSchema).where(eq(projectSchema.id, id));
 
     if (deleted.changes === 1) {
+      void cancelChecklistReminder(id);
       set(state => ({
         projects: state.projects.filter(project => project.id !== id),
       }));

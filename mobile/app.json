@@ -37,7 +37,12 @@
       },
       "package": "com.kriteshtimsina.checklist",
       "versionCode": 2,
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kriteshtimsina.checklist"
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.kriteshtimsina.checklist",
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +52,12 @@
     "plugins": [
       "expo-router",
       "expo-sqlite",
+      [
+        "expo-notifications",
+        {
+          "defaultChannel": "reminders"
+        }
+      ],
       [
         "expo-splash-screen",
         {

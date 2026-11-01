@@ -4,6 +4,7 @@ import React, { memo, useCallback } from 'react';
 import { ThemedText } from '@/components/ui';
 import { INote } from '@/db/schema';
 import dayjs from 'dayjs';
+import { usePreferences } from '@/hooks/usePreferences';
 import { useTheme } from '@/hooks/useTheme';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ type NoteItemProps = {
 
 const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteItemProps) => {
   const { primarySoft, primary, textMuted, icon } = useTheme();
+  const hasReminder = usePreferences(s => Boolean(s.noteReminders?.[item.id]));
   const scale = useSharedValue(1);
 
   const handlePressIn = useCallback(() => {
@@ -75,7 +77,10 @@ const NoteItem = ({ item, isSelecting, isSelected, onPress, onLongPress }: NoteI
           >
             {item.title}
           </ThemedText>
-          {item.pinned && <AntDesign name="pushpin" color={primary} size={16} />}
+          <View style={styles.headerIcons}>
+            {hasReminder && <Ionicons name="notifications" color={primary} size={14} />}
+            {item.pinned && <AntDesign name="pushpin" color={primary} size={16} />}
+          </View>
         </View>
 
         <ThemedText style={[styles.description, { color: textMuted }]} numberOfLines={6}>
@@ -111,6 +116,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   description: {
     flex: 1,

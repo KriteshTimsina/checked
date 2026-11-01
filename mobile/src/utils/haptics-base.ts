@@ -20,4 +20,8 @@ export const triggerHaptics = {
     } as const;
     Haptics.notificationAsync(map[type]);
   },
+
+  selection: () => {
+    Haptics.selectionAsync();
+  },
 };

@@ -1,13 +1,27 @@
 import { setAppIcon } from '@howincodes/expo-dynamic-app-icon';
 import { reloadAppAsync } from 'expo';
 import React, { useRef } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText, type BottomSheetModal } from '@/components/ui';
 import { APP_THEMES, AppTheme } from '@/constants/themes';
-import { storage, usePreferences, type Tab } from '@/hooks/usePreferences';
+import {
+  storage,
+  usePreferences,
+  type Tab,
+  type Weekday,
+} from '@/hooks/usePreferences';
 import { useTheme } from '@/hooks/useTheme';
 import { haptics } from '@/utils/haptics';
+import {
+  cancelAllAppReminders,
+  cancelDailyReminder,
+  cancelWeeklyReminder,
+  formatReminderTime,
+  requestNotificationPermissionsAsync,
+  scheduleDailyReminder,
+  scheduleWeeklyReminder,
+} from '@/utils/notifications';
 
 import { TitledScreen } from '@/components/layout';
 import {
@@ -17,6 +31,8 @@ import {
   SettingItem,
   SettingSection,
   ThemeSheet,
+  TimePickerSheet,
+  WeekdaySheet,
 } from '@/components/settings';
 import { openStoreListing } from '@/utils/review';
 import { openWhatsNew } from '@/utils/settings';
@@ -26,8 +42,11 @@ export default function Settings() {
   const primaryTabRef = useRef<BottomSheetModal | null>(null);
   const themeSheetRef = useRef<BottomSheetModal | null>(null);
   const appIconSheetRef = useRef<BottomSheetModal | null>(null);
+  const dailyTimeSheetRef = useRef<BottomSheetModal | null>(null);
+  const weeklyDaySheetRef = useRef<BottomSheetModal | null>(null);
+  const weeklyTimeSheetRef = useRef<BottomSheetModal | null>(null);
 
-  const { primary } = useTheme();
+  const { primary, textMuted } = useTheme();
   const {
     setPrimaryTab,
     primaryTab,
@@ -39,6 +58,18 @@ export default function Settings() {
     setIconId,
     colorScheme,
     setColorScheme,
+    notificationsEnabled,
+    setNotificationsEnabled,
+    dailyReminderEnabled,
+    setDailyReminderEnabled,
+    dailyReminderTime,
+    setDailyReminderTime,
+    weeklyReminderEnabled,
+    setWeeklyReminderEnabled,
+    weeklyReminderDay,
+    setWeeklyReminderDay,
+    weeklyReminderTime,
+    setWeeklyReminderTime,
   } = usePreferences();
 
   const isDark = colorScheme === 'dark';
@@ -91,12 +122,192 @@ export default function Settings() {
     toast('Default tab changed successfully');
   };
 
+  const showPermissionDeniedAlert = () => {
+    Alert.alert(
+      'Notification Permission Required',
+      'Reminders cannot be scheduled because notification permissions are disabled. You can enable notifications for Checked in your device settings.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Open Settings',
+          onPress: () => {
+            Linking.openSettings();
+          },
+        },
+      ],
+    );
+  };
+
+  const onToggleMasterNotifications = async (enabled: boolean) => {
+    if (!enabled) {
+      try {
+        await cancelAllAppReminders();
+        setNotificationsEnabled(false);
+        haptics.selection();
+        toast('Reminders cancelled');
+      } catch (error) {
+        console.error('Failed to disable reminders:', error);
+        toast('Could not cancel reminders');
+      }
+      return;
+    }
+
+    const granted = await requestNotificationPermissionsAsync();
+    if (!granted) {
+      setNotificationsEnabled(false);
+      showPermissionDeniedAlert();
+      return;
+    }
+
+    try {
+      setNotificationsEnabled(true);
+      if (dailyReminderEnabled) {
+        await scheduleDailyReminder(dailyReminderTime);
+      }
+      if (weeklyReminderEnabled) {
+        await scheduleWeeklyReminder(weeklyReminderDay, weeklyReminderTime);
+      }
+      haptics.success();
+      toast('Reminders enabled');
+    } catch (error) {
+      console.error('Failed to enable reminders:', error);
+      toast('Failed to schedule reminders');
+    }
+  };
+
+  const onToggleDailyReminder = async (enabled: boolean) => {
+    if (!enabled) {
+      try {
+        await cancelDailyReminder();
+        setDailyReminderEnabled(false);
+        haptics.selection();
+        toast('Daily reminder cancelled');
+      } catch (error) {
+        console.error('Failed to cancel daily reminder:', error);
+        toast('Could not cancel daily reminder');
+      }
+      return;
+    }
+
+    const granted = await requestNotificationPermissionsAsync();
+    if (!granted) {
+      setDailyReminderEnabled(false);
+      showPermissionDeniedAlert();
+      return;
+    }
+
+    try {
+      if (!notificationsEnabled) {
+        setNotificationsEnabled(true);
+      }
+      await scheduleDailyReminder(dailyReminderTime);
+      setDailyReminderEnabled(true);
+      haptics.success();
+      toast(`Daily reminder scheduled for ${formatReminderTime(dailyReminderTime)}`);
+    } catch (error) {
+      console.error('Failed to schedule daily reminder:', error);
+      toast('Could not schedule daily reminder');
+    }
+  };
+
+  const onSelectDailyTime = async (time: string) => {
+    if (time === dailyReminderTime) return;
+    setDailyReminderTime(time);
+
+    if (notificationsEnabled && dailyReminderEnabled) {
+      try {
+        await scheduleDailyReminder(time);
+        toast(`Daily reminder updated to ${formatReminderTime(time)}`);
+      } catch (error) {
+        console.error('Failed to update daily reminder:', error);
+        toast('Could not update daily reminder');
+      }
+    } else {
+      toast(`Daily reminder time set to ${formatReminderTime(time)}`);
+    }
+  };
+
+  const onToggleWeeklyReminder = async (enabled: boolean) => {
+    if (!enabled) {
+      try {
+        await cancelWeeklyReminder();
+        setWeeklyReminderEnabled(false);
+        haptics.selection();
+        toast('Weekly reminder cancelled');
+      } catch (error) {
+        console.error('Failed to cancel weekly reminder:', error);
+        toast('Could not cancel weekly reminder');
+      }
+      return;
+    }
+
+    const granted = await requestNotificationPermissionsAsync();
+    if (!granted) {
+      setWeeklyReminderEnabled(false);
+      showPermissionDeniedAlert();
+      return;
+    }
+
+    try {
+      if (!notificationsEnabled) {
+        setNotificationsEnabled(true);
+      }
+      await scheduleWeeklyReminder(weeklyReminderDay, weeklyReminderTime);
+      setWeeklyReminderEnabled(true);
+      haptics.success();
+      toast(
+        `Weekly reminder scheduled for ${weeklyReminderDay} at ${formatReminderTime(weeklyReminderTime)}`,
+      );
+    } catch (error) {
+      console.error('Failed to schedule weekly reminder:', error);
+      toast('Could not schedule weekly reminder');
+    }
+  };
+
+  const onSelectWeeklyDay = async (day: Weekday) => {
+    weeklyDaySheetRef.current?.dismiss();
+    if (day === weeklyReminderDay) return;
+
+    setWeeklyReminderDay(day);
+    haptics.selection();
+
+    if (notificationsEnabled && weeklyReminderEnabled) {
+      try {
+        await scheduleWeeklyReminder(day, weeklyReminderTime);
+        toast(`Weekly reminder updated to ${day} at ${formatReminderTime(weeklyReminderTime)}`);
+      } catch (error) {
+        console.error('Failed to update weekly reminder day:', error);
+        toast('Could not update weekly reminder');
+      }
+    } else {
+      toast(`Weekly reminder day set to ${day}`);
+    }
+  };
+
+  const onSelectWeeklyTime = async (time: string) => {
+    if (time === weeklyReminderTime) return;
+    setWeeklyReminderTime(time);
+
+    if (notificationsEnabled && weeklyReminderEnabled) {
+      try {
+        await scheduleWeeklyReminder(weeklyReminderDay, time);
+        toast(`Weekly reminder updated to ${weeklyReminderDay} at ${formatReminderTime(time)}`);
+      } catch (error) {
+        console.error('Failed to update weekly reminder time:', error);
+        toast('Could not update weekly reminder');
+      }
+    } else {
+      toast(`Weekly reminder time set to ${formatReminderTime(time)}`);
+    }
+  };
+
   const onResetApp = () => {
     Alert.alert('Confirmation', 'Are you sure you want to reset the app?', [
       { text: 'Cancel', isPreferred: true, style: 'destructive' },
       {
         text: 'Proceed',
-        onPress: () => {
+        onPress: async () => {
+          await cancelAllAppReminders();
           storage.clearAll();
           reloadAppAsync();
         },
@@ -168,6 +379,58 @@ export default function Settings() {
               />
             </SettingSection>
 
+            <SettingSection title="Notifications">
+              <SettingItem
+                variant="toggle"
+                icon="notifications-outline"
+                label="Enable reminders"
+                subtitle="Receive daily and weekly reminders to review your lists and notes."
+                value={notificationsEnabled}
+                onValueChange={onToggleMasterNotifications}
+              />
+              <SettingItem
+                variant="toggle"
+                icon="sunny-outline"
+                label="Daily reminder"
+                subtitle={`Every day at ${formatReminderTime(dailyReminderTime)}`}
+                value={notificationsEnabled && dailyReminderEnabled}
+                onValueChange={onToggleDailyReminder}
+              />
+              <SettingItem
+                variant="navigate"
+                icon="time-outline"
+                label="Daily reminder time"
+                rightLabel={formatReminderTime(dailyReminderTime)}
+                onPress={() => dailyTimeSheetRef.current?.present()}
+              />
+              <SettingItem
+                variant="toggle"
+                icon="calendar-outline"
+                label="Weekly reminder"
+                subtitle={`${weeklyReminderDay} at ${formatReminderTime(weeklyReminderTime)}`}
+                value={notificationsEnabled && weeklyReminderEnabled}
+                onValueChange={onToggleWeeklyReminder}
+              />
+              <SettingItem
+                variant="navigate"
+                icon="today-outline"
+                label="Weekly reminder day"
+                rightLabel={weeklyReminderDay}
+                onPress={() => weeklyDaySheetRef.current?.present()}
+              />
+              <SettingItem
+                variant="navigate"
+                icon="alarm-outline"
+                label="Weekly reminder time"
+                rightLabel={formatReminderTime(weeklyReminderTime)}
+                onPress={() => weeklyTimeSheetRef.current?.present()}
+              />
+              <ThemedText style={[styles.helperText, { color: textMuted }]}>
+                Reminders are scheduled locally on this device. No account or internet connection
+                is required.
+              </ThemedText>
+            </SettingSection>
+
             <SettingSection>
               <SettingItem
                 variant="navigate"
@@ -199,6 +462,26 @@ export default function Settings() {
       <AppIconSheet sheetRef={appIconSheetRef} iconId={iconId ?? themeId} onSelect={onSelectIcon} />
 
       <DefaultTabSheet sheetRef={primaryTabRef} primaryTab={primaryTab} onSelect={onSelectTab} />
+
+      <TimePickerSheet
+        sheetRef={dailyTimeSheetRef}
+        title="Daily Reminder Time"
+        time={dailyReminderTime}
+        onSelect={onSelectDailyTime}
+      />
+
+      <WeekdaySheet
+        sheetRef={weeklyDaySheetRef}
+        selectedDay={weeklyReminderDay}
+        onSelect={onSelectWeeklyDay}
+      />
+
+      <TimePickerSheet
+        sheetRef={weeklyTimeSheetRef}
+        title="Weekly Reminder Time"
+        time={weeklyReminderTime}
+        onSelect={onSelectWeeklyTime}
+      />
     </>
   );
 }
@@ -218,6 +501,12 @@ const styles = StyleSheet.create({
   sections: {
     marginTop: 24,
     gap: 24,
+  },
+  helperText: {
+    fontSize: 12,
+    lineHeight: 17,
+    paddingHorizontal: 6,
+    marginTop: 2,
   },
   pill: {
     flexDirection: 'row',

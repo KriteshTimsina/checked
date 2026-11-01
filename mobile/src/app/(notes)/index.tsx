@@ -12,7 +12,9 @@ import { ThemedView } from '@/components/layout';
 import { ThemedText } from '@/components/ui';
 import { globals } from '@/styles/globals';
 import { INote } from '@/db/schema';
+import { usePreferences } from '@/hooks/usePreferences';
 import { useTheme } from '@/hooks/useTheme';
+import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import useAppState from '@/hooks/useAppState';
 import { haptics } from '@/utils/haptics';
@@ -36,6 +38,7 @@ const Note = () => {
   const { getNote, updateNote } = useNotes();
   const navigation = useNavigation();
   const [pinned, setPinned] = useState<boolean | null>(null);
+  const noteReminder = usePreferences(s => (noteId ? s.noteReminders?.[Number(noteId)] : undefined));
 
   const noteRef = useRef(note);
 
@@ -45,11 +48,18 @@ const Note = () => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerRight}>
-          {noteId && <NotesMenu setPinned={setPinned} pinned={pinned} noteId={Number(noteId)} />}
+          {noteId && (
+            <NotesMenu
+              setPinned={setPinned}
+              pinned={pinned}
+              noteId={Number(noteId)}
+              noteTitle={note.title}
+            />
+          )}
         </View>
       ),
     });
-  }, [noteId, note.pinned]);
+  }, [noteId, note.pinned, note.title, pinned]);
 
   useEffect(() => {
     noteRef.current = note;
@@ -150,6 +160,15 @@ const Note = () => {
           </ThemedText>
         )}
 
+        {noteReminder && (
+          <View style={[styles.reminderBadge, { backgroundColor: primary + '18' }]}>
+            <Ionicons name="notifications-outline" size={14} color={primary} />
+            <ThemedText style={[styles.reminderText, { color: primary }]}>
+              Reminder: {dayjs(noteReminder.dateTime).format('MMM D, h:mm A')}
+            </ThemedText>
+          </View>
+        )}
+
         <TextInput
           ref={contentRef}
           cursorColor={primary}
@@ -189,5 +208,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+  },
+  reminderBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 6,
+  },
+  reminderText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

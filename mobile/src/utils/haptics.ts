@@ -43,4 +43,9 @@ export const haptics = {
     if (!isHapticsEnabled()) return;
     triggerHaptics.impact('soft');
   },
+
+  selection: () => {
+    if (!isHapticsEnabled()) return;
+    triggerHaptics.selection();
+  },
 };

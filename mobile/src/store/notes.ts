@@ -1,5 +1,6 @@
 import { notes, INote } from '@/db/schema';
 import { getDb } from '@/utils/db';
+import { cancelNoteReminder } from '@/utils/notifications';
 import { desc, eq } from 'drizzle-orm';
 import { create } from 'zustand';
 
@@ -93,6 +94,7 @@ const useNotesStore = create<NotesState>()(set => ({
       const deleted = await db.delete(notes).where(eq(notes.id, noteId));
 
       if (deleted.changes === 1) {
+        void cancelNoteReminder(noteId);
         set(state => ({
           notes: state.notes.filter(note => note.id !== noteId),
         }));

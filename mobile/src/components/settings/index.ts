@@ -3,3 +3,4 @@ export { AppIconSheet } from './AppIconSheet';
 export { DefaultTabSheet } from './DefaultTabSheet';
 export { SettingItem, SettingItemProps, SettingSection } from './SettingsItem';
 export { ThemeSheet } from './ThemeSheet';
+export { ItemReminderSheet, TimePickerSheet, WeekdaySheet } from './ReminderSheets';
