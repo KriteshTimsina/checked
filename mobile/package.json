@@ -17,7 +17,8 @@
     "cache:clean": "npm cache clean --force",
     "prebuild": "npx expo prebuild",
     "prebuild:android": "npx expo prebuild --clean --platform android",
-    "prebuild:ios": "npx expo prebuild --clean --platform ios"
+    "prebuild:ios": "npx expo prebuild --clean --platform ios",
+    "postinstall": "node scripts/patch-expo-cli.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
